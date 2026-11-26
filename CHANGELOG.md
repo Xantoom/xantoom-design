@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- `cursor: pointer` also on ARIA widgets (checkbox, radio, switch, option, menu items) and on labels wrapping a
+  checkbox or radio, so apps no longer keep their own list.
+
 ## 0.2.0
 
 - Custom scrollbars everywhere: thin, a thumb at 3:1 on every surface (`--x-scrollbar-thumb`, `--x-scrollbar-track`),

@@ -80,7 +80,24 @@
 }
 
 /* Everything clickable shows it; nothing disabled pretends to be. */
-:where(button, summary, select, label[for], a[href], [role="button"], [role="tab"], input:is([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"])) {
+:where(
+	button,
+	summary,
+	select,
+	label[for],
+	label:has(input:is([type="checkbox"], [type="radio"])),
+	a[href],
+	[role="button"],
+	[role="tab"],
+	[role="checkbox"],
+	[role="radio"],
+	[role="switch"],
+	[role="option"],
+	[role="menuitem"],
+	[role="menuitemcheckbox"],
+	[role="menuitemradio"],
+	input:is([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"])
+) {
 	cursor: pointer;
 	touch-action: manipulation;
 }
