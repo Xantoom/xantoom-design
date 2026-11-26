@@ -64,14 +64,14 @@ if (!linked) {
 	}
 }
 
-// 3. Pointers: AGENTS.md always (read by most agents), CLAUDE.md when the project has one (Claude Code then ignores
-//    AGENTS.md) and it does not already import AGENTS.md.
+// 3. Pointers: AGENTS.md always (read by most agents), and CLAUDE.md or .claude/CLAUDE.md when the project has one
+//    (Claude Code then ignores AGENTS.md) that does not already import AGENTS.md.
 function point(file: string, create: boolean): void {
 	const path = join(project, file);
 	const exists = existsSync(path);
 	if (!exists && !create) return;
 	const text = exists ? readFileSync(path, 'utf8') : '';
-	if (file === 'CLAUDE.md' && /^@AGENTS\.md\s*$/m.test(text)) return;
+	if (file.endsWith('CLAUDE.md') && /^@(\.\.\/)?AGENTS\.md\s*$/m.test(text)) return;
 	const block = new RegExp(`${START}[\\s\\S]*?${END}`);
 	const next = block.test(text) ? text.replace(block, POINTER) : `${text.trimEnd()}${text.trim() ? '\n\n' : ''}${POINTER}\n`;
 	if (next === text) return;
@@ -80,6 +80,7 @@ function point(file: string, create: boolean): void {
 }
 point('AGENTS.md', true);
 point('CLAUDE.md', false);
+point('.claude/CLAUDE.md', false);
 
 if (check && stale.length > 0) {
 	console.error(`${NAME}: out of date: ${stale.join(', ')}. Run \`bunx ${NAME} sync\`.`);
