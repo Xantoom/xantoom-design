@@ -1,0 +1,18 @@
+/*
+ * Xantoom design system. Everything sits in the `x` layer, so an app's own layers (or unlayered CSS) always win:
+ *   @layer x, app;   then   @import "xantoom-design/css";   @import "xantoom-design/themes/<app>.css";
+ */
+@layer x.reset, x.tokens, x.theme, x.base, x.layout, x.components, x.motion, x.utilities;
+
+@import "./tokens.css";
+@import "./reset.css" layer(x.reset);
+@import "./base.css" layer(x.base);
+@import "./layout.css" layer(x.layout);
+@import "./components/actions.css" layer(x.components);
+@import "./components/forms.css" layer(x.components);
+@import "./components/content.css" layer(x.components);
+@import "./components/feedback.css" layer(x.components);
+@import "./components/navigation.css" layer(x.components);
+@import "./components/overlays.css" layer(x.components);
+@import "./motion.css" layer(x.motion);
+@import "./utilities.css" layer(x.utilities);

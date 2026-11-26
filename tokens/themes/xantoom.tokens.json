@@ -1,0 +1,124 @@
+{
+	"$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+	"$description": "xantoom.dev: vermilion to amber.",
+	"color": {
+		"$type": "color",
+		"brand": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.3529,
+						0.1725
+					],
+					"hex": "#ff5a2c"
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.4784,
+						0.1294
+					],
+					"hex": "#ff7a21"
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.6824,
+						0.102
+					],
+					"hex": "#ffae1a"
+				}
+			},
+			"$description": "The logo gradient (decorative: never under text)."
+		},
+		"fill": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.3529,
+						0.1725
+					],
+					"hex": "#ff5a2c"
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.4784,
+						0.1294
+					],
+					"hex": "#ff7a21"
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.6824,
+						0.102
+					],
+					"hex": "#ffae1a"
+				}
+			},
+			"$description": "The accent fill gradient for buttons, checked controls, bars. on-fill reads on every stop."
+		},
+		"on-fill": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					0.102,
+					0.0627,
+					0.0353
+				],
+				"hex": "#1a1009"
+			}
+		},
+		"accent": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					0.7608,
+					0.2275,
+					0.0706
+				],
+				"hex": "#c23a12"
+			},
+			"$extensions": {
+				"app.xantoom.dark": {
+					"colorSpace": "srgb",
+					"components": [
+						1,
+						0.5412,
+						0.3608
+					],
+					"hex": "#ff8a5c"
+				}
+			},
+			"$description": "Accent text, links, focus rings, thin marks: 4.5:1 on every surface."
+		}
+	},
+	"shape": {
+		"$type": "number",
+		"radius": {
+			"$value": 1,
+			"$description": "Multiplies every radius."
+		},
+		"density": {
+			"$value": 1,
+			"$description": "Multiplies every space."
+		}
+	}
+}

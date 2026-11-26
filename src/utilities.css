@@ -1,0 +1,57 @@
+/* Single-purpose helpers. */
+
+/* Hidden on screen, read by assistive technology; shown again when it (or its content) is focused. */
+.x-visually-hidden:where(:not(:focus-within, :active)) {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.x-tabular {
+	font-variant-numeric: tabular-nums;
+}
+
+.x-mono {
+	font-family: var(--x-font-mono);
+}
+
+.x-muted {
+	color: var(--x-fg-muted);
+}
+
+.x-truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.x-display {
+	font-size: var(--x-text-display);
+	line-height: 1.05;
+}
+
+/* Arrows and other directional icons point the other way in right-to-left. */
+.x-flip-rtl:dir(rtl) {
+	scale: -1 1;
+}
+
+/* The app-icon tile: the brand gradient with the 25 % corner, for logos and app pickers. */
+.x-tile {
+	display: inline-grid;
+	place-items: center;
+	inline-size: var(--_size, 2.5rem);
+	aspect-ratio: 1;
+	border-radius: 25%;
+	background-image: var(--x-brand);
+}
+
+.x-surface {
+	background-color: var(--x-surface);
+}
+
+.x-raised {
+	background-color: var(--x-raised);
+}

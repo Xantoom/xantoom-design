@@ -1,0 +1,141 @@
+/*
+ * Layout primitives. They adapt to the space they get (flex wrapping, auto-fill grids, container queries), not to
+ * device names, so one page holds from a 320 px phone to an 8K or ultra-wide screen, and on square ones.
+ */
+
+/* Layout knobs apply to their own element only: a nested stack must not inherit its parent's gap. */
+@property --x-gap {
+	syntax: "*";
+	inherits: false;
+}
+
+@property --x-min {
+	syntax: "*";
+	inherits: false;
+}
+
+/* Centred page column with safe-area gutters (physical: the notch does not flip in right-to-left). */
+.x-container {
+	inline-size: 100%;
+	max-inline-size: var(--x-container, var(--x-size-container));
+	margin-inline: auto;
+	padding-left: max(var(--x-gutter), env(safe-area-inset-left));
+	padding-right: max(var(--x-gutter), env(safe-area-inset-right));
+	--x-gutter: clamp(var(--x-space-4), 4vw, var(--x-space-10));
+
+	&[data-width="narrow"] {
+		--x-container: 44rem;
+	}
+
+	&[data-width="wide"] {
+		--x-container: 120rem;
+	}
+}
+
+/* A readable text column. */
+.x-prose {
+	max-inline-size: 68ch;
+}
+
+.x-stack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--x-gap, var(--x-space-4));
+}
+
+.x-cluster {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--x-gap, var(--x-space-3));
+
+	&[data-justify="end"] {
+		justify-content: flex-end;
+	}
+
+	&[data-justify="between"] {
+		justify-content: space-between;
+	}
+}
+
+:is(.x-stack, .x-cluster) {
+	&[data-gap="1"] {
+		--x-gap: var(--x-space-1);
+	}
+
+	&[data-gap="2"] {
+		--x-gap: var(--x-space-2);
+	}
+
+	&[data-gap="6"] {
+		--x-gap: var(--x-space-6);
+	}
+
+	&[data-gap="8"] {
+		--x-gap: var(--x-space-8);
+	}
+
+	&[data-gap="12"] {
+		--x-gap: var(--x-space-12);
+	}
+}
+
+/* As many columns of at least --x-min as fit. */
+.x-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(var(--x-min, 16rem), 100%), 1fr));
+	gap: var(--x-gap, var(--x-space-4));
+
+	&[data-min="sm"] {
+		--x-min: 11rem;
+	}
+
+	&[data-min="lg"] {
+		--x-min: 22rem;
+	}
+}
+
+/* A side column and a main one, stacked once the main one would be narrower than 60 %. */
+.x-split {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--x-gap, var(--x-space-6));
+
+	& > :first-child {
+		flex: 1 1 var(--x-side, 16rem);
+	}
+
+	& > :last-child {
+		flex: 999 1 0;
+		min-inline-size: 60%;
+	}
+}
+
+/* App frame: header, navigation, main. The navigation moves above the main column on narrow screens. */
+.x-shell {
+	display: grid;
+	min-block-size: 100dvh;
+	grid-template: "header" auto "nav" auto "main" 1fr / minmax(0, 1fr);
+
+	@media (width >= 48rem) {
+		grid-template: "header header" auto "nav main" 1fr / var(--x-side, 16rem) minmax(0, 1fr);
+	}
+
+	& > header {
+		grid-area: header;
+	}
+
+	& > nav {
+		grid-area: nav;
+	}
+
+	& > main {
+		grid-area: main;
+		min-inline-size: 0;
+	}
+}
+
+/* Lets children size against this box (cqi units, @container). */
+.x-cq {
+	container-type: inline-size;
+}

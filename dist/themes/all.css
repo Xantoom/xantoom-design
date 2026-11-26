@@ -1,0 +1,72 @@
+@layer x.theme {
+	[data-x-theme="vexode"] {
+		--x-brand-1: #0b2a4a;
+		--x-brand-2: #0f6478;
+		--x-brand-3: #1aa38f;
+		--x-fill-1: #0b2a4a;
+		--x-fill-2: #0f6478;
+		--x-fill-3: #12806f;
+		--x-on-fill: #ffffff;
+		--x-accent: light-dark(#0f6478, #4fd1bc);
+		--x-radius: 1.1;
+		--x-density: 1;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+	[data-x-theme="vixeeny"] {
+		--x-brand-1: #43464f;
+		--x-brand-2: #2e3038;
+		--x-brand-3: #1c1d23;
+		--x-fill-1: light-dark(#43464f, #f4f4f6);
+		--x-fill-2: light-dark(#2e3038, #dcdde2);
+		--x-fill-3: light-dark(#1c1d23, #c4c6cd);
+		--x-on-fill: light-dark(#ffffff, #15161c);
+		--x-accent: light-dark(#2e3038, #d4d5db);
+		--x-radius: 0.9;
+		--x-density: 0.95;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+	[data-x-theme="vixely"] {
+		--x-brand-1: #2f6bff;
+		--x-brand-2: #5a4dff;
+		--x-brand-3: #9b4dff;
+		--x-fill-1: #2b62f0;
+		--x-fill-2: #5a4dff;
+		--x-fill-3: #8a45f5;
+		--x-on-fill: #ffffff;
+		--x-accent: light-dark(#3d4fe6, #a3a9ff);
+		--x-radius: 0.8;
+		--x-density: 0.9;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+	[data-x-theme="vixion"] {
+		--x-brand-1: #ffd36e;
+		--x-brand-2: #ffa574;
+		--x-brand-3: #ff94bf;
+		--x-fill-1: #ffd36e;
+		--x-fill-2: #ffa574;
+		--x-fill-3: #ff94bf;
+		--x-on-fill: #2a1508;
+		--x-accent: light-dark(#a8461c, #ffb08f);
+		--x-radius: 1.2;
+		--x-density: 1;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+	[data-x-theme="xantoom"] {
+		--x-brand-1: #ff5a2c;
+		--x-brand-2: #ff7a21;
+		--x-brand-3: #ffae1a;
+		--x-fill-1: #ff5a2c;
+		--x-fill-2: #ff7a21;
+		--x-fill-3: #ffae1a;
+		--x-on-fill: #1a1009;
+		--x-accent: light-dark(#c23a12, #ff8a5c);
+		--x-radius: 1;
+		--x-density: 1;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+}

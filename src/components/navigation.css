@@ -1,0 +1,260 @@
+/* Navigation: skip link, nav links, breadcrumb, pagination, tabs. */
+
+/* <a class="x-skip-link" href="#main">…</a> as the first element of <body>. */
+.x-skip-link {
+	position: fixed;
+	inset-block-start: var(--x-space-3);
+	inset-inline-start: var(--x-space-3);
+	padding: var(--x-space-2) var(--x-space-4);
+	border-radius: var(--x-radius-md);
+	background-color: var(--x-fg);
+	color: var(--x-bg);
+	font-weight: var(--x-weight-medium);
+	text-decoration: none;
+	translate: 0 calc(-100% - var(--x-space-6));
+
+	&:focus-visible {
+		translate: 0;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: translate var(--x-duration-fast) var(--x-ease-out);
+	}
+}
+
+/* A navigation link; the current page has aria-current="page". */
+.x-navlink {
+	display: flex;
+	align-items: center;
+	gap: var(--x-space-2);
+	min-block-size: var(--x-control);
+	padding-inline: var(--x-space-3);
+	border-radius: var(--x-radius-md);
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-sm);
+	font-weight: var(--x-weight-medium);
+	text-decoration: none;
+	transition-property: background-color, color;
+	transition-duration: var(--x-duration-fast);
+
+	& > svg {
+		inline-size: 1.25em;
+		block-size: 1.25em;
+	}
+
+	&:hover {
+		background-color: var(--x-hover);
+		color: var(--x-fg);
+	}
+
+	&[aria-current="page"] {
+		background-color: color-mix(in oklab, var(--x-accent) 12%, transparent);
+		color: var(--x-fg);
+		box-shadow: inset 2px 0 0 var(--x-accent);
+
+		&:dir(rtl) {
+			box-shadow: inset -2px 0 0 var(--x-accent);
+		}
+
+		@media (forced-colors: active) {
+			outline: 1px solid Highlight;
+		}
+	}
+}
+
+/* <nav aria-label="…"><ol class="x-breadcrumb"><li><a href>…</a></li>…<li aria-current="page">…</li></ol></nav> */
+.x-breadcrumb {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--x-space-1-5);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-sm);
+
+	& > li + li::before {
+		content: "/" / "";
+		margin-inline-end: var(--x-space-1-5);
+		color: var(--x-fg-faint);
+	}
+
+	& a {
+		color: inherit;
+		text-decoration: none;
+
+		&:hover {
+			color: var(--x-fg);
+			text-decoration: underline;
+		}
+	}
+
+	& [aria-current="page"] {
+		color: var(--x-fg);
+	}
+}
+
+/* <nav aria-label="…"><ul class="x-pagination"><li><a href aria-current="page">2</a></li>… */
+.x-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--x-space-1);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	& :is(a, button) {
+		display: inline-grid;
+		place-items: center;
+		min-inline-size: var(--x-control);
+		min-block-size: var(--x-control);
+		padding-inline: var(--x-space-2);
+		border: 1px solid transparent;
+		border-radius: var(--x-radius-md);
+		background: none;
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-sm);
+		font-variant-numeric: tabular-nums;
+		text-decoration: none;
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--x-hover);
+			color: var(--x-fg);
+		}
+
+		&[aria-current="page"] {
+			border-color: var(--x-line);
+			background-color: var(--x-raised);
+			color: var(--x-fg);
+			font-weight: var(--x-weight-bold);
+		}
+	}
+}
+
+/*
+ * Tabs (not for page navigation):
+ * <div class="x-tabs">
+ *   <div class="x-tablist" role="tablist" aria-label="…">            (or focusgroup="tablist nomemory")
+ *     <button class="x-tab" type="button" role="tab" id="t1" aria-selected="true">…</button> …
+ *   </div>
+ *   <div role="tabpanel" aria-labelledby="t1" tabindex="0">…</div>
+ *   <div role="tabpanel" aria-labelledby="t2" hidden="until-found">…</div>
+ * </div>
+ * xantoom.js adds the keyboard and the selection; the initial state must be in the HTML.
+ */
+@property --x-fade-start {
+	syntax: "<length>";
+	inherits: false;
+	initial-value: 0px;
+}
+
+@property --x-fade-end {
+	syntax: "<length>";
+	inherits: false;
+	initial-value: 0px;
+}
+
+.x-tabs {
+	display: grid;
+	grid-template: "list" auto "panel" 1fr / minmax(0, 1fr);
+	row-gap: var(--x-space-4);
+
+	/* Every panel in one cell: hidden="until-found" panels keep their box. */
+	& > [role="tabpanel"] {
+		grid-area: panel;
+	}
+}
+
+.x-tablist {
+	grid-area: list;
+	display: flex;
+	gap: var(--x-space-1);
+	overflow-x: auto;
+	scrollbar-width: none;
+	scroll-snap-type: inline proximity;
+	scroll-padding-inline: var(--x-space-8);
+	border-block-end: 1px solid var(--x-line);
+
+	/* Fades the edges that have more tabs beyond them (scroll-driven, so it costs nothing when the tabs fit). */
+	--x-fade-size: 2.5rem;
+	--_fade-dir: right;
+	--_fade-start-pos: 0;
+	--_fade-end-pos: 100%;
+	mask:
+		linear-gradient(black, black) no-clip subtract,
+		linear-gradient(to var(--_fade-dir), black, transparent) var(--_fade-start-pos) 0 / var(--x-fade-start) 100% no-repeat no-clip,
+		linear-gradient(to var(--_fade-dir), transparent, black) var(--_fade-end-pos) 0 / var(--x-fade-end) 100% no-repeat no-clip;
+	animation:
+		x-fade-start linear both,
+		x-fade-end linear both;
+	animation-timeline: scroll(self inline);
+	animation-range:
+		0 var(--x-fade-size),
+		calc(100% - var(--x-fade-size)) 100%;
+
+	&:dir(rtl) {
+		--_fade-dir: left;
+		--_fade-start-pos: 100%;
+		--_fade-end-pos: 0;
+	}
+
+	@supports not (animation-timeline: scroll()) {
+		mask: none;
+	}
+}
+
+@keyframes x-fade-start {
+	to {
+		--x-fade-start: var(--x-fade-size);
+	}
+}
+
+@keyframes x-fade-end {
+	from {
+		--x-fade-end: var(--x-fade-size);
+	}
+}
+
+.x-tab {
+	position: relative;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--x-space-2);
+	min-block-size: var(--x-control);
+	padding-inline: var(--x-space-3);
+	border: 0;
+	background: none;
+	color: var(--x-fg-muted);
+	font: inherit;
+	font-size: var(--x-text-sm);
+	font-weight: var(--x-weight-medium);
+	white-space: nowrap;
+	scroll-snap-align: start;
+	cursor: pointer;
+	transition: color var(--x-duration-fast);
+
+	&:hover {
+		color: var(--x-fg);
+	}
+
+	&:focus-visible {
+		outline-offset: -2px;
+		border-radius: var(--x-radius-sm);
+	}
+
+	/* A shape as well as a colour; a border, so forced-colors mode keeps it. */
+	&[aria-selected="true"] {
+		color: var(--x-fg);
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: auto var(--x-space-2) 0;
+			border-block-end: 2px solid var(--x-accent);
+			border-radius: 2px;
+		}
+	}
+}

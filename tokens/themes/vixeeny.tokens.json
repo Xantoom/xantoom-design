@@ -1,0 +1,168 @@
+{
+	"$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+	"$description": "Vixeeny: graphite and white, a screen capture tool.",
+	"color": {
+		"$type": "color",
+		"brand": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.2627,
+						0.2745,
+						0.3098
+					],
+					"hex": "#43464f"
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.1804,
+						0.1882,
+						0.2196
+					],
+					"hex": "#2e3038"
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.1098,
+						0.1137,
+						0.1373
+					],
+					"hex": "#1c1d23"
+				}
+			},
+			"$description": "The logo gradient (decorative: never under text)."
+		},
+		"fill": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.2627,
+						0.2745,
+						0.3098
+					],
+					"hex": "#43464f"
+				},
+				"$extensions": {
+					"app.xantoom.dark": {
+						"colorSpace": "srgb",
+						"components": [
+							0.9569,
+							0.9569,
+							0.9647
+						],
+						"hex": "#f4f4f6"
+					}
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.1804,
+						0.1882,
+						0.2196
+					],
+					"hex": "#2e3038"
+				},
+				"$extensions": {
+					"app.xantoom.dark": {
+						"colorSpace": "srgb",
+						"components": [
+							0.8627,
+							0.8667,
+							0.8863
+						],
+						"hex": "#dcdde2"
+					}
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.1098,
+						0.1137,
+						0.1373
+					],
+					"hex": "#1c1d23"
+				},
+				"$extensions": {
+					"app.xantoom.dark": {
+						"colorSpace": "srgb",
+						"components": [
+							0.7686,
+							0.7765,
+							0.8039
+						],
+						"hex": "#c4c6cd"
+					}
+				}
+			},
+			"$description": "The accent fill gradient for buttons, checked controls, bars. on-fill reads on every stop."
+		},
+		"on-fill": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					1,
+					1,
+					1
+				],
+				"hex": "#ffffff"
+			},
+			"$extensions": {
+				"app.xantoom.dark": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0824,
+						0.0863,
+						0.1098
+					],
+					"hex": "#15161c"
+				}
+			}
+		},
+		"accent": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					0.1804,
+					0.1882,
+					0.2196
+				],
+				"hex": "#2e3038"
+			},
+			"$extensions": {
+				"app.xantoom.dark": {
+					"colorSpace": "srgb",
+					"components": [
+						0.8314,
+						0.8353,
+						0.8588
+					],
+					"hex": "#d4d5db"
+				}
+			},
+			"$description": "Accent text, links, focus rings, thin marks: 4.5:1 on every surface."
+		}
+	},
+	"shape": {
+		"$type": "number",
+		"radius": {
+			"$value": 0.9,
+			"$description": "Multiplies every radius."
+		},
+		"density": {
+			"$value": 0.95,
+			"$description": "Multiplies every space."
+		}
+	}
+}

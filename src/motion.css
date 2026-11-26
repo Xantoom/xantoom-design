@@ -1,0 +1,65 @@
+/*
+ * Motion. Only opacity and transforms move; spatial motion is opt-in (prefers-reduced-motion: no-preference);
+ * loaders keep turning, slower, under reduced motion. Nothing flashes.
+ */
+
+@keyframes x-spin {
+	to {
+		rotate: 1turn;
+	}
+}
+
+@keyframes x-pulse {
+	50% {
+		opacity: 0.45;
+	}
+}
+
+@keyframes x-rise {
+	from {
+		opacity: 0;
+		translate: 0 var(--x-space-6);
+	}
+}
+
+@keyframes x-fade {
+	from {
+		opacity: 0;
+	}
+}
+
+/* Rises into view as it scrolls in (scroll-driven: no script, off the main thread where supported). */
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: view()) {
+		.x-reveal {
+			animation: x-rise linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 70%;
+		}
+	}
+}
+
+/* Pressed feedback for any custom clickable surface. */
+.x-pressable {
+	transition: scale var(--x-duration-fast) var(--x-ease-out);
+
+	@media (prefers-reduced-motion: no-preference) {
+		&:active {
+			scale: 0.97;
+		}
+	}
+}
+
+/* View transitions take the Xantoom timing; a site opts in to cross-page ones with `@view-transition { navigation: auto; }`. */
+::view-transition-group(*) {
+	animation-duration: var(--x-duration-base);
+	animation-timing-function: var(--x-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation-duration: 100ms;
+	}
+}

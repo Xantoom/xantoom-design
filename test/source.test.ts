@@ -1,0 +1,51 @@
+// Rules the sources must keep (cheap guards for whoever edits them next), and the size budgets.
+import { describe, expect, test } from 'bun:test';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
+import { THEMES } from '../scripts/build.ts';
+
+const ROOT = join(import.meta.dir, '..');
+const SRC = join(ROOT, 'src');
+const sources = readdirSync(SRC, { recursive: true, encoding: 'utf8' })
+	.filter((f) => f.endsWith('.css') && f !== 'tokens.css')
+	.map((f) => ({ file: f, lines: readFileSync(join(SRC, f), 'utf8').split('\n') }));
+
+/** Lines matching `pattern`, as `file:line`, skipping comments. */
+const offenders = (pattern: RegExp, allow: (line: string) => boolean = () => false): string[] =>
+	sources.flatMap(({ file, lines }) =>
+		lines
+			.map((line, i) => ({ line, at: `${file}:${i + 1}` }))
+			.filter(({ line }) => !/^\s*(\/\*|\*)/.test(line) && pattern.test(line) && !allow(line))
+			.map(({ at }) => at),
+	);
+
+describe('sources', () => {
+	test('use logical properties (physical ones only where they must not flip)', () => {
+		const physical = /^\s*(margin|padding|border)-(left|right|top|bottom)\b|^\s*(left|right|top|bottom):|text-align:\s*(left|right)/;
+		// Safe-area insets are physical: the notch does not move in right-to-left.
+		expect(offenders(physical, (line) => line.includes('safe-area-inset-left') || line.includes('safe-area-inset-right'))).toEqual([]);
+	});
+
+	test('never transition `all`', () => {
+		expect(offenders(/transition(-property)?:\s*all\b/)).toEqual([]);
+	});
+
+	test('hold no raw colour outside the tokens (keywords and data-URI icons aside)', () => {
+		expect(offenders(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i, (line) => line.includes('data:image'))).toEqual([]);
+	});
+
+	test('keep !important for `hidden` alone', () => {
+		expect(offenders(/!important/, (line) => line.includes('display: none !important'))).toEqual([]);
+	});
+});
+
+const brotli = (file: string): number => brotliCompressSync(readFileSync(join(ROOT, file))).length;
+
+describe('budgets (brotli)', () => {
+	test('the stylesheet stays under 12 KB', () => expect(brotli('dist/xantoom.css')).toBeLessThan(12 * 1024));
+	test('the script stays under 4 KB', () => expect(brotli('dist/xantoom.js')).toBeLessThan(4 * 1024));
+	test('a theme stays under 0.5 KB', () => {
+		for (const name of THEMES) expect(brotli(`dist/themes/${name}.css`)).toBeLessThan(512);
+	});
+});

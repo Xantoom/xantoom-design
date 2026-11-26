@@ -1,0 +1,16 @@
+@layer x.theme {
+	:root {
+		--x-brand-1: #0b2a4a;
+		--x-brand-2: #0f6478;
+		--x-brand-3: #1aa38f;
+		--x-fill-1: #0b2a4a;
+		--x-fill-2: #0f6478;
+		--x-fill-3: #12806f;
+		--x-on-fill: #ffffff;
+		--x-accent: light-dark(#0f6478, #4fd1bc);
+		--x-radius: 1.1;
+		--x-density: 1;
+		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
+		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));
+	}
+}

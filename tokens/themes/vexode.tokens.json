@@ -1,0 +1,124 @@
+{
+	"$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+	"$description": "Vexode: night to teal, a compass over a world.",
+	"color": {
+		"$type": "color",
+		"brand": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0431,
+						0.1647,
+						0.2902
+					],
+					"hex": "#0b2a4a"
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0588,
+						0.3922,
+						0.4706
+					],
+					"hex": "#0f6478"
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.102,
+						0.6392,
+						0.5608
+					],
+					"hex": "#1aa38f"
+				}
+			},
+			"$description": "The logo gradient (decorative: never under text)."
+		},
+		"fill": {
+			"1": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0431,
+						0.1647,
+						0.2902
+					],
+					"hex": "#0b2a4a"
+				}
+			},
+			"2": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0588,
+						0.3922,
+						0.4706
+					],
+					"hex": "#0f6478"
+				}
+			},
+			"3": {
+				"$value": {
+					"colorSpace": "srgb",
+					"components": [
+						0.0706,
+						0.502,
+						0.4353
+					],
+					"hex": "#12806f"
+				}
+			},
+			"$description": "The accent fill gradient for buttons, checked controls, bars. on-fill reads on every stop."
+		},
+		"on-fill": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					1,
+					1,
+					1
+				],
+				"hex": "#ffffff"
+			}
+		},
+		"accent": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					0.0588,
+					0.3922,
+					0.4706
+				],
+				"hex": "#0f6478"
+			},
+			"$extensions": {
+				"app.xantoom.dark": {
+					"colorSpace": "srgb",
+					"components": [
+						0.3098,
+						0.8196,
+						0.7373
+					],
+					"hex": "#4fd1bc"
+				}
+			},
+			"$description": "Accent text, links, focus rings, thin marks: 4.5:1 on every surface."
+		}
+	},
+	"shape": {
+		"$type": "number",
+		"radius": {
+			"$value": 1.1,
+			"$description": "Multiplies every radius."
+		},
+		"density": {
+			"$value": 1,
+			"$description": "Multiplies every space."
+		}
+	}
+}

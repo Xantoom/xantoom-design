@@ -1,0 +1,107 @@
+/* The page: colour scheme, type, focus, selection, scripts. Derived tokens live here so themes only set sources. */
+
+:root {
+	color-scheme: light dark;
+	/* Grows a little on large screens (1440 px ≈ 16.8 px, 4K ≈ 19.8 px), never below the user's setting. */
+	font-size: clamp(100%, 93.75% + 0.125vw, 137.5%);
+	font-family: var(--x-font-sans);
+	font-optical-sizing: auto;
+	line-height: var(--x-leading);
+	color: var(--x-fg);
+	background-color: var(--x-bg);
+	accent-color: var(--x-accent);
+	scrollbar-color: color-mix(in oklab, var(--x-fg) 28%, transparent) transparent;
+	-webkit-tap-highlight-color: color-mix(in oklab, var(--x-accent) 18%, transparent);
+
+	--x-leading: 1.5;
+	--x-leading-tight: 1.15;
+	--x-control: var(--x-size-control);
+	--x-hover: color-mix(in oklab, var(--x-fg) 6%, transparent);
+	--x-press: color-mix(in oklab, var(--x-fg) 10%, transparent);
+	--x-ring: 2px solid var(--x-accent);
+	--x-selection: color-mix(in oklab, var(--x-accent) 26%, transparent);
+	--x-text-display: clamp(var(--x-text-3xl), 1.4rem + 2.6vw, var(--x-text-5xl));
+
+	@media (pointer: coarse) {
+		--x-control: var(--x-size-control-touch);
+	}
+}
+
+:root[data-theme="light"] {
+	color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+}
+
+/* Scripts that need more room between lines, and CJK, which must not be letter-spaced. */
+:where(:lang(ar, fa, ur, ps, he, hi, mr, ne, bn, pa, gu, ta, te, kn, ml, si, th, lo, km, my, bo)) {
+	--x-leading: 1.75;
+	--x-leading-tight: 1.4;
+}
+
+:where(:lang(zh, ja, ko)) {
+	--x-leading: 1.7;
+	--x-leading-tight: 1.35;
+	letter-spacing: normal;
+	line-break: strict;
+	text-autospace: normal;
+	text-spacing-trim: trim-start;
+}
+
+:where(:lang(ja)) {
+	word-break: auto-phrase;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+	line-height: var(--x-leading-tight);
+	font-weight: var(--x-weight-bold);
+	text-wrap: balance;
+}
+
+:where(:lang(en, fr, de, es, it, pt, nl)) :where(h1, h2, h3) {
+	letter-spacing: -0.018em;
+}
+
+:where(p, li, figcaption, blockquote) {
+	text-wrap: pretty;
+}
+
+:where(code, kbd, samp, pre) {
+	font-family: var(--x-font-mono);
+	font-size: 0.92em;
+	font-variant-ligatures: none;
+}
+
+:where(a:any-link) {
+	color: var(--x-accent);
+	text-decoration-thickness: from-font;
+	text-underline-offset: 0.2em;
+}
+
+:where(:focus-visible) {
+	outline: var(--x-ring);
+	outline-offset: 2px;
+}
+
+::selection {
+	background-color: var(--x-selection);
+}
+
+:where([id]) {
+	scroll-margin-block-start: var(--x-space-16);
+}
+
+:where(hr) {
+	block-size: 0;
+	margin-block: var(--x-space-6);
+	border: 0;
+	border-block-start: 1px solid var(--x-line);
+}
+
+@media print {
+	:root {
+		color-scheme: light;
+	}
+}

@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en" data-x-theme="xantoom">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="color-scheme" content="light dark">
+		<meta name="theme-color" content="#ebebee" media="(prefers-color-scheme: light)">
+		<meta name="theme-color" content="#15161c" media="(prefers-color-scheme: dark)">
+		<title>Xantoom design system</title>
+		<link rel="stylesheet" href="../dist/xantoom.css">
+		<link rel="stylesheet" href="../dist/themes/all.css">
+		<style>
+			@layer x, demo;
+
+			@layer demo {
+				body {
+					padding-block: var(--x-space-6) var(--x-space-24);
+				}
+
+				.bar {
+					position: sticky;
+					inset-block-start: 0;
+					z-index: 1;
+					padding-block: var(--x-space-3);
+					border-block-end: 1px solid var(--x-line);
+					background-color: color-mix(in oklab, var(--x-bg) 88%, transparent);
+					backdrop-filter: blur(8px);
+				}
+
+				section > h2 {
+					margin-block-end: var(--x-space-4);
+					font-size: var(--x-text-xl);
+				}
+
+				.swatch {
+					display: grid;
+					gap: var(--x-space-1);
+					font-size: var(--x-text-xs);
+
+					& > span:first-child {
+						block-size: 3rem;
+						border: 1px solid var(--x-line);
+						border-radius: var(--x-radius-md);
+					}
+				}
+
+				.demo-sample {
+					min-inline-size: 0;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<a class="x-skip-link" href="#main">Skip to content</a>
+
+		<header class="bar">
+			<div class="x-container x-cluster" data-justify="between">
+				<div class="x-cluster" data-gap="2">
+					<span class="x-tile" aria-hidden="true"></span>
+					<strong translate="no">Xantoom design system</strong>
+					<span class="x-badge" data-tone="accent">0.1.0</span>
+				</div>
+				<div class="x-cluster" data-gap="2">
+					<label class="x-visually-hidden" for="theme">Theme</label>
+					<select class="x-select" id="theme" name="theme">
+						<option value="xantoom" selected>xantoom.dev</option>
+						<option value="vixion">Vixion</option>
+						<option value="vixely">Vixely</option>
+						<option value="vexode">Vexode</option>
+						<option value="vixeeny">Vixeeny</option>
+					</select>
+					<fieldset class="x-segmented" id="mode">
+						<legend>Colour scheme</legend>
+						<label><input type="radio" name="mode" value="system" checked>Auto</label>
+						<label><input type="radio" name="mode" value="light">Light</label>
+						<label><input type="radio" name="mode" value="dark">Dark</label>
+					</fieldset>
+					<fieldset class="x-segmented" id="dir">
+						<legend>Direction</legend>
+						<label><input type="radio" name="dir" value="ltr" checked>LTR</label>
+						<label><input type="radio" name="dir" value="rtl">RTL</label>
+					</fieldset>
+				</div>
+			</div>
+		</header>
+
+		<main id="main" class="x-container x-stack" data-gap="12">
+			<section class="x-stack" data-gap="6">
+				<h1 class="x-display">One signature, one theme per app.</h1>
+				<p class="x-prose x-muted">
+					Pure CSS components with tokens, motion and accessibility built in. Switch the theme, the colour scheme and the
+					direction above; resize the window from a phone to an ultra-wide screen.
+				</p>
+				<div class="x-cluster">
+					<button class="x-button" data-variant="primary" data-size="lg" type="button" command="show-modal" commandfor="confirm">
+						Open a dialog
+					</button>
+					<button class="x-button" data-size="lg" type="button" id="toast-button">Show a toast</button>
+				</div>
+			</section>
+
+			<section>
+				<h2>Colours</h2>
+				<div class="x-grid" data-min="sm">
+					<div class="swatch"><span style="background: var(--x-fill)"></span>fill</div>
+					<div class="swatch"><span style="background: var(--x-brand)"></span>brand</div>
+					<div class="swatch"><span style="background: var(--x-accent)"></span>accent</div>
+					<div class="swatch"><span style="background: var(--x-bg)"></span>bg</div>
+					<div class="swatch"><span style="background: var(--x-surface)"></span>surface</div>
+					<div class="swatch"><span style="background: var(--x-raised)"></span>raised</div>
+					<div class="swatch"><span style="background: var(--x-success)"></span>success</div>
+					<div class="swatch"><span style="background: var(--x-warning)"></span>warning</div>
+					<div class="swatch"><span style="background: var(--x-danger)"></span>danger</div>
+					<div class="swatch"><span style="background: var(--x-info)"></span>info</div>
+				</div>
+			</section>
+
+			<section>
+				<h2>Buttons</h2>
+				<div class="x-cluster">
+					<button class="x-button" data-variant="primary" type="button">Save changes</button>
+					<button class="x-button" type="button">Cancel</button>
+					<button class="x-button" data-variant="ghost" type="button">Ghost</button>
+					<button class="x-button" data-variant="danger" type="button">Delete…</button>
+					<button class="x-button" data-variant="primary" type="button" aria-busy="true" disabled>Saving…</button>
+					<button class="x-button" type="button" disabled>Disabled</button>
+					<button class="x-button" data-variant="ghost" data-icon type="button" aria-label="Settings" interestfor="tip-settings">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+					</button>
+					<div class="x-tooltip" id="tip-settings" popover="hint">Settings</div>
+					<button class="x-button" data-icon type="button" aria-label="Next" interestfor="tip-next">
+						<svg class="x-flip-rtl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+					</button>
+					<div class="x-tooltip" id="tip-next" popover="hint">Next <kbd class="x-kbd">→</kbd></div>
+					<div class="x-button-group">
+						<button class="x-button" type="button">Day</button>
+						<button class="x-button" type="button">Week</button>
+						<button class="x-button" type="button">Month</button>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<h2>Forms</h2>
+				<form class="x-grid" data-min="lg" action="#" method="post">
+					<div class="x-stack">
+						<div class="x-field">
+							<label class="x-label" for="email">Email</label>
+							<input class="x-input" id="email" name="email" type="email" autocomplete="email" spellcheck="false" autocapitalize="none" placeholder="ada@example.com…" required aria-describedby="email-hint">
+							<p class="x-hint" id="email-hint">Used to sign in.</p>
+						</div>
+						<div class="x-field">
+							<label class="x-label" for="bio">Bio</label>
+							<textarea class="x-input" id="bio" name="bio" placeholder="A few words…"></textarea>
+						</div>
+						<div class="x-field">
+							<label class="x-label" for="role">Role</label>
+							<select class="x-select" id="role" name="role">
+								<button><selectedcontent></selectedcontent></button>
+								<option value="editor">Editor</option>
+								<option value="viewer" selected>Viewer</option>
+								<option value="owner">Owner</option>
+							</select>
+						</div>
+						<div class="x-field">
+							<label class="x-label" for="name">Name</label>
+							<input class="x-input" id="name" name="name" aria-invalid="true" aria-describedby="name-error" value="A">
+							<p class="x-error" id="name-error">Use at least 2 characters.</p>
+						</div>
+					</div>
+					<div class="x-stack">
+						<fieldset class="x-fieldset">
+							<legend>Notifications</legend>
+							<label class="x-check"><input type="checkbox" class="x-checkbox" name="mentions" checked> Mentions</label>
+							<label class="x-check"><input type="checkbox" class="x-checkbox" name="all" id="all"> All activity</label>
+							<label class="x-check"><input type="checkbox" class="x-switch" name="email-digest" switch role="switch" checked> Weekly digest</label>
+							<label class="x-check"><input type="checkbox" class="x-switch" name="sounds" switch role="switch"> Sounds</label>
+						</fieldset>
+						<fieldset class="x-fieldset">
+							<legend>Plan</legend>
+							<label class="x-check"><input type="radio" class="x-radio" name="plan" value="free" checked> Free</label>
+							<label class="x-check"><input type="radio" class="x-radio" name="plan" value="pro"> Pro</label>
+						</fieldset>
+						<div class="x-field">
+							<label class="x-label" for="volume">Volume</label>
+							<input class="x-range" id="volume" name="volume" type="range" value="60">
+						</div>
+						<fieldset class="x-segmented">
+							<legend>View</legend>
+							<label><input type="radio" name="view" checked>List</label>
+							<label><input type="radio" name="view">Grid</label>
+							<label><input type="radio" name="view">Board</label>
+						</fieldset>
+						<div class="x-cluster">
+							<button class="x-button" data-variant="primary" type="submit">Save changes</button>
+						</div>
+					</div>
+				</form>
+			</section>
+
+			<section>
+				<h2>Content</h2>
+				<div class="x-grid">
+					<article class="x-card" data-interactive>
+						<div class="x-cluster" data-gap="2">
+							<span class="x-avatar" data-shape="tile" translate="no">VX</span>
+							<a class="x-card-link" href="#main"><strong>Northern reaches</strong></a>
+						</div>
+						<p class="x-muted">A whole-card link with one focus ring.</p>
+						<div class="x-cluster" data-gap="2">
+							<span class="x-badge" data-tone="success">Published</span>
+							<span class="x-badge">12 chapters</span>
+						</div>
+					</article>
+					<div class="x-callout" data-tone="info" role="status">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.5"/></svg>
+						<p><strong>Sync paused.</strong> Changes are kept on this device until you are back online.</p>
+					</div>
+					<div class="x-empty">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg>
+						<h3>No projects yet</h3>
+						<p>Create one to start.</p>
+						<button class="x-button" data-variant="primary" type="button">New project…</button>
+					</div>
+				</div>
+				<p class="x-muted">Press <kbd class="x-kbd">Ctrl</kbd>&nbsp;+&nbsp;<kbd class="x-kbd">K</kbd> to search.</p>
+			</section>
+
+			<section>
+				<h2>Table</h2>
+				<div class="x-table-scroll" role="region" aria-label="Exports" tabindex="0">
+					<table class="x-table">
+						<thead>
+							<tr><th scope="col">File</th><th scope="col">Status</th><th scope="col" data-numeric>Size</th><th scope="col" data-numeric>Duration</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>trailer-final.mp4</td><td><span class="x-badge" data-tone="success">Done</span></td><td data-numeric>48.2&nbsp;MB</td><td data-numeric>1:32</td></tr>
+							<tr aria-selected="true"><td>interview.webm</td><td><span class="x-badge" data-tone="warning">Queued</span></td><td data-numeric>312.0&nbsp;MB</td><td data-numeric>24:08</td></tr>
+							<tr><td>subtitles-fr.srt</td><td><span class="x-badge" data-tone="danger">Failed</span></td><td data-numeric>0.1&nbsp;MB</td><td data-numeric>—</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<section class="x-stack">
+				<h2>Navigation</h2>
+				<nav aria-label="Breadcrumb">
+					<ol class="x-breadcrumb"><li><a href="#main">Worlds</a></li><li><a href="#main">Aster</a></li><li aria-current="page">Cities</li></ol>
+				</nav>
+				<div class="x-tabs">
+					<div class="x-tablist" role="tablist" aria-label="Project">
+						<button class="x-tab" type="button" role="tab" id="tab-overview" aria-selected="true">Overview</button>
+						<button class="x-tab" type="button" role="tab" id="tab-people">Characters</button>
+						<button class="x-tab" type="button" role="tab" id="tab-places">Places</button>
+						<button class="x-tab" type="button" role="tab" id="tab-timeline">Timeline</button>
+						<button class="x-tab" type="button" role="tab" id="tab-maps">Maps</button>
+						<button class="x-tab" type="button" role="tab" id="tab-settings">Settings</button>
+					</div>
+					<div role="tabpanel" aria-labelledby="tab-overview" tabindex="0"><p>Overview panel.</p></div>
+					<div role="tabpanel" aria-labelledby="tab-people" hidden="until-found"><p>Characters panel.</p></div>
+					<div role="tabpanel" aria-labelledby="tab-places" hidden="until-found"><p>Places panel.</p></div>
+					<div role="tabpanel" aria-labelledby="tab-timeline" hidden="until-found"><p>Timeline panel.</p></div>
+					<div role="tabpanel" aria-labelledby="tab-maps" hidden="until-found"><p>Maps panel.</p></div>
+					<div role="tabpanel" aria-labelledby="tab-settings" hidden="until-found"><p>Settings panel.</p></div>
+				</div>
+				<div class="x-split">
+					<nav class="x-stack" data-gap="1" aria-label="Sections">
+						<a class="x-navlink" href="#main" aria-current="page">Projects</a>
+						<a class="x-navlink" href="#main">Library</a>
+						<a class="x-navlink" href="#main">Settings</a>
+					</nav>
+					<nav aria-label="Pages">
+						<ul class="x-pagination"><li><a href="#main">1</a></li><li><a href="#main" aria-current="page">2</a></li><li><a href="#main">3</a></li></ul>
+					</nav>
+				</div>
+			</section>
+
+			<section class="x-stack">
+				<h2>Overlays and feedback</h2>
+				<div class="x-cluster">
+					<button class="x-button" type="button" popovertarget="menu">Actions</button>
+					<div class="x-menu" id="menu" popover role="menu" aria-label="Actions">
+						<p class="x-menu-label">Project</p>
+						<button class="x-menu-item" type="button" role="menuitem">Rename…<kbd class="x-kbd">F2</kbd></button>
+						<button class="x-menu-item" type="button" role="menuitem">Duplicate</button>
+						<hr class="x-menu-separator">
+						<button class="x-menu-item" type="button" role="menuitem" data-tone="danger">Delete…</button>
+					</div>
+					<button class="x-button" type="button" popovertarget="pop">Details</button>
+					<div class="x-popover" id="pop" popover><p>An anchored panel that flips at the screen edges.</p></div>
+					<button class="x-button" type="button" command="show-modal" commandfor="sheet">Open a sheet</button>
+					<span class="x-spinner" role="status" aria-label="Loading…"></span>
+				</div>
+				<progress class="x-progress" value="64" max="100" aria-label="Upload"></progress>
+				<progress class="x-progress" aria-label="Processing"></progress>
+				<div class="x-stack" data-gap="2" aria-hidden="true">
+					<span class="x-skeleton"></span>
+					<span class="x-skeleton"></span>
+				</div>
+				<details class="x-accordion" name="faq"><summary>Can I use it commercially?</summary><div><p>Yes: MIT, and both fonts are under the OFL.</p></div></details>
+				<details class="x-accordion" name="faq"><summary>Does it need JavaScript?</summary><div><p>No. The optional script adds keyboards, exits and toasts.</p></div></details>
+			</section>
+
+			<section class="x-stack">
+				<h2>Languages</h2>
+				<div class="x-grid">
+					<div class="x-card demo-sample" lang="fr"><h3>Monde d’Aster</h3><p>Une carte, des peuples, une chronologie : tout ce qu’il faut pour bâtir un univers.</p></div>
+					<div class="x-card demo-sample" lang="ar" dir="rtl"><h3>عالم أستر</h3><p>خريطة وشعوب وخط زمني: كل ما تحتاجه لبناء عالم كامل.</p><button class="x-button" data-variant="primary" type="button">حفظ</button></div>
+					<div class="x-card demo-sample" lang="ja"><h3>アスターの世界</h3><p>地図、民族、年表。世界を築くために必要なものがすべて揃っています。</p></div>
+					<div class="x-card demo-sample" lang="hi"><h3>एस्टर की दुनिया</h3><p>एक नक्शा, लोग और समयरेखा: एक पूरी दुनिया बनाने के लिए सब कुछ।</p></div>
+				</div>
+			</section>
+
+			<section class="x-reveal">
+				<h2>Scroll reveal</h2>
+				<p class="x-muted">This section rises in as it scrolls into view (not under reduced motion).</p>
+			</section>
+		</main>
+
+		<dialog class="x-dialog" id="confirm" aria-labelledby="confirm-title" closedby="any">
+			<h1 id="confirm-title">Delete this world?</h1>
+			<p class="x-muted">Its maps, characters and timeline go too. You can restore it for 30 days.</p>
+			<form method="dialog" class="x-dialog-actions">
+				<button class="x-button" value="cancel" autofocus>Keep</button>
+				<button class="x-button" data-variant="danger" value="delete">Delete</button>
+			</form>
+		</dialog>
+
+		<dialog class="x-dialog" id="sheet" data-variant="sheet" aria-labelledby="sheet-title" closedby="any">
+			<h1 id="sheet-title">Filters</h1>
+			<button class="x-button x-dialog-close" data-variant="ghost" data-icon type="button" command="close" commandfor="sheet" aria-label="Close">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+			</button>
+			<div class="x-stack">
+				<label class="x-check"><input type="checkbox" class="x-checkbox" checked> Characters</label>
+				<label class="x-check"><input type="checkbox" class="x-checkbox"> Places</label>
+			</div>
+		</dialog>
+
+		<section class="x-toaster" popover="manual" role="region" aria-label="Notifications" data-close-label="Dismiss"></section>
+
+		<script type="module">
+			import { enhance, toast } from '../dist/xantoom.js';
+
+			enhance();
+			const root = document.documentElement;
+			document.getElementById('theme').addEventListener('change', (event) => {
+				root.dataset.xTheme = event.target.value;
+			});
+			document.getElementById('mode').addEventListener('change', (event) => {
+				if (event.target.value === 'system') delete root.dataset.theme;
+				else root.dataset.theme = event.target.value;
+			});
+			document.getElementById('dir').addEventListener('change', (event) => {
+				root.dir = event.target.value;
+			});
+			document.getElementById('all').indeterminate = true;
+			document.getElementById('toast-button').addEventListener('click', () => {
+				toast('Changes saved.', { tone: 'success', timeout: 6000 });
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,349 @@
+/* Content: card, badge, avatar, kbd, callout, table, accordion, empty state. */
+
+.x-card {
+	container-type: inline-size;
+	display: flex;
+	flex-direction: column;
+	gap: var(--x-space-3);
+	padding: var(--x-space-5);
+	border: 1px solid var(--x-line);
+	border-radius: var(--x-radius-lg);
+	background-color: var(--x-raised);
+	box-shadow: var(--x-shadow-sm);
+
+	/* A whole-card link: <article class="x-card" data-interactive> … <a class="x-card-link" href>Title</a> */
+	&[data-interactive] {
+		position: relative;
+		transition-property: box-shadow, translate, border-color;
+		transition-duration: var(--x-duration-base);
+		transition-timing-function: var(--x-ease-out);
+
+		&:hover {
+			border-color: color-mix(in oklab, var(--x-fg) 18%, var(--x-line));
+			box-shadow: var(--x-shadow-md);
+
+			@media (prefers-reduced-motion: no-preference) {
+				translate: 0 -2px;
+			}
+		}
+
+		&:has(.x-card-link:focus-visible) {
+			outline: var(--x-ring);
+			outline-offset: 2px;
+		}
+	}
+
+	&[data-variant="flat"] {
+		background-color: var(--x-surface);
+		box-shadow: none;
+	}
+}
+
+.x-card-link {
+	color: inherit;
+	text-decoration: none;
+
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+	}
+
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+/* Tones shared by badge, callout and toast. */
+:is(.x-badge, .x-callout, .x-toast) {
+	--_tone: var(--x-fg-muted);
+
+	&[data-tone="accent"] {
+		--_tone: var(--x-accent);
+	}
+
+	&[data-tone="success"] {
+		--_tone: var(--x-success);
+	}
+
+	&[data-tone="warning"] {
+		--_tone: var(--x-warning);
+	}
+
+	&[data-tone="danger"] {
+		--_tone: var(--x-danger);
+	}
+
+	&[data-tone="info"] {
+		--_tone: var(--x-info);
+	}
+}
+
+.x-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--x-space-1);
+	min-block-size: 1.375rem;
+	padding-inline: var(--x-space-2);
+	border-radius: 999px;
+	background-color: color-mix(in oklab, var(--_tone) 14%, transparent);
+	color: var(--_tone);
+	font-size: var(--x-text-xs);
+	font-weight: var(--x-weight-medium);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+
+	&[data-tone="neutral"],
+	&:not([data-tone]) {
+		color: var(--x-fg-muted);
+	}
+
+	& > svg {
+		inline-size: 1em;
+		block-size: 1em;
+	}
+
+	@media (forced-colors: active) {
+		border: 1px solid CanvasText;
+	}
+}
+
+/* Initials on the theme fill, or an image. data-shape="tile" gives the app-icon corner (25 %). */
+.x-avatar {
+	display: inline-grid;
+	place-items: center;
+	flex: none;
+	inline-size: var(--_size, 2.5rem);
+	aspect-ratio: 1;
+	overflow: hidden;
+	border-radius: 50%;
+	background-color: var(--x-fill-2);
+	background-image: var(--x-fill);
+	color: var(--x-on-fill);
+	font-size: calc(var(--_size, 2.5rem) * 0.4);
+	font-weight: var(--x-weight-bold);
+	line-height: 1;
+	text-transform: uppercase;
+	user-select: none;
+
+	& > img {
+		inline-size: 100%;
+		block-size: 100%;
+		object-fit: cover;
+	}
+
+	&[data-shape="tile"] {
+		border-radius: 25%;
+	}
+
+	&[data-size="sm"] {
+		--_size: 1.75rem;
+	}
+
+	&[data-size="lg"] {
+		--_size: 3.5rem;
+	}
+}
+
+.x-kbd {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-inline-size: 1.6em;
+	padding-inline: 0.35em;
+	border: 1px solid var(--x-line);
+	border-block-end-width: 2px;
+	border-radius: var(--x-radius-sm);
+	background-color: var(--x-surface);
+	color: var(--x-fg-muted);
+	font-family: var(--x-font-mono);
+	font-size: 0.8em;
+	line-height: 1.6;
+	white-space: nowrap;
+}
+
+/* A message in the page (prefer it to a toast for anything the user must see). */
+.x-callout {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: var(--x-space-1) var(--x-space-3);
+	padding: var(--x-space-4);
+	border: 1px solid color-mix(in oklab, var(--_tone) 30%, var(--x-line));
+	border-inline-start: 3px solid var(--_tone);
+	border-radius: var(--x-radius-md);
+	background-color: color-mix(in oklab, var(--_tone) 7%, var(--x-raised));
+
+	& > svg {
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
+		color: var(--_tone);
+		margin-block-start: 0.1em;
+	}
+
+	& > :not(svg) {
+		grid-column: 2;
+	}
+
+	& > :only-child {
+		grid-column: 1 / -1;
+	}
+}
+
+/*
+ * Table: <div class="x-table-scroll" role="region" aria-label="…" tabindex="0"><table class="x-table">…
+ * The wrapper scrolls on narrow screens and is reachable with the keyboard; headers stay in view.
+ */
+.x-table-scroll {
+	max-inline-size: 100%;
+	overflow: auto;
+	border: 1px solid var(--x-line);
+	border-radius: var(--x-radius-lg);
+	background-color: var(--x-raised);
+}
+
+.x-table {
+	inline-size: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	font-size: var(--x-text-sm);
+
+	& :is(th, td) {
+		padding-block: var(--x-space-3);
+		padding-inline: var(--x-space-4);
+		border-block-end: 1px solid var(--x-line);
+		text-align: start;
+		vertical-align: middle;
+	}
+
+	& th {
+		position: sticky;
+		inset-block-start: 0;
+		background-color: var(--x-surface);
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+		font-weight: var(--x-weight-medium);
+		white-space: nowrap;
+	}
+
+	& :is(th, td)[data-numeric] {
+		text-align: end;
+		font-variant-numeric: tabular-nums;
+	}
+
+	& tbody tr:last-child > * {
+		border-block-end: 0;
+	}
+
+	& tbody tr {
+		transition: background-color var(--x-duration-fast);
+
+		&:hover {
+			background-color: var(--x-hover);
+		}
+
+		&[aria-selected="true"] {
+			background-color: color-mix(in oklab, var(--x-accent) 10%, transparent);
+		}
+	}
+
+	& caption {
+		padding: var(--x-space-3) var(--x-space-4);
+		caption-side: bottom;
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+		text-align: start;
+	}
+
+	/* Long tables render only what is on screen. */
+	& tbody[data-long] > tr {
+		content-visibility: auto;
+		contain-intrinsic-size: auto 2.75rem;
+	}
+}
+
+/* Accordion: <details class="x-accordion"><summary>…</summary><div>…</div></details> (name="…" for exclusive groups). */
+.x-accordion {
+	border-block-end: 1px solid var(--x-line);
+	interpolate-size: allow-keywords;
+
+	& > summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--x-space-3);
+		min-block-size: var(--x-control);
+		padding-block: var(--x-space-3);
+		font-weight: var(--x-weight-medium);
+		list-style: none;
+		cursor: pointer;
+
+		&::-webkit-details-marker {
+			display: none;
+		}
+
+		&::after {
+			content: "";
+			flex: none;
+			inline-size: 1rem;
+			block-size: 1rem;
+			background-color: var(--x-fg-muted);
+			mask: var(--x-icon-chevron) no-repeat center / contain;
+			transition: rotate var(--x-duration-base) var(--x-ease-out);
+		}
+
+		&:hover {
+			color: var(--x-accent);
+		}
+	}
+
+	&[open] > summary::after {
+		rotate: 180deg;
+	}
+
+	&::details-content {
+		block-size: 0;
+		overflow-y: clip;
+	}
+
+	&[open]::details-content {
+		block-size: auto;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		&::details-content {
+			transition-property: block-size, content-visibility;
+			transition-duration: var(--x-duration-base);
+			transition-timing-function: var(--x-ease-out);
+			transition-behavior: allow-discrete;
+		}
+	}
+
+	& > :not(summary) {
+		padding-block-end: var(--x-space-4);
+		color: var(--x-fg-muted);
+	}
+}
+
+/* Empty, error and "nothing yet" states: an icon, a sentence, and the next step. */
+.x-empty {
+	display: grid;
+	justify-items: center;
+	gap: var(--x-space-3);
+	padding: var(--x-space-12) var(--x-space-6);
+	border: 1px dashed var(--x-line);
+	border-radius: var(--x-radius-lg);
+	color: var(--x-fg-muted);
+	text-align: center;
+
+	& > svg {
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		color: var(--x-fg-faint);
+	}
+
+	& > :is(h2, h3, h4) {
+		color: var(--x-fg);
+		font-size: var(--x-text-lg);
+	}
+}

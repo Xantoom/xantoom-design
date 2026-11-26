@@ -1,0 +1,31 @@
+{
+	"name": "xantoom-design",
+	"version": "0.1.0",
+	"description": "The Xantoom design system: tokens, pure-CSS components, motion and an agent skill, one theme per app.",
+	"license": "MIT",
+	"author": "Xantoom",
+	"repository": { "type": "git", "url": "git+https://github.com/Xantoom/xantoom-design.git" },
+	"type": "module",
+	"files": ["dist", "src", "tokens", "skills", "scripts/sync.ts", "scripts/tokens.ts"],
+	"exports": {
+		".": "./dist/xantoom.css",
+		"./css": "./dist/xantoom.css",
+		"./themes/*": "./dist/themes/*",
+		"./js": "./dist/xantoom.js",
+		"./tokens/*": "./tokens/*",
+		"./src/*": "./src/*"
+	},
+	"bin": { "xantoom-design": "./scripts/sync.ts" },
+	"scripts": {
+		"build": "bun scripts/build.ts",
+		"test": "bun test",
+		"lint": "oxlint scripts src test",
+		"check": "bun run build && bun run lint && bun test && git diff --exit-code -- dist src/tokens.css",
+		"demo": "bun demo/serve.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "1.4.5",
+		"lightningcss": "1.33.0",
+		"oxlint": "1.95.0"
+	}
+}
