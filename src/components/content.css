@@ -8,23 +8,22 @@
 	padding: var(--x-space-5);
 	border: 1px solid var(--x-line);
 	border-radius: var(--x-radius-lg);
-	background-color: var(--x-raised);
+	background-color: var(--_ground, var(--x-raised));
 	box-shadow: var(--x-shadow-sm);
 
-	/* A whole-card link: <article class="x-card" data-interactive> … <a class="x-card-link" href>Title</a> */
+	/*
+	 * A whole-card link: <article class="x-card" data-interactive> … <a class="x-card-link" href>Title</a>
+	 * Hovered, its edge firms up and its ground shifts a shade: nothing moves, so a grid of cards stays still.
+	 */
 	&[data-interactive] {
 		position: relative;
-		transition-property: box-shadow, translate, border-color;
-		transition-duration: var(--x-duration-base);
+		transition-property: border-color, background-color;
+		transition-duration: var(--x-duration-fast);
 		transition-timing-function: var(--x-ease-out);
 
 		&:hover {
-			border-color: color-mix(in oklab, var(--x-fg) 18%, var(--x-line));
-			box-shadow: var(--x-shadow-md);
-
-			@media (prefers-reduced-motion: no-preference) {
-				translate: 0 -2px;
-			}
+			border-color: color-mix(in oklab, var(--x-fg) 30%, var(--x-line));
+			background-color: color-mix(in oklab, var(--x-fg) 3%, var(--_ground, var(--x-raised)));
 		}
 
 		&:has(.x-card-link:focus-visible) {
@@ -34,7 +33,7 @@
 	}
 
 	&[data-variant="flat"] {
-		background-color: var(--x-surface);
+		--_ground: var(--x-surface);
 		box-shadow: none;
 	}
 }
@@ -55,32 +54,9 @@
 	}
 }
 
-/* Tones shared by badge, callout and toast. */
-:is(.x-badge, .x-callout, .x-toast) {
-	--_tone: var(--x-fg-muted);
-
-	&[data-tone="accent"] {
-		--_tone: var(--x-accent);
-	}
-
-	&[data-tone="success"] {
-		--_tone: var(--x-success);
-	}
-
-	&[data-tone="warning"] {
-		--_tone: var(--x-warning);
-	}
-
-	&[data-tone="danger"] {
-		--_tone: var(--x-danger);
-	}
-
-	&[data-tone="info"] {
-		--_tone: var(--x-info);
-	}
-}
-
 .x-badge {
+	--_tone: var(--x-tone, var(--x-fg-muted));
+
 	display: inline-flex;
 	align-items: center;
 	gap: var(--x-space-1);
@@ -93,11 +69,6 @@
 	font-weight: var(--x-weight-medium);
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
-
-	&[data-tone="neutral"],
-	&:not([data-tone]) {
-		color: var(--x-fg-muted);
-	}
 
 	& > svg {
 		inline-size: 1em;
@@ -165,6 +136,8 @@
 
 /* A message in the page (prefer it to a toast for anything the user must see). */
 .x-callout {
+	--_tone: var(--x-tone, var(--x-fg-muted));
+
 	display: grid;
 	grid-template-columns: auto 1fr;
 	gap: var(--x-space-1) var(--x-space-3);
@@ -276,7 +249,6 @@
 		padding-block: var(--x-space-3);
 		font-weight: var(--x-weight-medium);
 		list-style: none;
-		cursor: pointer;
 
 		&::-webkit-details-marker {
 			display: none;

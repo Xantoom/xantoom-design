@@ -31,12 +31,67 @@
 	}
 }
 
+/*
+ * Until Inter arrives, Arial (or its metric twin Liberation Sans) scaled to Inter's widths and line metrics, so the text
+ * does not reflow when it swaps in. Measured against Inter Variable (Fontsource) on French and English text: regular
+ * Arial for weights up to 549, Arial Bold for medium and bold. ascent and descent are Inter's (0.96875 and 0.2412 em)
+ * divided by size-adjust.
+ */
+@font-face {
+	font-family: "Inter Fallback";
+	font-weight: 100 549;
+	src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+	size-adjust: 105.7%;
+	ascent-override: 91.65%;
+	descent-override: 22.82%;
+	line-gap-override: 0%;
+}
+
+@font-face {
+	font-family: "Inter Fallback";
+	font-weight: 550 900;
+	src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Helvetica Bold");
+	size-adjust: 100.8%;
+	ascent-override: 96.11%;
+	descent-override: 23.93%;
+	line-gap-override: 0%;
+}
+
 :root[data-theme="light"] {
 	color-scheme: light;
 }
 
 :root[data-theme="dark"] {
 	color-scheme: dark;
+}
+
+/*
+ * Tones: data-tone="accent|success|warning|danger|info" sets the colour a component draws with (badge, callout,
+ * toast…); without one it falls back to muted. Not inherited, so a toned box does not tint what it holds.
+ */
+@property --x-tone {
+	syntax: "*";
+	inherits: false;
+}
+
+:where([data-tone="accent"]) {
+	--x-tone: var(--x-accent);
+}
+
+:where([data-tone="success"]) {
+	--x-tone: var(--x-success);
+}
+
+:where([data-tone="warning"]) {
+	--x-tone: var(--x-warning);
+}
+
+:where([data-tone="danger"]) {
+	--x-tone: var(--x-danger);
+}
+
+:where([data-tone="info"]) {
+	--x-tone: var(--x-info);
 }
 
 /* Scripts that need more room between lines, and CJK, which must not be letter-spaced. */

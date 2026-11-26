@@ -16,7 +16,7 @@
 		--x-danger: light-dark(#b42318, #ff8a80);
 		--x-info: light-dark(#2457c5, #8fb3ff);
 		--x-on-danger: light-dark(#ffffff, #1f0805);
-		--x-font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", "Roboto", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+		--x-font-sans: "Inter Variable", "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", "Roboto", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 		--x-font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "Menlo", "Consolas", "Noto Sans Mono", monospace;
 		--x-weight-regular: 400;
 		--x-weight-medium: 550;
@@ -55,9 +55,9 @@
 		--x-duration-slow: 420ms;
 		--x-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 		--x-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-		--x-shadow-sm: light-dark(0 1px 2px 0 #1112160f, 0 1px 2px 0 #0000004d);
-		--x-shadow-md: light-dark(0 1px 2px 0 #1112160f, 0 8px 24px -12px #1112161f, 0 1px 2px 0 #0000004d, 0 12px 32px -16px #00000099);
-		--x-shadow-lg: light-dark(0 2px 4px 0 #11121614, 0 24px 48px -16px #11121633, 0 2px 4px 0 #00000066, 0 24px 56px -16px #000000b3);
+		--x-shadow-sm: 0 1px 2px 0 light-dark(#1112160f, #0000004d);
+		--x-shadow-md: 0 1px 2px 0 light-dark(#1112160f, #0000004d), 0 10px 28px -14px light-dark(#1112161f, #00000099);
+		--x-shadow-lg: 0 2px 4px 0 light-dark(#11121614, #00000066), 0 24px 52px -16px light-dark(#11121633, #000000b3);
 	}
 }
 @layer x.theme {

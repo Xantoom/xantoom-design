@@ -1,4 +1,4 @@
-/* Element defaults, zero specificity, no `*` selector (an app or a web component can override any of them). */
+/* Element defaults, zero specificity (an app or a web component can override any of them). */
 
 :where(html) {
 	text-size-adjust: 100%;
@@ -11,43 +11,7 @@
 	overflow-wrap: break-word;
 }
 
-:where(
-		body,
-		div,
-		section,
-		article,
-		aside,
-		header,
-		footer,
-		main,
-		nav,
-		form,
-		fieldset,
-		figure,
-		ul,
-		ol,
-		li,
-		p,
-		label,
-		pre,
-		table,
-		th,
-		td,
-		img,
-		video,
-		iframe,
-		canvas,
-		dialog,
-		details,
-		summary,
-		input,
-		textarea,
-		select,
-		button,
-		a,
-		span
-	),
-:where(::before, ::after) {
+:where(*, ::before, ::after) {
 	box-sizing: border-box;
 }
 

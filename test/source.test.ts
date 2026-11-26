@@ -35,6 +35,12 @@ describe('sources', () => {
 		expect(offenders(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i, (line) => line.includes('data:image'))).toEqual([]);
 	});
 
+	test('give light-dark() colours only (anything else is invalid: a shadow in it renders none)', () => {
+		const tokens = readFileSync(join(SRC, 'tokens.css'), 'utf8');
+		expect(tokens.match(/light-dark\(\s*[^#\s][^,]*,/g) ?? []).toEqual([]);
+		expect(offenders(/light-dark\(\s*\d/)).toEqual([]);
+	});
+
 	test('keep !important for `hidden` alone', () => {
 		expect(offenders(/!important/, (line) => line.includes('display: none !important'))).toEqual([]);
 	});

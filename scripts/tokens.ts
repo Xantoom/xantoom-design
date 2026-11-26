@@ -109,10 +109,27 @@ export function css(type: string, value: unknown): string {
 	}
 }
 
+/**
+ * A shadow with a dark value: light-dark() takes colours only (a whole shadow in it is invalid, and the property
+ * falls back to none), so both modes share one geometry and each layer switches its colour.
+ */
+function themedShadow(name: string, light: readonly ShadowLayer[], dark: readonly ShadowLayer[]): string {
+	const geometry = (l: ShadowLayer): string => [l.offsetX, l.offsetY, l.blur, l.spread].map(dimension).join(' ');
+	if (light.length !== dark.length || light.some((l, i) => geometry(l) !== geometry(dark[i] as ShadowLayer)))
+		throw new Error(`${name}: the light and dark shadows must have the same layers and geometry`);
+	return light
+		.map((l, i) => `${geometry(l)} light-dark(${hexOf(l.color)}, ${hexOf((dark[i] as ShadowLayer).color)})`)
+		.join(', ');
+}
+
 /** The declaration of a token: light-dark() when it has a dark value, times its knob when it scales. */
 export function declaration(token: Token): string {
 	let value = css(token.type, token.value);
-	if (token.dark !== undefined) value = `light-dark(${value}, ${css(token.type, token.dark)})`;
+	if (token.dark !== undefined)
+		value =
+			token.type === 'shadow'
+				? themedShadow(token.name, token.value as ShadowLayer[], token.dark as ShadowLayer[])
+				: `light-dark(${value}, ${css(token.type, token.dark)})`;
 	if (token.scale !== undefined) value = `calc(${value} * var(--x-${token.scale}))`;
 	return `${token.name}: ${value};`;
 }

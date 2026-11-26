@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- Fix: the shadow tokens rendered nothing. `light-dark()` takes colours only, so a whole shadow inside it was invalid
+  and `box-shadow` fell back to `none`. Both modes now share one geometry and each layer switches its colour; the
+  build refuses shadows whose light and dark geometry differ, and a test rejects `light-dark()` around anything but
+  a colour.
+- The reset gives `box-sizing: border-box` to every element (`:where(*, ::before, ::after)`), not to a hand-kept list
+  that missed headings, `blockquote`, `legend`, `output` and others.
+- An interactive card no longer rises and grows its shadow on hover: its edge firms up and its ground shifts a shade.
+- One file per component family in `dist/components/`, each with the icons it uses, for sites that import the
+  foundation plus what they use. The skip link moves to the foundation.
+- `data-tone` is now a foundation rule setting `--x-tone` (not inherited), usable by any component.
+- An `Inter Fallback` face (Arial or Liberation Sans scaled to Inter Variable's widths and metrics) right after Inter
+  in `--x-font-sans`, so text does not reflow when Inter loads.
+- Removed: `x-meter` (it drew nothing), and the `cursor`, `font` and `touch-action` declarations the reset already
+  makes.
+
 ## 0.2.2
 
 - `xantoom-design/foundation`: tokens, reset, base, motion and utilities without the components (2.8 KB brotli), for

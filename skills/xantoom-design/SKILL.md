@@ -66,7 +66,9 @@ install. Commit the synced files: an agent reads them before any install.
 
 An app that brings its own components (React Aria, a Tailwind kit) imports `xantoom-design/foundation` instead of
 `xantoom-design/css`: the same tokens, reset, base, motion and utilities, without the components (about 3 KB brotli
-instead of 8). It still follows the rules below.
+instead of 8). It still follows the rules below. A site that uses only some components imports the foundation plus
+their families, `xantoom-design/components/<family>.css` (`actions`, `forms`, `content`, `feedback`, `navigation`,
+`overlays`; a toast's close button needs `actions`). The skip link is in the foundation: every page has one.
 
 ```html
 <meta name="color-scheme" content="light dark">

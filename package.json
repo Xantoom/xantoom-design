@@ -21,6 +21,7 @@
 		".": "./dist/xantoom.css",
 		"./css": "./dist/xantoom.css",
 		"./foundation": "./dist/foundation.css",
+		"./components/*": "./dist/components/*",
 		"./themes/*": "./dist/themes/*",
 		"./js": "./dist/xantoom.js",
 		"./tokens/*": "./tokens/*",

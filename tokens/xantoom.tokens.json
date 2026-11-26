@@ -353,6 +353,7 @@
 			"$value": [
 				"Inter Variable",
 				"Inter",
+				"Inter Fallback",
 				"system-ui",
 				"-apple-system",
 				"Segoe UI",
@@ -736,15 +737,15 @@
 						"unit": "px"
 					},
 					"offsetY": {
-						"value": 8,
+						"value": 10,
 						"unit": "px"
 					},
 					"blur": {
-						"value": 24,
+						"value": 28,
 						"unit": "px"
 					},
 					"spread": {
-						"value": -12,
+						"value": -14,
 						"unit": "px"
 					}
 				}
@@ -795,15 +796,15 @@
 							"unit": "px"
 						},
 						"offsetY": {
-							"value": 12,
+							"value": 10,
 							"unit": "px"
 						},
 						"blur": {
-							"value": 32,
+							"value": 28,
 							"unit": "px"
 						},
 						"spread": {
-							"value": -16,
+							"value": -14,
 							"unit": "px"
 						}
 					}
@@ -860,7 +861,7 @@
 						"unit": "px"
 					},
 					"blur": {
-						"value": 48,
+						"value": 52,
 						"unit": "px"
 					},
 					"spread": {
@@ -919,7 +920,7 @@
 							"unit": "px"
 						},
 						"blur": {
-							"value": 56,
+							"value": 52,
 							"unit": "px"
 						},
 						"spread": {

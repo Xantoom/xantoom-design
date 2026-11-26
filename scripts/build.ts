@@ -2,7 +2,7 @@
 import { readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { gzipSync, brotliCompressSync } from 'node:zlib';
-import { bundle } from 'lightningcss';
+import { bundle, transform } from 'lightningcss';
 import { declaration, flatten, knob } from './tokens.ts';
 
 const ROOT = join(import.meta.dir, '..');
@@ -48,6 +48,16 @@ async function build(): Promise<void> {
 	for (const [source, target] of [['src/index.css', 'dist/xantoom.css'], ['src/foundation.css', 'dist/foundation.css']]) {
 		const { code } = bundle({ filename: at(source), minify: true, targets: TARGETS, errorRecovery: false });
 		await Bun.write(at(target), ORDER + code.toString());
+	}
+
+	// 2b. Each component family alone, for a page that imports the foundation plus what it uses.
+	const icons = [...(await Bun.file(at('src/icons.css')).text()).matchAll(/^\t(--x-icon-[a-z]+): (.+);$/gm)];
+	for (const file of readdirSync(at('src/components')).filter((f) => f.endsWith('.css')).sort()) {
+		const css = await Bun.file(at('src/components', file)).text();
+		const used = icons.filter(([, name]) => css.includes(`var(${name})`)).map(([line]) => line.trim());
+		const source = `@layer x.components {\n${used.length > 0 ? `:root {\n${used.join('\n')}\n}\n` : ''}${css}\n}`;
+		const { code } = transform({ filename: file, code: Buffer.from(source), minify: true, targets: TARGETS, errorRecovery: false });
+		await Bun.write(at('dist/components', file), ORDER + code.toString());
 	}
 
 	// 3. Themes: one file per app (`:root`), and all of them keyed by `data-x-theme` (demos, previews, nested themes).

@@ -98,3 +98,25 @@
 .x-raised {
 	background-color: var(--x-raised);
 }
+
+/* <a class="x-skip-link" href="#main">…</a> as the first element of <body>. */
+.x-skip-link {
+	position: fixed;
+	inset-block-start: var(--x-space-3);
+	inset-inline-start: var(--x-space-3);
+	padding: var(--x-space-2) var(--x-space-4);
+	border-radius: var(--x-radius-md);
+	background-color: var(--x-fg);
+	color: var(--x-bg);
+	font-weight: var(--x-weight-medium);
+	text-decoration: none;
+	translate: 0 calc(-100% - var(--x-space-6));
+
+	&:focus-visible {
+		translate: 0;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: translate var(--x-duration-fast) var(--x-ease-out);
+	}
+}

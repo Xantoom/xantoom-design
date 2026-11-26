@@ -62,7 +62,7 @@ name and message comes from the app's translations. `demo/index.html` shows each
 | Markup | Notes |
 | --- | --- |
 | `<article class="x-card">` | `data-variant="flat"`; `data-interactive` with one `<a class="x-card-link">` makes the whole card clickable |
-| `<span class="x-badge" data-tone="accent|success|warning|danger|info">` | Always with text, never colour alone |
+| `<span class="x-badge" data-tone="accent|success|warning|danger|info">` | Always with text, never colour alone. `data-tone` sets `--x-tone` (not inherited) for any component, the app's own included; without it, muted |
 | `<span class="x-avatar">AB</span>` or with an `<img alt>` | `data-size="sm|lg"`, `data-shape="tile"` (app-icon corner) |
 | `<kbd class="x-kbd">⌘</kbd>` | Join keys with `&nbsp;` |
 | `<div class="x-callout" data-tone="…" role="status"><svg aria-hidden>…</svg><p>…</p></div>` | Messages in the page. Prefer them to toasts |
@@ -74,7 +74,6 @@ name and message comes from the app's translations. `demo/index.html` shows each
 
 ```html
 <progress class="x-progress" value="40" max="100" aria-label="Upload"></progress>   <!-- no value: indeterminate -->
-<meter class="x-meter" …></meter>
 <span class="x-spinner" role="status" aria-label="Loading…"></span>
 <span class="x-skeleton"></span>   <!-- size it (in the app layer) exactly like the content it stands for -->
 ```

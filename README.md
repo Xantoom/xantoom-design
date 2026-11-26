@@ -36,7 +36,8 @@ commit the result. `xantoom-design sync --check` fails in CI when the copy is st
 ```
 
 Apps with their own components (React Aria, Tailwind) import `xantoom-design/foundation` instead: tokens, reset, base,
-motion and utilities, without the components.
+motion and utilities, without the components. A site that uses only some components adds their families:
+`@import "xantoom-design/components/forms.css";` (`actions`, `forms`, `content`, `feedback`, `navigation`, `overlays`).
 
 ```html
 <meta name="color-scheme" content="light dark">

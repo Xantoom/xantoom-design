@@ -49,13 +49,6 @@
 	}
 }
 
-:root {
-	--x-icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-	--x-icon-dash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
-	--x-icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-	--x-icon-alert: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M12 7v6M12 16.5v.5'/%3E%3C/svg%3E");
-}
-
 /* Text fields, text areas and selects share one box. */
 .x-input,
 .x-select {
@@ -67,7 +60,6 @@
 	border-radius: var(--x-radius-md);
 	background-color: var(--x-raised);
 	color: var(--x-fg);
-	font: inherit;
 	font-size: var(--x-text-sm);
 	line-height: 1.4;
 	transition-property: border-color, background-color;
@@ -216,7 +208,6 @@ textarea.x-input {
 	align-items: center;
 	gap: var(--x-space-2);
 	min-block-size: 1.5rem;
-	cursor: pointer;
 
 	@media (pointer: coarse) {
 		min-block-size: 2.75rem;
@@ -240,7 +231,6 @@ textarea.x-input {
 	border: 1.5px solid var(--x-control-border);
 	border-radius: var(--x-radius-sm);
 	background-color: var(--x-raised);
-	cursor: pointer;
 	transition-property: background-color, border-color;
 	transition-duration: var(--x-duration-fast);
 	transition-timing-function: var(--x-ease-out);
@@ -288,9 +278,6 @@ textarea.x-input {
 		border-color: var(--x-danger);
 	}
 
-	&:disabled {
-		cursor: not-allowed;
-	}
 }
 
 .x-radio {
@@ -315,7 +302,6 @@ textarea.x-input {
 	border: 1.5px solid var(--x-control-border);
 	border-radius: 999px;
 	background-color: color-mix(in oklab, var(--x-fg) 12%, var(--x-raised));
-	cursor: pointer;
 	transition-property: background-color, border-color;
 	transition-duration: var(--x-duration-fast);
 	transition-timing-function: var(--x-ease-out);
@@ -360,9 +346,6 @@ textarea.x-input {
 		}
 	}
 
-	&:disabled {
-		cursor: not-allowed;
-	}
 }
 
 /* Segmented control: a fieldset of radios drawn as one bar. Keyboard: the radios' own arrow keys. */
@@ -397,7 +380,6 @@ textarea.x-input {
 		color: var(--x-fg-muted);
 		font-size: var(--x-text-sm);
 		font-weight: var(--x-weight-medium);
-		cursor: pointer;
 		transition-property: background-color, color;
 		transition-duration: var(--x-duration-fast);
 
@@ -429,7 +411,6 @@ textarea.x-input {
 .x-range {
 	inline-size: 100%;
 	accent-color: var(--x-accent);
-	cursor: pointer;
 }
 
 .x-file {
@@ -446,7 +427,6 @@ textarea.x-input {
 		color: var(--x-fg);
 		font: inherit;
 		font-weight: var(--x-weight-medium);
-		cursor: pointer;
 	}
 }
 

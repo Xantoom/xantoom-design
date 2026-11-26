@@ -8,6 +8,7 @@
 @import "./reset.css" layer(x.reset);
 @import "./base.css" layer(x.base);
 @import "./layout.css" layer(x.layout);
+@import "./icons.css" layer(x.components);
 @import "./components/actions.css" layer(x.components);
 @import "./components/forms.css" layer(x.components);
 @import "./components/content.css" layer(x.components);

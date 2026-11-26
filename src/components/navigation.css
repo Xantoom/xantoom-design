@@ -1,26 +1,4 @@
-/* Navigation: skip link, nav links, breadcrumb, pagination, tabs. */
-
-/* <a class="x-skip-link" href="#main">…</a> as the first element of <body>. */
-.x-skip-link {
-	position: fixed;
-	inset-block-start: var(--x-space-3);
-	inset-inline-start: var(--x-space-3);
-	padding: var(--x-space-2) var(--x-space-4);
-	border-radius: var(--x-radius-md);
-	background-color: var(--x-fg);
-	color: var(--x-bg);
-	font-weight: var(--x-weight-medium);
-	text-decoration: none;
-	translate: 0 calc(-100% - var(--x-space-6));
-
-	&:focus-visible {
-		translate: 0;
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		transition: translate var(--x-duration-fast) var(--x-ease-out);
-	}
-}
+/* Navigation: nav links, breadcrumb, pagination, tabs (the skip link is in the foundation: every page has one). */
 
 /* A navigation link; the current page has aria-current="page". */
 .x-navlink {
@@ -117,7 +95,6 @@
 		font-size: var(--x-text-sm);
 		font-variant-numeric: tabular-nums;
 		text-decoration: none;
-		cursor: pointer;
 
 		&:hover {
 			background-color: var(--x-hover);
@@ -228,12 +205,10 @@
 	border: 0;
 	background: none;
 	color: var(--x-fg-muted);
-	font: inherit;
 	font-size: var(--x-text-sm);
 	font-weight: var(--x-weight-medium);
 	white-space: nowrap;
 	scroll-snap-align: start;
-	cursor: pointer;
 	transition: color var(--x-duration-fast);
 
 	&:hover {
