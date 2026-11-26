@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- `sync` accepts its pointer re-wrapped by a Markdown formatter (`proseWrap: always`): only the words are compared.
+
 ## 0.2.1
 
 - Scrollbars use the WebKit pseudo-elements wherever they exist (a rounded thumb that thickens under the pointer,

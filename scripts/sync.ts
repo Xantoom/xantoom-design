@@ -75,7 +75,11 @@ function point(file: string, create: boolean): void {
 	const text = exists ? readFileSync(path, 'utf8') : '';
 	if (file.endsWith('CLAUDE.md') && /^@(\.\.\/)?AGENTS\.md\s*$/m.test(text)) return;
 	const block = new RegExp(`${START}[\\s\\S]*?${END}`);
-	const next = block.test(text) ? text.replace(block, POINTER) : `${text.trimEnd()}${text.trim() ? '\n\n' : ''}${POINTER}\n`;
+	const current = block.exec(text)?.[0];
+	// A formatter may re-wrap the paragraph: only the words count.
+	const words = (value: string): string => value.replace(/\s+/g, ' ').trim();
+	if (current !== undefined && words(current) === words(POINTER)) return;
+	const next = current !== undefined ? text.replace(block, POINTER) : `${text.trimEnd()}${text.trim() ? '\n\n' : ''}${POINTER}\n`;
 	if (next === text) return;
 	stale.push(file);
 	if (!check) writeFileSync(path, next);
