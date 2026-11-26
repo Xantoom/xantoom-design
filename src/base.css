@@ -10,12 +10,14 @@
 	color: var(--x-fg);
 	background-color: var(--x-bg);
 	accent-color: var(--x-accent);
-	scrollbar-color: color-mix(in oklab, var(--x-fg) 28%, transparent) transparent;
+	scrollbar-color: var(--x-line-strong) transparent;
 	-webkit-tap-highlight-color: color-mix(in oklab, var(--x-accent) 18%, transparent);
 
 	--x-leading: 1.5;
 	--x-leading-tight: 1.15;
 	--x-control: var(--x-size-control);
+	/* Hovered accent text: pulled toward the text colour, so its contrast only rises. */
+	--x-accent-hover: color-mix(in oklab, var(--x-accent) 78%, var(--x-fg));
 	--x-hover: color-mix(in oklab, var(--x-fg) 6%, transparent);
 	--x-press: color-mix(in oklab, var(--x-fg) 10%, transparent);
 	--x-ring: 2px solid var(--x-accent);

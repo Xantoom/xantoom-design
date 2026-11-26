@@ -5,6 +5,7 @@
 		--x-surface: light-dark(#f5f5f7, #1b1c23);
 		--x-raised: light-dark(#ffffff, #22232c);
 		--x-line: light-dark(#d9d9de, #2c2e38);
+		--x-line-strong: light-dark(#b9bac2, #444756);
 		--x-control-border: light-dark(#767984, #6e7180);
 		--x-fg: light-dark(#111216, #ededf2);
 		--x-fg-muted: light-dark(#4b4e58, #a9acb8);

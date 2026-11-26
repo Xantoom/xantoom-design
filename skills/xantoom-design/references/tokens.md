@@ -12,11 +12,13 @@ The source of truth is `tokens/*.tokens.json` (DTCG 2025.10). A colour's dark va
 | `--x-surface` | A band or panel on the ground |
 | `--x-raised` | Cards, fields, menus, dialogs |
 | `--x-line` | Decorative separators. Never the only edge of a control |
+| `--x-line-strong` | Lines that must show: outlined tags, scrollbars, emphasised dividers |
 | `--x-control-border` | Edge of fields, checkboxes and switches (3:1 on every surface) |
 | `--x-fg`, `--x-fg-muted`, `--x-fg-faint` | Text: body, secondary, metadata and placeholders (all 4.5:1) |
 | `--x-success`, `--x-warning`, `--x-danger`, `--x-info` | Status text and marks (4.5:1). Tints: `color-mix(in oklab, var(--x-danger) 14%, transparent)` |
 | `--x-on-danger` | Text on a `--x-danger` fill |
 | `--x-overlay` | Modal backdrop |
+| `--x-accent-hover` | Hovered links and accent text (pulled toward `--x-fg`) |
 | `--x-hover`, `--x-press` | Translucent tints for hovered and pressed surfaces |
 | `--x-selection`, `--x-ring` | Text selection, focus outline (`outline: var(--x-ring)`) |
 | `--x-font-sans`, `--x-font-mono` | Inter, JetBrains Mono, then system fonts |

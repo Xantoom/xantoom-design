@@ -95,6 +95,29 @@
 				}
 			}
 		},
+		"line-strong": {
+			"$value": {
+				"colorSpace": "srgb",
+				"components": [
+					0.7255,
+					0.7294,
+					0.7608
+				],
+				"hex": "#b9bac2"
+			},
+			"$description": "Stronger decorative lines: outlined tags, scrollbars, dividers that must show (not a control edge).",
+			"$extensions": {
+				"app.xantoom.dark": {
+					"colorSpace": "srgb",
+					"components": [
+						0.2667,
+						0.2784,
+						0.3373
+					],
+					"hex": "#444756"
+				}
+			}
+		},
 		"control-border": {
 			"$value": {
 				"colorSpace": "srgb",

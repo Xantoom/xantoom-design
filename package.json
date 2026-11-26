@@ -1,6 +1,6 @@
 {
 	"name": "xantoom-design",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "The Xantoom design system: tokens, pure-CSS components, motion and an agent skill, one theme per app.",
 	"license": "MIT",
 	"author": "Xantoom",

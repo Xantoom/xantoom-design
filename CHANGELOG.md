@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- `--x-line-strong` for lines that must show (outlined tags, scrollbars), and `--x-accent-hover` for hovered accent
+  text.
+- The skill asks agents to propose moving reusable work from a project into the design system.
+
 ## 0.1.0
 
 First release.

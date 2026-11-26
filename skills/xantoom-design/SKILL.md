@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Xantoom design system
@@ -51,7 +51,7 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
 ## Adding the design system to a project
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.1.0
+bun add github:Xantoom/xantoom-design#v0.1.1
 bunx xantoom-design sync          # copies this skill into .agents/skills/, links .claude/skills/, adds pointers
 ```
 
@@ -77,6 +77,13 @@ Fonts: self-host Inter and JetBrains Mono (both under the OFL, so commercial use
 Follow [references/new-app.md](references/new-app.md): reserve a hue in the registry, write
 `tokens/themes/<app>.tokens.json`, run `bun run check` (the contrast tests must pass in both modes), then draw the
 logo with the shared grammar.
+
+## Growing the design system
+
+The design system grows with the apps. When work in a project produces something useful beyond that project (a
+component, a token, a motion pattern, an accessibility or i18n rule, a browser fix), propose to the user that it be
+moved into xantoom-design, with a short description of what would change there. Do it only after they agree. Keep
+project-specific UI in the project, written with the tokens.
 
 ## Where things are
 
