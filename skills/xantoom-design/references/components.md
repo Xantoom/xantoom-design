@@ -153,4 +153,15 @@ toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without t
 
 `x-visually-hidden`, `x-tabular` (tabular numbers), `x-mono`, `x-muted`, `x-truncate`, `x-display` (hero size),
 `x-flip-rtl` (directional icons), `x-tile` (the brand tile), `x-surface`, `x-raised`, `x-reveal` (rises in on scroll),
-`x-pressable`.
+`x-pressable`, `x-enter` and `x-stagger` (see motion), and:
+
+| Utility | Use |
+| --- | --- |
+| `x-touch-target` | A small control (an icon in a dense row) gets a 44 px hit area on touch screens. Needs a positioned box |
+| `x-lazy` | An item of a long list, rendered only near the screen. Set `--x-lazy-size` to its usual height |
+| `x-readable` | A colour someone else chose (a chat name, a label): set `--x-color`, it stays legible in both themes |
+| `x-scrollbar-none`, `x-scrollbar-stable` | Hide a scrollbar (the box still scrolls), or keep its room so content never shifts |
+
+Scrollbars are styled everywhere: thin, with a thumb of `--x-scrollbar-thumb` (the control edge, 3:1 on every
+surface, the text colour under `prefers-contrast: more`) on `--x-scrollbar-track`. Set those two on a box to change
+its scrollbar, as the player does on dark video; never transition them.

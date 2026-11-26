@@ -10,7 +10,6 @@
 	color: var(--x-fg);
 	background-color: var(--x-bg);
 	accent-color: var(--x-accent);
-	scrollbar-color: var(--x-line-strong) transparent;
 	-webkit-tap-highlight-color: color-mix(in oklab, var(--x-accent) 18%, transparent);
 
 	--x-leading: 1.5;
@@ -23,6 +22,9 @@
 	--x-ring: 2px solid var(--x-accent);
 	--x-selection: color-mix(in oklab, var(--x-accent) 26%, transparent);
 	--x-text-display: clamp(var(--x-text-3xl), 1.4rem + 2.6vw, var(--x-text-5xl));
+	/* Scrollbar thumb: the control edge, 3:1 on every surface, so how far a page has scrolled can be seen. */
+	--x-scrollbar-thumb: var(--x-control-border);
+	--x-scrollbar-track: transparent;
 
 	@media (pointer: coarse) {
 		--x-control: var(--x-size-control-touch);
@@ -100,6 +102,51 @@
 	margin-block: var(--x-space-6);
 	border: 0;
 	border-block-start: 1px solid var(--x-line);
+}
+
+/*
+ * Scrollbars: thin, with a visible thumb, in every scrolling box (scrollbar-color inherits; scrollbar-width does
+ * not). Never transition scrollbar-color: WebKit flickers on every change.
+ */
+:root {
+	scrollbar-color: var(--x-scrollbar-thumb) var(--x-scrollbar-track);
+
+	@media (prefers-contrast: more) {
+		--x-scrollbar-thumb: var(--x-fg);
+	}
+}
+
+:where(*) {
+	scrollbar-width: thin;
+}
+
+/* Browsers without scrollbar-color (Safari before 26.2): the old WebKit pseudo-elements, as a rounded thumb. */
+@supports not (scrollbar-color: auto) {
+	:where(*) {
+		scrollbar-width: auto;
+	}
+
+	::-webkit-scrollbar {
+		inline-size: 12px;
+		block-size: 12px;
+	}
+
+	::-webkit-scrollbar-track,
+	::-webkit-scrollbar-corner {
+		background: var(--x-scrollbar-track);
+	}
+
+	::-webkit-scrollbar-thumb {
+		min-inline-size: 40px;
+		min-block-size: 40px;
+		border: 3px solid transparent;
+		border-radius: 99px;
+		background: var(--x-scrollbar-thumb) padding-box;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		border-width: 2px;
+	}
 }
 
 @media print {

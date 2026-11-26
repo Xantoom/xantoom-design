@@ -14,6 +14,49 @@
 	font-variant-numeric: tabular-nums;
 }
 
+.x-scrollbar-none {
+	scrollbar-width: none;
+}
+
+/* Keeps room for the scrollbar, so content does not shift when it appears (tabs that may or may not scroll). */
+.x-scrollbar-stable {
+	scrollbar-gutter: stable;
+}
+
+/*
+ * On touch screens, a control smaller than a finger gets a 44 px hit area around it. The element needs a
+ * positioned box (position: relative or absolute).
+ */
+.x-touch-target {
+	@media (pointer: coarse) {
+		&::before {
+			content: "";
+			position: absolute;
+			inset: min(0px, calc((100% - 2.75rem) / 2));
+		}
+	}
+}
+
+/*
+ * An item far down a long list: skipped by layout and paint until it nears the screen. Its last known size holds
+ * its place (set --x-lazy-size to a typical height), it stays in the tab order and in find-in-page, and a margin of
+ * room keeps focus rings whole.
+ */
+.x-lazy {
+	content-visibility: auto;
+	contain-intrinsic-size: auto var(--x-lazy-size, 20rem);
+	margin: calc(-1 * var(--x-space-2));
+	padding: var(--x-space-2);
+}
+
+/* A colour chosen by someone else (a chat name, a label): set --x-color; it stays readable in both themes. */
+.x-readable {
+	color: light-dark(
+		color-mix(in oklab, var(--x-color) 70%, black),
+		color-mix(in oklab, var(--x-color) 75%, white)
+	);
+}
+
 .x-mono {
 	font-family: var(--x-font-mono);
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Custom scrollbars everywhere: thin, a thumb at 3:1 on every surface (`--x-scrollbar-thumb`, `--x-scrollbar-track`),
+  the text colour under `prefers-contrast: more`, and a rounded WebKit fallback where `scrollbar-color` is missing.
+- From Vixion: `x-touch-target` (44 px hit area on touch screens), `x-lazy` (long lists rendered near the screen),
+  `x-readable` (someone else's colour, legible in both themes), `x-enter` and `x-stagger` (content and list items
+  coming in, a beat apart, with `sibling-index()`), `x-scrollbar-none` and `x-scrollbar-stable`.
+
 ## 0.1.2
 
 - `sync` also points `.claude/CLAUDE.md` to the skill (unless it imports AGENTS.md), and writes its AGENTS.md block
