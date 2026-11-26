@@ -44,6 +44,7 @@ const brotli = (file: string): number => brotliCompressSync(readFileSync(join(RO
 
 describe('budgets (brotli)', () => {
 	test('the stylesheet stays under 12 KB', () => expect(brotli('dist/xantoom.css')).toBeLessThan(12 * 1024));
+	test('the foundation stays under 4 KB', () => expect(brotli('dist/foundation.css')).toBeLessThan(4 * 1024));
 	test('the script stays under 4 KB', () => expect(brotli('dist/xantoom.js')).toBeLessThan(4 * 1024));
 	test('a theme stays under 0.5 KB', () => {
 		for (const name of THEMES) expect(brotli(`dist/themes/${name}.css`)).toBeLessThan(512);

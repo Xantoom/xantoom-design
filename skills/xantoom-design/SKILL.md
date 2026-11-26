@@ -64,6 +64,10 @@ install. Commit the synced files: an agent reads them before any install.
 @import "xantoom-design/themes/vexode.css";
 ```
 
+An app that brings its own components (React Aria, a Tailwind kit) imports `xantoom-design/foundation` instead of
+`xantoom-design/css`: the same tokens, reset, base, motion and utilities, without the components (about 3 KB brotli
+instead of 8). It still follows the rules below.
+
 ```html
 <meta name="color-scheme" content="light dark">
 <script type="module">import { enhance } from 'xantoom-design/js'; enhance();</script>

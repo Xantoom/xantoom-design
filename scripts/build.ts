@@ -44,9 +44,11 @@ async function build(): Promise<void> {
 	const tokens = `${HEADER}@layer x.tokens {\n${rule(':root', base)}}\n@layer x.theme {\n${await themeCss(at('tokens/themes/xantoom.tokens.json'), ':root')}}\n`;
 	await Bun.write(at('src/tokens.css'), tokens);
 
-	// 2. One stylesheet.
-	const { code } = bundle({ filename: at('src/index.css'), minify: true, targets: TARGETS, errorRecovery: false });
-	await Bun.write(at('dist/xantoom.css'), ORDER + code.toString());
+	// 2. One stylesheet, and the foundation alone (no components) for apps that bring their own.
+	for (const [source, target] of [['src/index.css', 'dist/xantoom.css'], ['src/foundation.css', 'dist/foundation.css']]) {
+		const { code } = bundle({ filename: at(source), minify: true, targets: TARGETS, errorRecovery: false });
+		await Bun.write(at(target), ORDER + code.toString());
+	}
 
 	// 3. Themes: one file per app (`:root`), and all of them keyed by `data-x-theme` (demos, previews, nested themes).
 	const all: string[] = [];
@@ -62,7 +64,7 @@ async function build(): Promise<void> {
 	if (!js.success) throw new AggregateError(js.logs, 'script build failed');
 	await Bun.write(at('dist/xantoom.js'), (await js.outputs[0]?.text()) ?? '');
 
-	for (const file of ['dist/xantoom.css', 'dist/xantoom.js', 'dist/themes/vexode.css']) {
+	for (const file of ['dist/xantoom.css', 'dist/foundation.css', 'dist/xantoom.js', 'dist/themes/vexode.css']) {
 		const bytes = await Bun.file(at(file)).bytes();
 		const kb = (n: number): string => `${(n / 1024).toFixed(1)} KB`;
 		console.log(`${file}: ${kb(bytes.length)}, gzip ${kb(gzipSync(bytes).length)}, brotli ${kb(brotliCompressSync(bytes).length)}`);

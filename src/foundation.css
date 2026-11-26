@@ -1,0 +1,12 @@
+/*
+ * The foundation alone: tokens, reset, base, motion and utilities, without the components. For apps that bring their
+ * own components (React Aria, Tailwind) but share the Xantoom signature:
+ *   @layer x, app;   then   @import "xantoom-design/foundation";   @import "xantoom-design/themes/<app>.css";
+ */
+@layer x.reset, x.tokens, x.theme, x.base, x.layout, x.components, x.motion, x.utilities;
+
+@import "./tokens.css";
+@import "./reset.css" layer(x.reset);
+@import "./base.css" layer(x.base);
+@import "./motion.css" layer(x.motion);
+@import "./utilities.css" layer(x.utilities);

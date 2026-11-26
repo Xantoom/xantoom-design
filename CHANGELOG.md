@@ -2,6 +2,8 @@
 
 ## 0.2.2
 
+- `xantoom-design/foundation`: tokens, reset, base, motion and utilities without the components (2.8 KB brotli), for
+  apps that bring their own components.
 - `sync` accepts its pointer re-wrapped by a Markdown formatter (`proseWrap: always`): only the words are compared.
 
 ## 0.2.1

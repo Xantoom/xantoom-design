@@ -4,18 +4,31 @@
 	"description": "The Xantoom design system: tokens, pure-CSS components, motion and an agent skill, one theme per app.",
 	"license": "MIT",
 	"author": "Xantoom",
-	"repository": { "type": "git", "url": "git+https://github.com/Xantoom/xantoom-design.git" },
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Xantoom/xantoom-design.git"
+	},
 	"type": "module",
-	"files": ["dist", "src", "tokens", "skills", "scripts/sync.ts", "scripts/tokens.ts"],
+	"files": [
+		"dist",
+		"src",
+		"tokens",
+		"skills",
+		"scripts/sync.ts",
+		"scripts/tokens.ts"
+	],
 	"exports": {
 		".": "./dist/xantoom.css",
 		"./css": "./dist/xantoom.css",
+		"./foundation": "./dist/foundation.css",
 		"./themes/*": "./dist/themes/*",
 		"./js": "./dist/xantoom.js",
 		"./tokens/*": "./tokens/*",
 		"./src/*": "./src/*"
 	},
-	"bin": { "xantoom-design": "./scripts/sync.ts" },
+	"bin": {
+		"xantoom-design": "./scripts/sync.ts"
+	},
 	"scripts": {
 		"build": "bun scripts/build.ts",
 		"test": "bun test",

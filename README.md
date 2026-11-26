@@ -35,6 +35,9 @@ commit the result. `xantoom-design sync --check` fails in CI when the copy is st
 @import "xantoom-design/themes/vexode.css";
 ```
 
+Apps with their own components (React Aria, Tailwind) import `xantoom-design/foundation` instead: tokens, reset, base,
+motion and utilities, without the components.
+
 ```html
 <meta name="color-scheme" content="light dark">
 <button class="x-button" data-variant="primary" command="show-modal" commandfor="confirm">Delete…</button>
