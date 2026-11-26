@@ -14,7 +14,9 @@ const check = argv.includes('--check');
 
 const START = `<!-- ${NAME}:start -->`;
 const END = `<!-- ${NAME}:end -->`;
+// The blank line after START matches what Markdown formatters (oxfmt, Prettier) write, so a formatted file stays in sync.
 const POINTER = `${START}
+
 ## Design system
 
 This project uses the Xantoom design system. Before any UI work (pages, components, styles, motion, icons,

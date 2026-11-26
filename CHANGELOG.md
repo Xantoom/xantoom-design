@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- `sync` also points `.claude/CLAUDE.md` to the skill (unless it imports AGENTS.md), and writes its AGENTS.md block
+  the way Markdown formatters do, so a formatted project stays in sync.
+
 ## 0.1.1
 
 - `--x-line-strong` for lines that must show (outlined tags, scrollbars), and `--x-accent-hover` for hovered accent
