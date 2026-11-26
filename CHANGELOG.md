@@ -2,6 +2,8 @@
 
 ## 0.2.1
 
+- Scrollbars use the WebKit pseudo-elements wherever they exist (a rounded thumb that thickens under the pointer,
+  without the arrow buttons Windows adds to standard scrollbars); the standard properties only where they are missing.
 - `cursor: pointer` also on ARIA widgets (checkbox, radio, switch, option, menu items) and on labels wrapping a
   checkbox or radio, so apps no longer keep their own list.
 

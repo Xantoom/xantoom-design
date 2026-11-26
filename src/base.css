@@ -105,47 +105,45 @@
 }
 
 /*
- * Scrollbars: thin, with a visible thumb, in every scrolling box (scrollbar-color inherits; scrollbar-width does
- * not). Never transition scrollbar-color: WebKit flickers on every change.
+ * Scrollbars: a rounded thumb floating on no track, which thickens under the pointer, 3:1 on every surface so how
+ * far a page has scrolled can be seen. Chromium and Safari draw it from the WebKit pseudo-elements, which leave out
+ * the arrow buttons Windows adds to standard scrollbars; setting scrollbar-width or scrollbar-color would turn those
+ * pseudo-elements off, so the standard properties are only for browsers without them (Firefox). Never transition
+ * the thumb colour: WebKit flickers on every change.
  */
 :root {
-	scrollbar-color: var(--x-scrollbar-thumb) var(--x-scrollbar-track);
-
 	@media (prefers-contrast: more) {
 		--x-scrollbar-thumb: var(--x-fg);
 	}
 }
 
-:where(*) {
-	scrollbar-width: thin;
+::-webkit-scrollbar {
+	inline-size: 12px;
+	block-size: 12px;
 }
 
-/* Browsers without scrollbar-color (Safari before 26.2): the old WebKit pseudo-elements, as a rounded thumb. */
-@supports not (scrollbar-color: auto) {
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+	background: var(--x-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+	min-inline-size: 40px;
+	min-block-size: 40px;
+	border: 3.5px solid transparent;
+	border-radius: 99px;
+	background: var(--x-scrollbar-thumb) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+	border-width: 2px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
 	:where(*) {
-		scrollbar-width: auto;
-	}
-
-	::-webkit-scrollbar {
-		inline-size: 12px;
-		block-size: 12px;
-	}
-
-	::-webkit-scrollbar-track,
-	::-webkit-scrollbar-corner {
-		background: var(--x-scrollbar-track);
-	}
-
-	::-webkit-scrollbar-thumb {
-		min-inline-size: 40px;
-		min-block-size: 40px;
-		border: 3px solid transparent;
-		border-radius: 99px;
-		background: var(--x-scrollbar-thumb) padding-box;
-	}
-
-	::-webkit-scrollbar-thumb:hover {
-		border-width: 2px;
+		scrollbar-width: thin;
+		scrollbar-color: var(--x-scrollbar-thumb) var(--x-scrollbar-track);
 	}
 }
 

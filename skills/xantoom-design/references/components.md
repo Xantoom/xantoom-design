@@ -162,6 +162,8 @@ toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without t
 | `x-readable` | A colour someone else chose (a chat name, a label): set `--x-color`, it stays legible in both themes |
 | `x-scrollbar-none`, `x-scrollbar-stable` | Hide a scrollbar (the box still scrolls), or keep its room so content never shifts |
 
-Scrollbars are styled everywhere: thin, with a thumb of `--x-scrollbar-thumb` (the control edge, 3:1 on every
-surface, the text colour under `prefers-contrast: more`) on `--x-scrollbar-track`. Set those two on a box to change
-its scrollbar, as the player does on dark video; never transition them.
+Scrollbars are styled everywhere: a rounded thumb of `--x-scrollbar-thumb` (the control edge, 3:1 on every surface,
+the text colour under `prefers-contrast: more`) on `--x-scrollbar-track`, thickening under the pointer. Set those two
+on a box to change its scrollbar; never transition them. Do not set `scrollbar-width` or `scrollbar-color` in app
+code (except `none` through `x-scrollbar-none`): in Chromium they switch off the styled scrollbar and bring back the
+arrow buttons Windows draws.
