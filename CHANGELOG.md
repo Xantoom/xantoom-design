@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1
+
+- React `Avatar decorative`: hidden from assistive technology when the name is written beside it, so it is not read
+  twice.
+- Demo: a tooltip with a picture (`data-tip-img`).
+
 ## 0.7.0
 
 - Tooltip pictures: `data-tip-img` (a picture above the text, whole) and `data-tip-poster` (a 3:4 cover); React

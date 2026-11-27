@@ -69,3 +69,13 @@ describe('select', () => {
 		expect(html(<Select aria-label="Kind" name="kind" value="place" onChange={noop} options={options} />)).toContain('<input type="hidden" name="kind" value="place"/>');
 	});
 });
+
+describe('avatar', () => {
+	test('a decorative avatar is hidden, so the name beside it is read once', async () => {
+		const { Avatar } = await import('../src/react');
+		const out = html(<Avatar name="Mila Arnaud" seed="u-1" decorative />);
+		expect(out).toContain('aria-hidden="true"');
+		expect(out).not.toContain('role="img"');
+		expect(html(<Avatar name="Mila Arnaud" />)).toContain('role="img" aria-label="Mila Arnaud"');
+	});
+});

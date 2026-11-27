@@ -27,6 +27,7 @@ export function Avatar({
 	size,
 	shape,
 	seed,
+	decorative,
 	className,
 }: {
 	src?: string | null;
@@ -38,6 +39,8 @@ export function Avatar({
 	shape?: 'tile';
 	/** The person's id: their initials on a colour drawn from it, the same everywhere. */
 	seed?: string;
+	/** The name is already written beside it: hidden from assistive technology, so it is not read twice. */
+	decorative?: boolean;
 	className?: string;
 }): ReactElement {
 	const [failed, setFailed] = useState<string | null>(null);
@@ -50,11 +53,12 @@ export function Avatar({
 			data-shape={shape}
 			data-hue={seed === undefined ? undefined : ''}
 			style={Object.keys(style).length > 0 ? (style as React.CSSProperties) : undefined}
-			role={src && failed !== src ? undefined : 'img'}
-			aria-label={src && failed !== src ? undefined : name}
+			role={decorative || (src && failed !== src) ? undefined : 'img'}
+			aria-label={decorative || (src && failed !== src) ? undefined : name}
+			aria-hidden={decorative || undefined}
 		>
 			{src && failed !== src ? (
-				<img src={src} alt={name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(src)} />
+				<img src={src} alt={decorative ? '' : name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(src)} />
 			) : (
 				<span aria-hidden="true">{initials(name)}</span>
 			)}

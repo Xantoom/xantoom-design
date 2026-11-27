@@ -5,7 +5,7 @@ export declare function hueOf(seed: string): number;
  * A picture, or the name's initials when there is none or it fails to load: on the theme fill, or with `seed` (the
  * person's id) on a colour of their own.
  */
-export declare function Avatar({ src, name, size, shape, seed, className, }: {
+export declare function Avatar({ src, name, size, shape, seed, decorative, className, }: {
     src?: string | null;
     /** Used for the initials and as the picture's text. */
     name: string;
@@ -15,6 +15,8 @@ export declare function Avatar({ src, name, size, shape, seed, className, }: {
     shape?: 'tile';
     /** The person's id: their initials on a colour drawn from it, the same everywhere. */
     seed?: string;
+    /** The name is already written beside it: hidden from assistive technology, so it is not read twice. */
+    decorative?: boolean;
     className?: string;
 }): ReactElement;
 declare const FLAGS: {

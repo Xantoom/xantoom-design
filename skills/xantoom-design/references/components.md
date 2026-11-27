@@ -303,6 +303,6 @@ arrow buttons Windows draws.
 | `<Brand name size label>` | An app's logo from `xantoom-design/brand`, its ids unique |
 | `<CommandPalette open onClose label query onQueryChange groups empty>` | Needs `xantoom-design/components/extras.css`. `x-command`: the app filters `groups` (`{ id, label, items: [{ id, label, icon, detail, hint, onSelect }] }`); the first item is active, the arrow keys move it, Enter or a click closes and runs it |
 | `<Toaster label closeLabel>` and `toast()` | The toast region, once per page |
-| `<Avatar name src size shape seed>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails, on a colour of the person's own with `seed` (their id; `hueOf(id)` gives the same hue for a cursor or a name); drawn flags (fr, gb, de, it, es) |
+| `<Avatar name src size shape seed decorative>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails, on a colour of the person's own with `seed` (their id; `hueOf(id)` gives the same hue for a cursor or a name); `decorative` hides it from assistive technology when the name is written beside it; drawn flags (fr, gb, de, it, es) |
 | `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon; `disabled` on an option fades it and the arrows skip it |
 | `<ThemeCycle labels icons>` | The `x-cycle` theme switch on `theme.js` |
