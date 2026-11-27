@@ -18,14 +18,14 @@ One signature, one theme per app. The design language of every Xantoom web proje
   `theme.js` (0.4 KB) applies the system, light or dark choice before the first paint and drives the theme button.
 - **React and Tailwind**: `xantoom-design/react` (2.7 KB brotli) and `xantoom-design/tailwind.css`.
 - **The family's logos** in [`brand/`](brand), one source for every site that shows them.
-- **Theme contrast check** for apps with their own themes: `bunx xantoom-design contrast src/themes.css --theme <app>`.
+- **Theme contrast check** for apps with their own themes: `bunx xantoom-design contrast src/themes.css --theme <app> [--prefix <app> --ground <name>]`.
 - **Agent skill**: [`skills/xantoom-design`](skills/xantoom-design/SKILL.md), in the open Agent Skills format, so any
   coding agent working in a Xantoom project knows the rules.
 
 ## Use it
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.4.0
+bun add github:Xantoom/xantoom-design#v0.4.1
 bunx xantoom-design sync
 ```
 

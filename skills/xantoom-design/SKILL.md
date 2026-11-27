@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.4.0
+  version: 0.4.1
 ---
 
 # Xantoom design system
@@ -57,12 +57,13 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
   with its type (`image/svg+xml`): without the type the browser ignores it and keeps another app's icon from the
   same port; without the hash it keeps an old one.
 - **Theme contrast.** An app with its own themes runs `bunx xantoom-design contrast <themes.css> --theme <app>` in its
-  tests or CI: text pairs reach 4.5:1 and interface colours 3:1 in every theme.
+  tests or CI (`--prefix <app>` when it names some colours itself, `--ground <name>` for each ground of its own): text
+  pairs reach 4.5:1 and interface colours 3:1 in every theme.
 
 ## Adding the design system to a project
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.4.0
+bun add github:Xantoom/xantoom-design#v0.4.1
 bunx xantoom-design sync          # copies this skill into .agents/skills/, links .claude/skills/, adds pointers
 ```
 

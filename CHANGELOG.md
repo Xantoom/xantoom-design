@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- `xantoom-design contrast` reads blocks for every theme (`[data-theme]`, with `:not([data-theme^="…"])` or
+  `:not([data-theme="…"])` exclusions), and `--ground <name>` adds an app's own ground (`--<prefix>-<name>`) that
+  text and interface colours must read on.
+
 ## 0.4.0
 
 - `xantoom-design/react`: thin React components on native elements (Button, IconButton, Tooltip, Field, TextField,

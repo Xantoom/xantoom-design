@@ -1,6 +1,9 @@
-// `xantoom-design contrast <file.css> [--theme <app>] [--prefix <name>]`: checks an app's themes against WCAG 2.2 AA.
+// `xantoom-design contrast <file.css> [--theme <app>] [--prefix <name>] [--ground <name>]…`: checks an app's themes
+// against WCAG 2.2 AA.
 //
-// Every block whose selector names a theme (`[data-theme="id"]`) is one theme, on top of the `:root` block. Colours
+// Every block whose selector names a theme (`[data-theme="id"]`) is one theme, on top of the `:root` block and of the
+// blocks for every theme (`[data-theme]`, optionally `:not([data-theme^="prefix"])` or `:not([data-theme="id"])`).
+// `--ground <name>` adds an app's own ground (`--<prefix>-<name>`) that text and interface colours must read on. Colours
 // are read by role whatever the app calls its properties (`--vx-ink` or `--x-fg` is the text colour), then resolved:
 // `var()` within the file or to the design system's tokens (`--theme` adds an app theme's), `light-dark()` by the
 // block's `color-scheme`, hex, rgb() and oklch(). Text pairs need 4.5:1, interface colours 3:1. Exits 1 on a failure.
@@ -24,12 +27,12 @@ const ROLES = {
 } as const;
 type Role = keyof typeof ROLES;
 
-const GROUNDS: readonly Role[] = ['bg', 'surface', 'raised'];
-const PAIRS: readonly (readonly [Role, Role, number])[] = [
-	...(['fg', 'muted'] as const).flatMap((fg) => GROUNDS.map((bg) => [fg, bg, 4.5] as const)),
+const GROUNDS: readonly string[] = ['bg', 'surface', 'raised'];
+const pairs = (grounds: readonly string[]): (readonly [string, string, number])[] => [
+	...(['fg', 'muted'] as const).flatMap((fg) => grounds.map((bg) => [fg, bg, 4.5] as const)),
 	['onAccent', 'accent', 4.5],
 	...(['accent', 'danger', 'warning', 'success', 'info', 'muted'] as const).flatMap((fg) =>
-		GROUNDS.map((bg) => [fg, bg, 3] as const),
+		grounds.map((bg) => [fg, bg, 3] as const),
 	),
 ];
 
@@ -125,7 +128,10 @@ function resolve(value: string, own: Declarations, ds: Declarations, dark: boole
 }
 
 /** Checks every theme of a stylesheet. */
-export function checkContrast(css: string, { theme, prefix }: { theme?: string; prefix?: string } = {}): Result[] {
+export function checkContrast(
+	css: string,
+	{ theme, prefix, grounds = [] }: { theme?: string; prefix?: string; grounds?: readonly string[] } = {},
+): Result[] {
 	const source = css.replace(/\/\*[\s\S]*?\*\//g, '');
 	const blocks = [...source.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, selector = '', body = '']) => ({
 		selector: selector.trim(),
@@ -137,6 +143,15 @@ export function checkContrast(css: string, { theme, prefix }: { theme?: string; 
 			.map((s) => /^\s*\[data-theme=["']?([\w-]+)["']?\]\s*$/.exec(s)?.[1])
 			.filter((id): id is string => id !== undefined);
 	const isRoot = (selector: string): boolean => selector.split(',').some((s) => s.trim() === ':root');
+	/** `[data-theme]` alone, or with :not() exclusions: every theme, or every theme it does not exclude. */
+	const forAll = (selector: string, id: string): boolean =>
+		selector.split(',').some((part) => {
+			const m = /^\s*\[data-theme\]((?::not\(\[data-theme(\^?)=["']?([\w-]+)["']?\]\))*)\s*$/.exec(part);
+			if (!m) return false;
+			return [...(m[1] ?? '').matchAll(/:not\(\[data-theme(\^?)=["']?([\w-]+)["']?\]\)/g)].every(([, starts, value = '']) =>
+				starts ? !id.startsWith(value) : id !== value,
+			);
+		});
 
 	const names = blocks.flatMap((b) => b.declarations.map(([k]) => k)).filter((k) => k.startsWith('--'));
 	const counts = new Map<string, number>();
@@ -151,15 +166,16 @@ export function checkContrast(css: string, { theme, prefix }: { theme?: string; 
 	return themes.flatMap((id) => {
 		const decls: Declarations = new Map();
 		for (const block of blocks)
-			if (isRoot(block.selector) || idsOf(block.selector).includes(id))
+			if (isRoot(block.selector) || forAll(block.selector, id) || idsOf(block.selector).includes(id))
 				for (const [k, v] of block.declarations) decls.set(k, v);
 		const dark = /\bdark\b/.test(decls.get('color-scheme') ?? '') && !/\blight\b/.test(decls.get('color-scheme') ?? '');
-		const colour = (role: Role): { name: string; color: Color } | undefined => {
+		const colour = (role: string): { name: string; color: Color } | undefined => {
 			// The app's own names first, then design-system names it sets, then the design system's values.
+			const aliases: readonly string[] = role in ROLES ? ROLES[role as Role] : [role];
 			const candidates = [
-				...ROLES[role].map((alias) => [`--${own}-${alias}`, decls] as const),
-				...ROLES[role].map((alias) => [`--x-${alias}`, decls] as const),
-				...ROLES[role].map((alias) => [`--x-${alias}`, ds] as const),
+				...aliases.map((alias) => [`--${own}-${alias}`, decls] as const),
+				...aliases.map((alias) => [`--x-${alias}`, decls] as const),
+				...aliases.map((alias) => [`--x-${alias}`, ds] as const),
 			];
 			for (const [name, from] of candidates) {
 				const raw = from.get(name);
@@ -168,7 +184,7 @@ export function checkContrast(css: string, { theme, prefix }: { theme?: string; 
 			}
 			return undefined;
 		};
-		return PAIRS.flatMap(([fgRole, bgRole, min]) => {
+		return pairs([...GROUNDS, ...grounds]).flatMap(([fgRole, bgRole, min]) => {
 			const [fg, bg] = [colour(fgRole), colour(bgRole)];
 			if (!fg || !bg) return [];
 			const ratio = contrast(fg.color, bg.color);
@@ -178,16 +194,17 @@ export function checkContrast(css: string, { theme, prefix }: { theme?: string; 
 }
 
 export async function main(argv: readonly string[]): Promise<number> {
-	const file = argv.find((a, i) => !a.startsWith('--') && !['--theme', '--prefix'].includes(argv[i - 1] ?? ''));
+	const file = argv.find((a, i) => !a.startsWith('--') && !['--theme', '--prefix', '--ground'].includes(argv[i - 1] ?? ''));
 	if (!file) {
-		console.error('usage: xantoom-design contrast <file.css> [--theme <app>] [--prefix <name>]');
+		console.error('usage: xantoom-design contrast <file.css> [--theme <app>] [--prefix <name>] [--ground <name>]…');
 		return 2;
 	}
 	const option = (name: string): string | undefined => {
 		const i = argv.indexOf(name);
 		return i < 0 ? undefined : argv[i + 1];
 	};
-	const results = checkContrast(await Bun.file(file).text(), { theme: option('--theme'), prefix: option('--prefix') });
+	const grounds = argv.flatMap((a, i) => (argv[i - 1] === '--ground' ? [a] : []));
+	const results = checkContrast(await Bun.file(file).text(), { theme: option('--theme'), prefix: option('--prefix'), grounds });
 	const failures = results.filter((r) => !r.ok);
 	for (const r of failures)
 		console.log(`✗ ${r.theme}: ${r.fg} on ${r.bg} is ${r.ratio.toFixed(2)}:1, needs ${r.min}:1`);
