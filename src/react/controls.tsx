@@ -1,4 +1,4 @@
-import { Field, type FieldProps } from './field';
+import { Field, type ControlProps, type FieldProps } from './field';
 import {
 	type InputHTMLAttributes,
 	type KeyboardEvent,
@@ -22,22 +22,27 @@ export function Switch({
 	className,
 	...input
 }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'checked' | 'onChange' | 'role'> & {
-	label: ReactNode;
+	/** Without it, the bare switch: named by `aria-label`, or by a SettingRow's label through its `id`. */
+	label?: ReactNode;
 	checked: boolean;
 	onChange: (checked: boolean) => void;
 }): ReactElement {
+	const control = (
+		<input
+			{...input}
+			type="checkbox"
+			// `switch` gives the native switch semantics where it exists (Safari); the role covers the rest.
+			{...({ switch: '' } as object)}
+			role="switch"
+			className={label === undefined && className ? `x-switch ${className}` : 'x-switch'}
+			checked={checked}
+			onChange={(event) => onChange(event.currentTarget.checked)}
+		/>
+	);
+	if (label === undefined) return control;
 	return (
 		<label className={className ? `x-check ${className}` : 'x-check'}>
-			<input
-				{...input}
-				type="checkbox"
-				// `switch` gives the native switch semantics where it exists (Safari); the role covers the rest.
-				{...({ switch: '' } as object)}
-				role="switch"
-				className="x-switch"
-				checked={checked}
-				onChange={(event) => onChange(event.currentTarget.checked)}
-			/>
+			{control}
 			{label}
 		</label>
 	);
@@ -54,7 +59,12 @@ function separators(locale?: string): { decimal: string; group: string } {
 
 const decimalsOf = (step: number): number => (String(step).split('.')[1] ?? '').length;
 
-export interface NumberFieldProps extends Pick<FieldProps, 'label' | 'hint' | 'error' | 'required' | 'className'> {
+export interface NumberFieldProps extends Partial<Pick<FieldProps, 'label' | 'hint' | 'error' | 'required' | 'className'>> {
+	/** Without `label`, the bare control: named by these (a SettingRow passes `id` and `aria-describedby`). */
+	id?: string;
+	'aria-label'?: string;
+	'aria-labelledby'?: string;
+	'aria-describedby'?: string;
 	value: number;
 	onChange: (value: number) => void;
 	min?: number;
@@ -100,6 +110,7 @@ function Spin({
 	read,
 	decimal,
 	digits = decimalsOf(step),
+	...named
 }: SpinProps): ReactElement {
 	const [text, setText] = useState<string | null>(null);
 	const [scrubbing, setScrubbing] = useState(false);
@@ -154,11 +165,9 @@ function Spin({
 	};
 
 	const shown = text ?? (Number.isFinite(value) ? show(value) : '');
-	return (
-		<Field label={label} hint={hint} error={error} required={required} className={className}>
-			{(control) => (
+	const body = (control: Partial<ControlProps> & typeof named): ReactElement => (
 				// data-x-ready: React drives it, extras.js `numbers()` leaves it alone.
-				<div className="x-number" data-x-ready="" data-scrubbing={scrubbing ? '' : undefined}>
+				<div className={label === undefined && className ? `x-number ${className}` : 'x-number'} data-x-ready="" data-scrubbing={scrubbing ? '' : undefined}>
 					<span className="x-number-scrub" aria-hidden="true" onPointerDown={press} onPointerMove={move} onPointerUp={release} onPointerCancel={release}>
 						<svg {...ICON}>
 							<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />
@@ -188,7 +197,11 @@ function Spin({
 						<button type="button" tabIndex={-1} data-step="down" disabled={disabled || value <= min} onClick={() => set(value - step)} />
 					</span>
 				</div>
-			)}
+	);
+	if (label === undefined) return body(named);
+	return (
+		<Field label={label} hint={hint} error={error} required={required} className={className}>
+			{body}
 		</Field>
 	);
 }

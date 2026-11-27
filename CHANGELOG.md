@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3
+
+- React `NumberField`, `DurationField` and `Switch` work without `label`: the bare control, named by `id`,
+  `aria-label`, `aria-labelledby` or `aria-describedby`, so a SettingRow can hold them.
+
 ## 0.7.2
 
 - A field label with an icon before its words (`<label class="x-label"><svg>…</svg>Dark theme</label>`) keeps both

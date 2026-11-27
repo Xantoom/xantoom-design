@@ -2,11 +2,17 @@ import { type FieldProps } from './field';
 import { type InputHTMLAttributes, type ReactElement, type ReactNode, type Ref } from 'react';
 /** On or off, applied at once (a setting): the native checkbox drawn as a switch, its label beside it. */
 export declare function Switch({ label, checked, onChange, className, ...input }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'checked' | 'onChange' | 'role'> & {
-    label: ReactNode;
+    /** Without it, the bare switch: named by `aria-label`, or by a SettingRow's label through its `id`. */
+    label?: ReactNode;
     checked: boolean;
     onChange: (checked: boolean) => void;
 }): ReactElement;
-export interface NumberFieldProps extends Pick<FieldProps, 'label' | 'hint' | 'error' | 'required' | 'className'> {
+export interface NumberFieldProps extends Partial<Pick<FieldProps, 'label' | 'hint' | 'error' | 'required' | 'className'>> {
+    /** Without `label`, the bare control: named by these (a SettingRow passes `id` and `aria-describedby`). */
+    id?: string;
+    'aria-label'?: string;
+    'aria-labelledby'?: string;
+    'aria-describedby'?: string;
     value: number;
     onChange: (value: number) => void;
     min?: number;

@@ -79,3 +79,15 @@ describe('avatar', () => {
 		expect(html(<Avatar name="Mila Arnaud" />)).toContain('role="img" aria-label="Mila Arnaud"');
 	});
 });
+
+describe('bare controls', () => {
+	test('a number and a switch without a label render only the control, named by what they are given', async () => {
+		const { NumberField, Switch } = await import('../src/react');
+		const number = html(<NumberField id="keep" aria-describedby="keep-d" value={30} onChange={noop} min={1} max={365} unit="days" className="w-44" />);
+		expect(number.startsWith('<div class="x-number w-44"')).toBe(true);
+		expect(number).toContain('id="keep" aria-describedby="keep-d"');
+		expect(number).not.toContain('x-field');
+		expect(html(<Switch aria-label="Chat" checked onChange={noop} />)).toMatch(/^<input aria-label="Chat" type="checkbox"[^>]* role="switch" class="x-switch" checked=""\/>$/);
+		expect(html(<Switch label="Chat" checked onChange={noop} />)).toContain('<label class="x-check">');
+	});
+});
