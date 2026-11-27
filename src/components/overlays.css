@@ -301,7 +301,7 @@
 	}
 
 	/* Two-line items: the row limit counts their height, from the same sizes that draw them (padding, two lines). */
-	.x-menu:has(> & > .x-menu-text > small) {
+	.x-menu:has(.x-menu-text > small) {
 		--_row: max(
 			var(--x-control) - 0.25rem,
 			2 * var(--x-space-1-5) + var(--x-space-0-5) + (var(--x-text-sm) + var(--x-text-xs)) * var(--x-leading)
@@ -388,6 +388,27 @@
 		display: block;
 		opacity: 0.72;
 		font-size: inherit;
+	}
+
+	/* A picture above the text (data-tip-img): an icon or a flag, whole; a cover (data-tip-poster): 3:4, filled. */
+	&:has(> img) {
+		text-align: center;
+	}
+
+	& > img {
+		display: block;
+		block-size: 3.5rem;
+		inline-size: auto;
+		max-inline-size: 100%;
+		margin: 0 auto var(--x-space-1-5);
+		object-fit: contain;
+	}
+
+	& > img[data-poster] {
+		block-size: 10rem;
+		aspect-ratio: 3 / 4;
+		border-radius: calc(var(--x-radius-sm) / 2);
+		object-fit: cover;
 	}
 
 	@media (forced-colors: active) {

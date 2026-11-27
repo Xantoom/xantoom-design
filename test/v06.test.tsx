@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Avatar, ColorField, Combobox, DurationField, Select, SettingRow, Settings, Tooltip, hueOf } from '../src/react';
+import { Avatar, ColorField, Combobox, DurationField, SettingRow, Settings, Tooltip, hueOf } from '../src/react';
 
 const html = (node: React.ReactElement): string => renderToStaticMarkup(node);
 const noop = (): void => undefined;
@@ -27,7 +27,7 @@ describe('settings', () => {
 		const [, heading] = /<section class="x-settings" aria-labelledby="([^"]+)"><h3 id="\1">Recording<\/h3>/.exec(out) ?? [];
 		expect(heading).toBeDefined();
 		const id = /<input[^>]* id="([^"]+)"/.exec(out)?.[1];
-		expect(out).toContain(`<label for="${id}">Chat</label><small id="${id}-d">`);
+		expect(out).toContain(`<label for="${id}" id="${id}-label">Chat</label><small id="${id}-d">`);
 		expect(out).toContain(`aria-describedby="${id}-d"`);
 	});
 });
@@ -37,11 +37,6 @@ describe('pickers', () => {
 		{ value: 'place', label: 'Lieu' },
 		{ value: 'event', label: 'Événement', detail: '12 elements' },
 	] as const;
-
-	test('a select is the native element, its options in order', () => {
-		const out = html(<Select label="Kind" value="event" onChange={noop} options={options} />);
-		expect(out).toMatch(/<select[^>]* class="x-select"><option value="place">Lieu<\/option><option value="event" selected="">Événement<\/option><\/select>/);
-	});
 
 	test('a combobox is a field with the combobox role, tied to a listbox popover', () => {
 		const out = html(<Combobox label="Kind" value="event" onChange={noop} options={options} empty="None" />);

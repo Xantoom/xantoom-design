@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.0
+
+- Tooltip pictures: `data-tip-img` (a picture above the text, whole) and `data-tip-poster` (a 3:4 cover); React
+  `Tooltip` takes `img` and `poster`. The tooltip is placed again once the picture has its size.
+- Tooltips on touch: a tap on anything but a control shows the tooltip, a second tap or a tap elsewhere hides it. It
+  also hides when the window loses focus.
+- React `Select` is now a listbox of its own, the same in every browser: options with an icon or a picture, a second
+  line, group headings, a lock and its reason in a tooltip, their own style; typeahead, Home, End, Enter, Space or
+  Tab to pick; a search from 12 options; `variant` (`field`, `inline`, `ghost`), `size` (`sm`, `md`, `lg`), `icon`,
+  `bare`, `name`. Without `label` it takes `aria-label`, `aria-labelledby` or a SettingRow's `id`. Breaking: it no
+  longer renders a native `<select>` (plain HTML keeps `x-select` on one).
+- Listbox options (Select, Combobox): `aria-selected` marks the choice with a check, `data-active` the active option;
+  the pointer moves the active option. A Combobox now checks its chosen option.
+- Field and SettingRow labels have an id (`<control id>-label`), so a control can be read as "label, value".
+- New icon: `--x-icon-lock`.
+- Budgets: the script 4.5 KB, the React components 10 KB (brotli).
+
 ## 0.6.1
 
 - Skill: a rule against local copies. An app wraps a design-system component to adapt its props, never restyles or

@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.6.1
+  version: 0.7.0
 ---
 
 # Xantoom design system
@@ -14,7 +14,7 @@ next from its ground, type, shapes, motion and gradient fill, while its colour a
 
 The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pure CSS (`dist/xantoom.css`, about
 10 KB brotli), one theme file per app (`dist/themes/<app>.css`), DTCG tokens (`tokens/`) and an optional script
-(`dist/xantoom.js`, about 4 KB) for what CSS cannot do alone, plus the theme head script and the apps' logos
+(`dist/xantoom.js`, about 4.5 KB) for what CSS cannot do alone, plus the theme head script and the apps' logos
 (`xantoom-design/brand`). What few pages need is apart: `components/extras.css` (command palette, scrubber, error
 pages, key figures) and `extras.js` (contents that follow the reading, number fields without React).
 
@@ -76,7 +76,7 @@ The CSS goes in the project; this skill stays on the machine (`bunx github:Xanto
 updates it). A project never holds a copy of the skill.
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.6.1
+bun add github:Xantoom/xantoom-design#v0.7.0
 ```
 
 ```css

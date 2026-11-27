@@ -9,5 +9,9 @@ export function toast(
 ): { dismiss(): void };
 /** Wires every component under `root`, and `root` itself (idempotent: call it again after inserting content). */
 export function enhance(root?: ParentNode): void;
-/** Wires `data-tip` tooltips (and `data-tip-sub`, a second line) for the document, in every browser; `enhance()` calls it. */
+/**
+ * Wires `data-tip` tooltips for the document, in every browser; `enhance()` calls it. `data-tip-sub` adds a second line,
+ * `data-tip-img` a picture and `data-tip-poster` a 3:4 cover above the text. On touch, a tap on anything but a control
+ * shows the tooltip.
+ */
 export function tooltips(root?: ParentNode): void;

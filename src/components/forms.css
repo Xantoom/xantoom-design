@@ -855,23 +855,195 @@ textarea.x-input {
 	}
 }
 
-.x-menu[role="listbox"] {
-	& > [role="option"] {
-		cursor: pointer;
+/*
+ * Select with a list of its own (xantoom-design/react `Select`): a button showing the choice, a listbox in a popover.
+ * <button class="x-select" aria-haspopup="listbox" popovertarget="l" data-variant="inline|ghost" data-size="sm|lg">
+ *   <span class="x-select-value">English</span></button>
+ * <div class="x-menu" id="l" popover><div role="listbox"><div role="option" aria-selected="true">English</div></div></div>
+ */
+button.x-select {
+	display: flex;
+	align-items: center;
+	gap: var(--x-space-2);
+	padding-block: 0;
+	padding-inline-end: var(--x-space-2);
+	background-image: none;
+	text-align: start;
 
-		&[aria-selected="true"] {
-			background-color: var(--x-hover);
-		}
+	& > svg {
+		flex: none;
+		inline-size: 1rem;
+		block-size: 1rem;
+		color: var(--x-fg-muted);
+	}
 
-		/* The typed part of each option, so the eye finds why it matched. */
-		& mark {
-			background: none;
-			color: inherit;
-			font-weight: var(--x-weight-bold);
+	&::after {
+		content: "";
+		flex: none;
+		inline-size: 1rem;
+		block-size: 1rem;
+		margin-inline-start: auto;
+		background-color: var(--x-fg-muted);
+		mask: var(--x-icon-chevron) no-repeat center / contain;
+		transition: rotate var(--x-duration-fast) var(--x-ease-out);
+	}
+
+	&[aria-expanded="true"] {
+		border-color: var(--x-accent);
+
+		&::after {
+			rotate: 180deg;
 		}
 	}
 
-	& > .x-menu-empty {
+	&[data-size="sm"] {
+		--x-control: calc(var(--x-size-control) - 0.5rem);
+		padding-inline-start: var(--x-space-2);
+	}
+
+	&[data-size="lg"] {
+		--x-control: calc(var(--x-size-control) + 0.5rem);
+	}
+
+	/* In a row of properties: framed only on hover and while open. */
+	&[data-variant="inline"] {
+		border-color: transparent;
+		background-color: transparent;
+
+		&:hover:not(:disabled) {
+			border-color: transparent;
+			background-color: var(--x-hover);
+		}
+
+		&[aria-expanded="true"] {
+			border-color: var(--x-accent);
+		}
+	}
+
+	/* In a toolbar or another control: muted text, no frame. */
+	&[data-variant="ghost"] {
+		inline-size: auto;
+		border-color: transparent;
+		background-color: transparent;
+		color: var(--x-fg-muted);
+
+		&:is(:hover:not(:disabled), [aria-expanded="true"]) {
+			border-color: transparent;
+			background-color: var(--x-hover);
+			color: var(--x-fg);
+		}
+	}
+
+	/* Only the chevron (the choice is read elsewhere): a square button. */
+	&[data-bare] {
+		justify-content: center;
+		inline-size: var(--x-control);
+		padding: 0;
+
+		& > .x-select-value {
+			display: none;
+		}
+
+		&::after {
+			margin: 0;
+		}
+	}
+}
+
+.x-select-value {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: var(--x-space-2);
+	min-inline-size: 0;
+
+	& > span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	& > :is(svg, img) {
+		flex: none;
+		inline-size: 1.125em;
+		block-size: 1.125em;
+		object-fit: contain;
+	}
+}
+
+/* The options of a listbox (Select, Combobox): the active one is lit, the chosen one checked. */
+.x-menu [role="option"] {
+	cursor: pointer;
+
+	/* The pointer moves the active option; a disabled one is never lit. */
+	&:hover:not([data-active]) {
+		background: none;
+	}
+
+	&[data-active] {
+		background-color: var(--x-hover);
+	}
+
+	&[aria-selected="true"] {
+		font-weight: var(--x-weight-medium);
+
+		&::after {
+			content: "";
+			flex: none;
+			inline-size: 1rem;
+			block-size: 1rem;
+			margin-inline-start: auto;
+			background-color: var(--x-accent);
+			mask: var(--x-icon-check) no-repeat center / contain;
+		}
+	}
+
+	/* Why it cannot be chosen is in its tooltip (data-tip); the lock says there is one. */
+	&[aria-disabled="true"] {
+		cursor: default;
+
+		&[data-tip]::after {
+			content: "";
+			flex: none;
+			inline-size: 0.875rem;
+			block-size: 0.875rem;
+			margin-inline-start: auto;
+			background-color: var(--x-fg-muted);
+			mask: var(--x-icon-lock) no-repeat center / contain;
+		}
+	}
+
+	& > img {
+		flex: none;
+		inline-size: 1.5rem;
+		block-size: 1.5rem;
+		border-radius: calc(var(--x-radius-sm) / 2);
+		object-fit: cover;
+	}
+
+	/* The typed part of each option, so the eye finds why it matched. */
+	& mark {
+		background: none;
+		color: inherit;
+		font-weight: var(--x-weight-bold);
+	}
+}
+
+.x-menu {
+	& [role="listbox"]:focus-visible {
+		outline: none;
+	}
+
+	/* The search of a long list stays on top as it scrolls. */
+	& > .x-input[type="search"] {
+		position: sticky;
+		z-index: 1;
+		inset-block-start: calc(-1 * var(--x-space-1));
+		margin-block-end: var(--x-space-1);
+		box-shadow: 0 calc(-1 * var(--x-space-1)) 0 var(--x-raised);
+	}
+
+	& .x-menu-empty {
 		margin: 0;
 		padding: var(--x-space-2);
 		color: var(--x-fg-muted);

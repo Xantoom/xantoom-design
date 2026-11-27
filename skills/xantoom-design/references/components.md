@@ -244,10 +244,13 @@ toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without t
 - A menu item with `aria-current` (a language, a sort order) gets a check at its end.
 - The command palette keeps focus in its search; arrow keys, Home and End move the active option
   (`aria-activedescendant`), Enter clicks it, and the first visible option becomes active after each input.
-- Tooltips: `data-tip` (and `data-tip-sub`, a quieter second line) on any element. One shared tooltip shows on mouse
-  hover (after 450 ms; at once on a neighbour) and keyboard focus, above its trigger or under it, and hides on Escape,
-  a press or a scroll. It names a trigger that has none and describes one whose name says something else
-  (`aria-description`). Touch screens never show it: never put needed information only there. The older
+- Tooltips: `data-tip` (and `data-tip-sub`, a quieter second line) on any element; `data-tip-img` puts a picture
+  above the text (an icon, a flag: whole, 3.5 rem high) and `data-tip-poster` a 3:4 cover (10 rem high). One shared
+  tooltip shows on mouse hover (after 450 ms; at once on a neighbour) and keyboard focus, above its trigger or under
+  it, and hides on Escape, a press, a scroll or when the window loses focus. It names a trigger that has none and
+  describes one whose name says something else (`aria-description`). On touch, a tap on anything but a control (a
+  link, a button, a field, a label, a switch, a slider, a tab) shows it, and a second tap or a tap elsewhere hides
+  it; a control does what it does instead, so never put needed information only there. The older
   `interestfor` + `popover="hint"` markup still works, in Chromium only.
 - Toasts are for supplemental news; keep their actions available elsewhere. During a modal, `toast()` moves the
   region into the modal (the page behind is inert), so a toast shows over it, clickable, and moves back when it
@@ -283,8 +286,8 @@ arrow buttons Windows draws.
 | --- | --- |
 | `<Button variant size block busy>` | `.x-button`; `busy` shows the spinner and blocks presses but keeps focus. `buttonProps()` gives a link the look |
 | `<IconButton label shortcut>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) and its shortcut. A toggle takes `aria-pressed`: pressed, it sits in and turns accent |
-| `<Tooltip content sub>` | `data-tip` (and `data-tip-sub`) on its child: the shared tooltip, in every browser |
-| `<Select label value onChange options>` | The native `<select class="x-select">` in a field: drawn by the design system where `base-select` exists, the platform's list elsewhere |
+| `<Tooltip content sub img poster>` | `data-tip` (and `data-tip-sub`, `-img`, `-poster`) on its child: the shared tooltip, in every browser |
+| `<Select value onChange options label? variant size icon bare search rows name>` | One choice from a list, the same in every browser: `button.x-select` (`aria-haspopup="listbox"`) and a listbox in a popover (top layer, so over a modal too). Options (`{ value, label, detail, icon, disabled, reason, group, style }`) take an icon or an `<img>`, a second line, a group heading (consecutive options of one `group`), a lock with `reason` in its tooltip, their own style (a font in its face). Arrows, Home, End and typing move; Enter, Space or Tab take the active option; Escape closes. `search: { label, empty }` adds a filter field from 12 options. `variant`: `field` (default), `inline` (framed on hover and while open, in a row of properties), `ghost` (muted, in a toolbar); `size`: `sm`, `md`, `lg`; `icon` before the value; `bare` shows only the chevron. With `label` it is a field; without, `aria-label`, `aria-labelledby` or a SettingRow's `id` names it. `name` submits it in a hidden input. Plain HTML keeps the native `<select class="x-select">` |
 | `<Combobox label value onChange options empty placeholder rows>` | A search picking one option (`{ value, label, detail }`) from a long list: typing filters (accents and case aside) and marks the match, the arrows move, Enter or Tab takes the active option, Escape closes. Focus stays in the field |
 | `<ColorField label value onChange labels>` | A button showing the colour, opening a picker: saturation and brightness on a plane (arrow keys too), hue on a bar, the hex code. `labels` names the three parts |
 | `<Settings title level>` with `<SettingRow label description>{(control) => …}</SettingRow>` | `x-settings`: the control gets the id and description it must carry |

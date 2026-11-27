@@ -13,7 +13,7 @@ One signature, one theme per app. The design language of every Xantoom web proje
   from 320 px to 8K, ultra-wide and square.
 - **Motion everywhere**, compositor-only, opt-in under `prefers-reduced-motion`, with entry and exit transitions on
   every overlay.
-- **Optional script** (about 4 KB): exit animations outside Chromium, tooltips in every browser, tab, menu and command
+- **Optional script** (about 4.5 KB): exit animations outside Chromium, tooltips in every browser, tab, menu and command
   palette keyboards, shortcuts written for the platform, toasts, and fallbacks for invoker commands and `closedby`.
   `theme.js` (0.4 KB) applies the system, light or dark choice before the first paint and drives the theme button.
 - **Extras** for few pages: `components/extras.css` (command palette, scrubber, error pages, key figures) and

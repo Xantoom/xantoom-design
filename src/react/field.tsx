@@ -29,7 +29,7 @@ export function Field({ label, hint, error, required, className, children }: Fie
 	const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
 	return (
 		<div className={className ? `x-field ${className}` : 'x-field'}>
-			<label className="x-label" htmlFor={id}>
+			<label className="x-label" htmlFor={id} id={`${id}-label`}>
 				{label}
 			</label>
 			{children({ id, 'aria-describedby': describedBy, 'aria-invalid': error ? true : undefined, required })}

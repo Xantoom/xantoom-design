@@ -1,4 +1,5 @@
-import { type ReactElement, type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { closeTopLayer, tooltips } from 'xantoom-design/js';
+import { type CSSProperties, type ReactElement, type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { Field, type FieldProps } from './field';
 import { Popover } from './popover';
 
@@ -7,36 +8,17 @@ type FieldText = Pick<FieldProps, 'label' | 'hint' | 'error' | 'required' | 'cla
 export interface Choice<T extends string> {
 	value: T;
 	label: string;
-	/** A second line under the label (Combobox). */
+	/** A second line under the label. */
 	detail?: string;
+	/** Before the label, in the list and on the button: an icon, or an <img> (a flag, a cover). */
+	icon?: ReactNode;
 	disabled?: boolean;
-}
-
-/**
- * One choice from a list: the native <select>, drawn by the design system where `appearance: base-select` exists
- * (Chromium) and left to the platform's own list elsewhere, which keeps it usable everywhere, keyboard included.
- */
-export function Select<T extends string>({
-	value,
-	onChange,
-	options,
-	name,
-	disabled,
-	...field
-}: FieldText & { value: T; onChange: (value: T) => void; options: readonly Choice<T>[]; name?: string; disabled?: boolean }): ReactElement {
-	return (
-		<Field {...field}>
-			{(control) => (
-				<select {...control} className="x-select" name={name} disabled={disabled} value={value} onChange={(event) => onChange(event.currentTarget.value as T)}>
-					{options.map((option) => (
-						<option key={option.value} value={option.value} disabled={option.disabled}>
-							{option.label}
-						</option>
-					))}
-				</select>
-			)}
-		</Field>
-	);
+	/** Why it is disabled: a lock, and this in its tooltip. */
+	reason?: string;
+	/** The heading it shows under (Select); options of one group follow each other. */
+	group?: string;
+	/** The label's own style, e.g. a font shown in that font. */
+	style?: CSSProperties;
 }
 
 /** Lower case without accents, so "eve" finds "Événement". */
@@ -59,6 +41,257 @@ function highlight(label: string, query: string): ReactNode {
 			<mark>{marks(start, end)}</mark>
 			{marks(end, plain.length)}
 		</span>
+	);
+}
+
+type Named = {
+	/** The button's id (a SettingRow's control id): its label is the element `${id}-label`. */
+	id?: string;
+	'aria-label'?: string;
+	'aria-labelledby'?: string;
+	'aria-describedby'?: string;
+	'aria-invalid'?: true;
+};
+
+export interface SelectProps<T extends string> extends Partial<FieldText>, Named {
+	value: T;
+	onChange: (value: T) => void;
+	options: readonly Choice<T>[];
+	/** `inline`: a value in a row of properties, framed on hover and while open. `ghost`: muted, in a toolbar. */
+	variant?: 'field' | 'inline' | 'ghost';
+	size?: 'sm' | 'md' | 'lg';
+	/** Before the choice on the button: what the select changes (a sort icon). */
+	icon?: ReactNode;
+	/** Only the chevron shows: the choice is read elsewhere. */
+	bare?: boolean;
+	/** A search over the list, once it holds 12 options or more: its label, and what shows when nothing matches. */
+	search?: { label: string; empty: ReactNode };
+	/** How many options show before the list scrolls. */
+	rows?: number;
+	/** Submitted with a form, in a hidden input. */
+	name?: string;
+	disabled?: boolean;
+}
+
+/**
+ * One choice from a list, drawn the same in every browser: a button showing the choice, a listbox in a popover (in the
+ * top layer, so over a modal too). Options take an icon or a picture, a second line, a group heading, a disabled
+ * state with its reason. The arrow keys, Home, End and typing move through the list; Enter, Space or Tab take the
+ * active option; Escape closes it. From 12 options, with `search`, a field filters the list.
+ * With `label`, it is a field (label, hint, error); without, `aria-label`, `aria-labelledby` or `id` names it.
+ */
+export function Select<T extends string>({ label, hint, error, required, className, ...props }: SelectProps<T>): ReactElement {
+	if (label === undefined) return <SelectButton {...props} className={className} />;
+	return (
+		<Field label={label} hint={hint} error={error} required={required} className={className}>
+			{({ required: _required, ...control }) => <SelectButton {...props} {...control} />}
+		</Field>
+	);
+}
+
+function SelectButton<T extends string>({
+	value,
+	onChange,
+	options,
+	variant = 'field',
+	size = 'md',
+	icon,
+	bare,
+	search,
+	rows = 8,
+	name,
+	disabled,
+	className,
+	...named
+}: Omit<SelectProps<T>, keyof FieldText | 'required'> & { className?: string }): ReactElement {
+	const id = useId();
+	const button = useRef<HTMLButtonElement>(null);
+	const panel = useRef<HTMLDivElement>(null);
+	const list = useRef<HTMLDivElement>(null);
+	const field = useRef<HTMLInputElement>(null);
+	const typed = useRef({ text: '', at: 0 });
+	const [open, setOpen] = useState(false);
+	const [query, setQuery] = useState('');
+	const [active, setActive] = useState<Choice<T>>();
+	const chosen = options.find((option) => option.value === value);
+	const searching = search !== undefined && options.length >= 12;
+	const shown = query ? options.filter((option) => fold(`${option.label} ${option.detail ?? ''}`).includes(fold(query))) : options;
+	const enabled = shown.filter((option) => !option.disabled);
+	const current = active && enabled.includes(active) ? active : enabled[0];
+	const optionId = (option: Choice<T>): string => `${id}-${options.indexOf(option)}`;
+	const self = named.id ?? `${id}-button`;
+	// The button reads "label, choice": its label (or its own aria-label), then the value.
+	const labelledBy = named['aria-labelledby'] ?? (named['aria-label'] ? self : `${self}-label`);
+
+	useEffect(() => tooltips(), []);
+	useEffect(() => {
+		if (open && current) document.getElementById(optionId(current))?.scrollIntoView({ block: 'nearest' });
+	});
+
+	const opening = (): void => {
+		if (panel.current && button.current) panel.current.style.minInlineSize = bare ? '' : `${button.current.offsetWidth}px`;
+	};
+	const pick = (option: Choice<T> | undefined): void => {
+		if (!option || option.disabled) return;
+		onChange(option.value);
+		if (panel.current) void closeTopLayer(panel.current);
+	};
+	const move = (to: number): void => {
+		const at = current ? enabled.indexOf(current) : -1;
+		setActive(enabled[Math.min(Math.max(to === Infinity ? enabled.length - 1 : to === -Infinity ? 0 : at + to, 0), enabled.length - 1)]);
+	};
+	// Typing a name's first letters goes to it; the same letter again goes to the next one.
+	const typeahead = (key: string): void => {
+		const now = Date.now();
+		const t = typed.current;
+		t.text = (now - t.at > 700 ? '' : t.text) + fold(key);
+		t.at = now;
+		const from = current ? enabled.indexOf(current) + (t.text.length === 1 ? 1 : 0) : 0;
+		const hit = [...enabled.slice(from), ...enabled.slice(0, from)].find((option) => fold(option.label).startsWith(t.text));
+		if (hit) setActive(hit);
+	};
+
+	const groups: [string | undefined, Choice<T>[]][] = [];
+	for (const option of shown) {
+		const last = groups.at(-1);
+		if (last && last[0] === option.group) last[1].push(option);
+		else groups.push([option.group, [option]]);
+	}
+	const row = (option: Choice<T>): ReactElement => {
+		const text = (
+			<span style={option.style}>{searching ? highlight(option.label, query) : option.label}</span>
+		);
+		return (
+			<div
+				key={option.value}
+				id={optionId(option)}
+				className="x-menu-item"
+				role="option"
+				aria-selected={option.value === value}
+				aria-disabled={option.disabled || undefined}
+				data-active={option === current ? '' : undefined}
+				data-tip={option.disabled ? option.reason : undefined}
+				onPointerMove={() => !option.disabled && setActive(option)}
+				onClick={() => pick(option)}
+			>
+				{option.icon}
+				{option.detail ? (
+					<span className="x-menu-text">
+						{text}
+						<small>{option.detail}</small>
+					</span>
+				) : (
+					text
+				)}
+			</div>
+		);
+	};
+
+	return (
+		<>
+			<button
+				ref={button}
+				type="button"
+				id={self}
+				className={className ? `x-select ${className}` : 'x-select'}
+				aria-label={named['aria-label']}
+				aria-labelledby={`${labelledBy} ${id}-value`}
+				aria-describedby={named['aria-describedby']}
+				aria-invalid={named['aria-invalid']}
+				aria-haspopup="listbox"
+				aria-expanded={open}
+				popovertarget={`${id}-panel`}
+				data-variant={variant === 'field' ? undefined : variant}
+				data-size={size === 'md' ? undefined : size}
+				data-bare={bare ? '' : undefined}
+				disabled={disabled}
+				onClick={opening}
+				onKeyDown={(event) => {
+					if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && !open) {
+						event.preventDefault();
+						opening();
+						panel.current?.showPopover({ source: button.current } as ShowPopoverOptions);
+					}
+				}}
+			>
+				{icon}
+				<span className="x-select-value" id={`${id}-value`}>
+					{chosen?.icon}
+					<span style={chosen?.style}>{chosen?.label}</span>
+				</span>
+			</button>
+			{name ? <input type="hidden" name={name} value={value} /> : null}
+			<div
+				ref={panel}
+				id={`${id}-panel`}
+				className="x-menu"
+				popover="auto"
+				style={{ '--rows': rows } as CSSProperties}
+				onToggle={(event) => {
+					const now = (event.nativeEvent as ToggleEvent).newState === 'open';
+					setOpen(now);
+					setQuery('');
+					if (now) {
+						setActive(chosen);
+						(field.current ?? list.current)?.focus();
+					}
+				}}
+				onKeyDown={(event) => {
+					const inList = event.target === list.current;
+					const keys: Record<string, () => void> = {
+						ArrowDown: () => move(1),
+						ArrowUp: () => move(-1),
+						Enter: () => pick(current),
+						...(inList ? { Home: () => move(-Infinity), End: () => move(Infinity), ' ': () => pick(current) } : {}),
+					};
+					if (event.key === 'Tab') pick(current);
+					else if (keys[event.key]) {
+						event.preventDefault();
+						keys[event.key]?.();
+					} else if (inList && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) typeahead(event.key);
+				}}
+			>
+				{searching ? (
+					<input
+						ref={field}
+						className="x-input"
+						type="search"
+						role="combobox"
+						aria-label={search.label}
+						aria-expanded={open}
+						aria-controls={`${id}-list`}
+						aria-autocomplete="list"
+						aria-activedescendant={current ? optionId(current) : undefined}
+						autoComplete="off"
+						spellCheck={false}
+						value={query}
+						onChange={(event) => setQuery(event.currentTarget.value)}
+					/>
+				) : null}
+				<div
+					ref={list}
+					id={`${id}-list`}
+					role="listbox"
+					tabIndex={-1}
+					aria-labelledby={labelledBy}
+					aria-activedescendant={!searching && current ? optionId(current) : undefined}
+				>
+					{shown.length === 0 ? <p className="x-menu-empty">{search?.empty}</p> : null}
+					{groups.map(([group, items], index) =>
+						group === undefined ? (
+							items.map(row)
+						) : (
+							<div key={`${group}-${index}`} role="group" aria-labelledby={`${id}-g${index}`}>
+								<div className="x-menu-label" id={`${id}-g${index}`}>
+									{group}
+								</div>
+								{items.map(row)}
+							</div>
+						),
+					)}
+				</div>
+			</div>
+		</>
 	);
 }
 
@@ -188,7 +421,8 @@ export function Combobox<T extends string>({
 								id={optionId(option)}
 								className="x-menu-item"
 								role="option"
-								aria-selected={option === current}
+								aria-selected={option.value === value}
+								data-active={option === current ? '' : undefined}
 								aria-disabled={option.disabled || undefined}
 								// Pressing an option must not take the focus from the field (which would close the list).
 								onPointerDown={(event) => event.preventDefault()}
@@ -374,7 +608,9 @@ export function SettingRow({
 	return (
 		<li>
 			<span className="x-setting-text">
-				<label htmlFor={id}>{label}</label>
+				<label htmlFor={id} id={`${id}-label`}>
+					{label}
+				</label>
 				{description ? <small id={`${id}-d`}>{description}</small> : null}
 			</span>
 			{children({ id, 'aria-describedby': description ? `${id}-d` : undefined })}

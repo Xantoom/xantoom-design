@@ -259,12 +259,22 @@ function tipLabel(element) {
 	else if (name !== text && !element.hasAttribute('aria-description')) element.setAttribute('aria-description', text);
 }
 
+// Touched, these show their tooltip; a control does what it does instead.
+const TAP = 'a[href], button, input, select, textarea, label, [role=button], [role=switch], [role=slider], [role=tab]';
+
 function showTip(host) {
 	clearTimeout(tipTimer);
 	tipHost = host;
 	tipLabel(host);
-	tip.replaceChildren(host.dataset.tip);
-	if (host.dataset.tipSub) tip.append(Object.assign(document.createElement('small'), { textContent: host.dataset.tipSub }));
+	const { tip: text, tipSub, tipImg, tipPoster } = host.dataset;
+	tip.replaceChildren(text);
+	if (tipSub) tip.append(Object.assign(document.createElement('small'), { textContent: tipSub }));
+	// A picture above the text (an icon, a flag) or a cover (a poster, 3:4); placed again once it has its size.
+	if (tipImg || tipPoster) {
+		const img = Object.assign(new Image(), { src: tipPoster ?? tipImg, alt: '', onload: () => tipHost === host && placeTip() });
+		img.toggleAttribute('data-poster', !!tipPoster);
+		tip.prepend(img);
+	}
 	// Over a modal or in full screen, the rest of the page is hidden: the tooltip goes where its trigger is.
 	const layer = host.closest('dialog:modal, :popover-open') ?? document.fullscreenElement ?? document.body;
 	if (tip.parentElement !== layer) {
@@ -272,7 +282,11 @@ function showTip(host) {
 		layer.append(tip);
 	}
 	tip.togglePopover(true);
-	const a = host.getBoundingClientRect();
+	placeTip();
+}
+
+function placeTip() {
+	const a = tipHost.getBoundingClientRect();
 	const r = tip.getBoundingClientRect();
 	const above = a.top - r.height - 6 >= 8;
 	Object.assign(tip.style, {
@@ -288,7 +302,11 @@ function hideTip() {
 	tip?.togglePopover(false);
 }
 
-/** Wires `data-tip` (and `data-tip-sub`, a second line) for the whole document; `enhance()` calls it. */
+/**
+ * Wires `data-tip` for the whole document (`enhance()` calls it): `data-tip-sub` adds a second line, `data-tip-img` a
+ * picture and `data-tip-poster` a cover above the text. Mouse hover and keyboard focus show it; on touch, a tap on
+ * anything but a control shows it and a second tap, or a tap elsewhere, hides it.
+ */
 export function tooltips(root = document) {
 	for (const element of within(root, '[data-tip]')) tipLabel(element);
 	if (tip) return;
@@ -307,14 +325,25 @@ export function tooltips(root = document) {
 	});
 	document.addEventListener('pointerout', (event) => {
 		const host = hostOf(event);
-		if (host && !host.contains(event.relatedTarget)) hideTip();
+		if (host && event.pointerType === 'mouse' && !host.contains(event.relatedTarget)) hideTip();
 	});
 	document.addEventListener('focusin', (event) => {
 		const host = hostOf(event);
 		if (host?.matches(':focus-visible')) showTip(host);
 	});
-	for (const type of ['focusout', 'pointerdown']) document.addEventListener(type, hideTip, true);
+	document.addEventListener('focusout', (event) => hostOf(event) === tipHost && hideTip());
+	document.addEventListener(
+		'pointerdown',
+		(event) => {
+			const host = hostOf(event);
+			const tap = host && host !== tipHost && event.pointerType !== 'mouse' && !event.target.closest(TAP);
+			hideTip();
+			if (tap) showTip(host);
+		},
+		true,
+	);
 	addEventListener('scroll', hideTip, { capture: true, passive: true });
+	addEventListener('blur', hideTip);
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') hideTip();
 	});

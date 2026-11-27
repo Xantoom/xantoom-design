@@ -51,10 +51,12 @@ const brotli = (file: string): number => brotliCompressSync(readFileSync(join(RO
 describe('budgets (brotli)', () => {
 	test('the stylesheet stays under 12 KB', () => expect(brotli('dist/xantoom.css')).toBeLessThan(12 * 1024));
 	test('the foundation stays under 4 KB', () => expect(brotli('dist/foundation.css')).toBeLessThan(4 * 1024));
-	test('the script stays under 4 KB', () => expect(brotli('dist/xantoom.js')).toBeLessThan(4 * 1024));
+	// 4.5 KB since 0.7: tooltip pictures and touch taps, so the apps keep no tooltip of their own.
+	test('the script stays under 4.5 KB', () => expect(brotli('dist/xantoom.js')).toBeLessThan(4.5 * 1024));
 	// Apps bundle only the components they import (one ES module, tree-shaken): this is the cost of all of them, so it
-	// grows with the catalogue (9 KB since 0.6 added Select, Combobox, ColorField, Settings and DurationField).
-	test('the React components stay under 9 KB', () => expect(brotli('dist/react.js')).toBeLessThan(9 * 1024));
+	// grows with the catalogue (9 KB since 0.6 added Combobox, ColorField, Settings and DurationField; 10 KB since 0.7
+	// made Select a listbox of its own, which replaces React Aria's in the apps).
+	test('the React components stay under 10 KB', () => expect(brotli('dist/react.js')).toBeLessThan(10 * 1024));
 	test('the extras stay under 2 KB, script and stylesheet', () => {
 		expect(brotli('dist/extras.js')).toBeLessThan(2 * 1024);
 		expect(brotli('dist/components/extras.css')).toBeLessThan(2 * 1024);
