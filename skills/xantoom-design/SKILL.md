@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.6.0
+  version: 0.6.1
 ---
 
 # Xantoom design system
@@ -59,6 +59,10 @@ pages, key figures) and `extras.js` (contents that follow the reading, number fi
 - **Favicons served right.** Link the icon with a content hash (`/favicon.svg?v=<8 hex of its SHA-256>`) and serve it
   with its type (`image/svg+xml`): without the type the browser ignores it and keeps another app's icon from the
   same port; without the hash it keeps an old one.
+- **No local copies.** An app never keeps its own version of a component the design system has (a tooltip, a
+  dropdown, a settings row, a number field). It may wrap one to adapt its props to the app's data, never to restyle
+  or re-implement it. When the component lacks something, propose the change for the design system instead of
+  forking it; when an app already holds a copy, replace it with the design system's at the next migration.
 - **Labels read as headings.** A label over its text (a term, a field's caption, a card's section) is the text's
   colour and bold, the text under it muted, close to it; groups stand further apart than a label from its text. Use
   `x-dl`, and `x-card-head` for a card's title row. No small uppercase grey labels above brighter text.
@@ -72,7 +76,7 @@ The CSS goes in the project; this skill stays on the machine (`bunx github:Xanto
 updates it). A project never holds a copy of the skill.
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.6.0
+bun add github:Xantoom/xantoom-design#v0.6.1
 ```
 
 ```css

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1
+
+- Skill: a rule against local copies. An app wraps a design-system component to adapt its props, never restyles or
+  re-implements it, and proposes what is missing for the design system.
+
 ## 0.6.0
 
 - Tooltips in every browser: `data-tip` (and `data-tip-sub`, a second line) on any element; `enhance()` shows one
