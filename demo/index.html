@@ -7,13 +7,21 @@
 		<meta name="theme-color" content="#ebebee" media="(prefers-color-scheme: light)">
 		<meta name="theme-color" content="#15161c" media="(prefers-color-scheme: dark)">
 		<title>Xantoom design system</title>
-		<script type="module">import { applyTheme } from '../dist/theme.js'; applyTheme();</script>
+		<!-- In an app, inline this file's contents: it must run before the first paint. -->
+		<script src="../dist/theme-head.js"></script>
 		<link rel="stylesheet" href="../dist/xantoom.css">
 		<link rel="stylesheet" href="../dist/themes/all.css">
 		<style>
 			@layer x, demo;
 
 			@layer demo {
+				/* A zone with its own colour (the app's three, contrast-tested like a theme). */
+				[data-x-accent="video"] {
+					--x-scope: light-dark(#2f5bff, #5c86ff);
+					--x-scope-ink: light-dark(#fff, #0a0d16);
+					--x-scope-text: light-dark(#2448e6, #8eabff);
+				}
+
 				body {
 					padding-block-end: var(--x-space-24);
 				}
@@ -77,7 +85,7 @@
 		</svg>
 		<div class="x-banner" data-tone="info" role="status" id="banner">
 			<svg aria-hidden="true"><use href="#i-info"/></svg>
-			<p>Version 0.3.0: options, search, chips, command palette, banner and more.</p>
+			<p>Version 0.5.0: number field, card heads, labelled text, alerts, toasts over modals and more.</p>
 			<button class="x-button" data-size="sm" type="button" command="show-modal" commandfor="palette">Try the palette</button>
 			<button class="x-banner-close" type="button" aria-label="Close" onclick="this.parentElement.remove()"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
 		</div>
@@ -87,7 +95,7 @@
 				<div class="x-cluster" data-gap="2">
 					<span class="x-tile" aria-hidden="true"></span>
 					<strong translate="no">Xantoom design system</strong>
-					<span class="x-badge" data-tone="accent">0.3.0</span>
+					<span class="x-badge" data-tone="accent">0.5.0</span>
 				</div>
 				<div class="x-cluster" data-gap="2">
 					<label class="x-visually-hidden" for="theme">Theme</label>
@@ -219,7 +227,18 @@
 							<label><input type="radio" name="view" checked>List</label>
 							<label><input type="radio" name="view">Grid</label>
 							<label><input type="radio" name="view">Board</label>
+							<label><input type="radio" name="view" disabled>Timeline</label>
 						</fieldset>
+						<div class="x-field">
+							<label class="x-label" for="quota">Warn under</label>
+							<div class="x-number" id="quota-box">
+								<span class="x-number-scrub" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg></span>
+								<input id="quota" type="text" inputmode="numeric" role="spinbutton" aria-valuemin="1" aria-valuemax="500" aria-valuenow="20" aria-describedby="quota-hint" value="20">
+								<span class="x-number-unit">GB</span>
+								<span class="x-number-steps" aria-hidden="true"><button type="button" tabindex="-1" data-step="up"></button><button type="button" tabindex="-1" data-step="down"></button></span>
+							</div>
+							<p class="x-hint" id="quota-hint">Between 1 and 500 GB. Drag the grip, or use the arrow keys.</p>
+						</div>
 						<div class="x-cluster">
 							<button class="x-button" data-variant="primary" type="submit">Save changes</button>
 						</div>
@@ -230,6 +249,17 @@
 			<section>
 				<h2>Content</h2>
 				<div class="x-grid">
+					<article class="x-card">
+						<header class="x-card-head">
+							<span class="x-card-mark">12</span>
+							<h3>Theme head script</h3>
+							<span class="x-badge" data-tone="accent">Recommended</span>
+						</header>
+						<dl class="x-dl">
+							<div><dt>Today</dt><dd>Each site applies the theme before the first paint and syncs the browser bar by hand.</dd></div>
+							<div><dt>Proposed</dt><dd>A short script to inline in the head, and a theme switch that keeps the bar in step.</dd></div>
+						</dl>
+					</article>
 					<article class="x-card" data-interactive>
 						<div class="x-cluster" data-gap="2">
 							<span class="x-avatar" data-shape="tile" translate="no">VX</span>
@@ -383,9 +413,23 @@
 						<hr class="x-menu-separator">
 						<button class="x-menu-item" type="button" role="menuitem" data-tone="danger">Delete…</button>
 					</div>
+					<button class="x-button" type="button" popovertarget="tracks">Subtitles</button>
+					<div class="x-menu" id="tracks" popover role="menu" aria-label="Subtitles" style="--rows: 4">
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="true"><span class="x-menu-text"><span>Français</span><small>Default · 312 lines</small></span><span data-detail>ASS</span></button>
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="false"><span class="x-menu-text"><span>English</span><small>298 lines</small></span><span data-detail>SRT</span></button>
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="false"><span class="x-menu-text"><span>English (SDH)</span><small>Hard of hearing · 340 lines</small></span><span data-detail>SRT</span></button>
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="false"><span class="x-menu-text"><span>Deutsch</span><small>301 lines</small></span><span data-detail>VTT</span></button>
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="false"><span class="x-menu-text"><span>Español</span><small>305 lines</small></span><span data-detail>SRT</span></button>
+						<button class="x-menu-item" type="button" role="menuitemradio" aria-checked="false">None</button>
+					</div>
 					<button class="x-button" type="button" popovertarget="pop">Details</button>
 					<div class="x-popover" id="pop" popover><p>An anchored panel that flips at the screen edges.</p></div>
 					<button class="x-button" type="button" command="show-modal" commandfor="sheet">Open a sheet</button>
+					<button class="x-button" data-variant="danger" type="button" command="show-modal" commandfor="drop">Delete a recording…</button>
+					<div class="x-cluster" data-gap="2" data-x-accent="video">
+						<button class="x-button" data-variant="primary" type="button">Export video</button>
+						<label class="x-check"><input type="checkbox" class="x-switch" switch role="switch" checked> Keep audio</label>
+					</div>
 					<span class="x-spinner" role="status" aria-label="Loading…"></span>
 				</div>
 				<progress class="x-progress" value="64" max="100" aria-label="Upload"></progress>
@@ -439,6 +483,18 @@
 			</form>
 		</dialog>
 
+		<dialog class="x-dialog" role="alertdialog" id="drop" aria-labelledby="drop-title" aria-describedby="drop-text" closedby="closerequest">
+			<header class="x-dialog-head" data-tone="danger">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+				<h1 id="drop-title">Delete this recording?</h1>
+				<p id="drop-text">“Northern coast, 26 November” and its 2.4 GB leave the disk for good.</p>
+			</header>
+			<form method="dialog" class="x-dialog-actions">
+				<button class="x-button" value="cancel">Cancel</button>
+				<button class="x-button" data-variant="danger" value="delete">Delete</button>
+			</form>
+		</dialog>
+
 		<dialog class="x-dialog" id="sheet" data-variant="sheet" aria-labelledby="sheet-title" closedby="any">
 			<h1 id="sheet-title">Filters</h1>
 			<button class="x-button x-dialog-close" data-variant="ghost" data-icon type="button" command="close" commandfor="sheet" aria-label="Close">
@@ -447,6 +503,7 @@
 			<div class="x-stack">
 				<label class="x-check"><input type="checkbox" class="x-checkbox" checked> Characters</label>
 				<label class="x-check"><input type="checkbox" class="x-checkbox"> Places</label>
+				<button class="x-button" type="button" id="sheet-save">Save these filters</button>
 			</div>
 		</dialog>
 
@@ -505,6 +562,30 @@
 				root.dir = event.target.value;
 			});
 			document.getElementById('all').indeterminate = true;
+			document.getElementById('sheet-save').addEventListener('click', () => {
+				toast('Filters saved.', { tone: 'success', timeout: 6000 });
+			});
+			// The number field's behaviour is the React NumberField's; this is a bare-bones version for the page.
+			const quota = document.getElementById('quota');
+			const setQuota = (n) => {
+				const v = Math.min(500, Math.max(1, Math.round(n)));
+				quota.value = String(v);
+				quota.setAttribute('aria-valuenow', String(v));
+				document.querySelector('#quota-box [data-step="up"]').disabled = v >= 500;
+				document.querySelector('#quota-box [data-step="down"]').disabled = v <= 1;
+			};
+			quota.addEventListener('keydown', (e) => {
+				const by = { ArrowUp: 1, ArrowDown: -1 }[e.key];
+				if (by) { e.preventDefault(); setQuota(Number(quota.value) + by * (e.shiftKey ? 10 : 1)); }
+			});
+			quota.addEventListener('change', () => setQuota(Number(quota.value) || 1));
+			for (const b of document.querySelectorAll('#quota-box [data-step]'))
+				b.addEventListener('click', () => setQuota(Number(quota.value) + (b.dataset.step === 'up' ? 1 : -1)));
+			const grip = document.querySelector('#quota-box .x-number-scrub');
+			let from = null;
+			grip.addEventListener('pointerdown', (e) => { grip.setPointerCapture(e.pointerId); from = [e.clientX, Number(quota.value)]; grip.parentElement.dataset.scrubbing = ''; });
+			grip.addEventListener('pointermove', (e) => { if (from) setQuota(from[1] + Math.trunc((e.clientX - from[0]) / 4)); });
+			grip.addEventListener('pointerup', () => { from = null; delete grip.parentElement.dataset.scrubbing; });
 			document.getElementById('toast-button').addEventListener('click', () => {
 				toast('Changes saved.', { tone: 'success', timeout: 6000 });
 			});

@@ -25,7 +25,7 @@ One signature, one theme per app. The design language of every Xantoom web proje
 ## Use it
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.4.2
+bun add github:Xantoom/xantoom-design#v0.5.0
 bunx xantoom-design sync
 ```
 

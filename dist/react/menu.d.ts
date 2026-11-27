@@ -9,18 +9,24 @@ export interface MenuTriggerProps {
  * A short list of actions or choices in a popover, anchored to its button: Escape, a click outside and a choice close
  * it, arrow keys, Home and End move through it (xantoom.js), and focus returns to the button.
  */
-export declare function Menu({ trigger, label, children, className, }: {
+export declare function Menu({ trigger, label, children, rows, className, }: {
     /** The button; spread the props on it. */
     trigger: (props: MenuTriggerProps) => ReactNode;
     /** The menu's accessible name. */
     label: string;
     children: ReactNode;
+    /** Shows this many items and half the next, then scrolls. */
+    rows?: number;
     /** Size only. Never a display (flex, grid): it would show the closed menu. */
     className?: string;
 }): ReactElement;
 export interface MenuItemProps {
     icon?: ReactNode;
     children: ReactNode;
+    /** A second line under the label, muted (a count, a note). */
+    description?: ReactNode;
+    /** A short value at the end (a format, a size). */
+    detail?: ReactNode;
     onSelect?: () => void;
     /** One choice among several: `true` marks it current (a check), `false` an other choice. */
     checked?: boolean;
@@ -34,7 +40,7 @@ export interface MenuItemProps {
     download?: boolean | string;
     disabled?: boolean;
 }
-export declare function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, target, download, disabled }: MenuItemProps): ReactElement;
+export declare function MenuItem({ icon, children, description, detail, onSelect, checked, tone, shortcut, href, target, download, disabled, }: MenuItemProps): ReactElement;
 export declare function MenuLabel({ children }: {
     children: ReactNode;
 }): ReactElement;

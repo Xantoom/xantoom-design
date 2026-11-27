@@ -1,6 +1,6 @@
 {
 	"name": "xantoom-design",
-	"version": "0.4.2",
+	"version": "0.5.0",
 	"description": "The Xantoom design system: tokens, pure-CSS components, motion and an agent skill, one theme per app.",
 	"license": "MIT",
 	"author": "Xantoom",
@@ -17,7 +17,8 @@
 		"skills",
 		"scripts/sync.ts",
 		"scripts/tokens.ts",
-		"scripts/contrast.ts"
+		"scripts/contrast.ts",
+		"scripts/migrate.ts"
 	],
 	"exports": {
 		".": "./dist/xantoom.css",
@@ -37,6 +38,11 @@
 			"types": "./dist/react/index.d.ts",
 			"default": "./dist/react.js"
 		},
+		"./brand": {
+			"types": "./src/brand.d.ts",
+			"default": "./dist/brand.js"
+		},
+		"./theme-head.js": "./dist/theme-head.js",
 		"./tailwind.css": "./src/tailwind.css",
 		"./tokens/*": "./tokens/*",
 		"./src/*": "./src/*",
@@ -49,7 +55,7 @@
 		"build": "bun scripts/build.ts",
 		"test": "bun test",
 		"lint": "oxlint scripts src test && tsc -p tsconfig.json --noEmit",
-		"check": "bun run build && bun run lint && bun test && git diff --exit-code -- dist src/tokens.css",
+		"check": "bun run build && bun run lint && bun test && git diff --exit-code -- dist src/tokens.css src/brand-data.js",
 		"demo": "bun demo/serve.ts"
 	},
 	"devDependencies": {

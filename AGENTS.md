@@ -22,7 +22,7 @@ them too.
 - Change a token in `tokens/`, never in `src/tokens.css` or `dist/`.
 - Every component change updates `references/components.md` and the demo. Every new rule for apps goes in the skill.
 - Keep to the tests' guards: logical properties, no `transition: all`, no raw colours in `src/`, `!important` only for
-  `hidden`, size budgets (CSS < 12 KB brotli, JS < 4 KB, theme < 0.5 KB).
+  `hidden`, size budgets (CSS < 12 KB brotli, JS < 4 KB, React < 7 KB, theme and head script < 0.5 KB).
 - Before using a newer CSS or HTML feature, check its coverage against
   [references/browsers.md](skills/xantoom-design/references/browsers.md) and give it a fallback that leaves the page
   usable.

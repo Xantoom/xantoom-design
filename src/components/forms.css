@@ -435,11 +435,158 @@ textarea.x-input {
 			outline: var(--x-ring);
 			outline-offset: -2px;
 		}
+
+		/* A choice that cannot be picked now: it stays in place, faded, and the arrow keys skip it. */
+		&:has(> input:disabled) {
+			opacity: 0.45;
+			cursor: not-allowed;
+
+			&:hover {
+				background-color: transparent;
+				color: var(--x-fg-muted);
+			}
+		}
 	}
 
 	&[data-icons] > label {
 		inline-size: calc(var(--x-control) - 0.5rem);
 		padding-inline: 0;
+	}
+}
+
+/*
+ * Number: typed freely, dragged with the grip, stepped with the arrows (Shift: ×10). One frame, the ring on the frame.
+ * <div class="x-number"><span class="x-number-scrub" aria-hidden="true"><svg>…</svg></span>
+ *   <input id="…" type="text" inputmode="decimal" role="spinbutton" aria-valuemin aria-valuemax aria-valuenow>
+ *   <span class="x-number-unit">GB</span>
+ *   <span class="x-number-steps" aria-hidden="true"><button type="button" tabindex="-1" data-step="up"></button>
+ *   <button type="button" tabindex="-1" data-step="down"></button></span></div>
+ * The behaviour (drag, keys, limits) is the React NumberField's.
+ */
+.x-number {
+	display: inline-flex;
+	align-items: stretch;
+	inline-size: 10rem;
+	max-inline-size: 100%;
+	min-block-size: var(--x-control);
+	border: 1px solid var(--x-control-border);
+	border-radius: var(--x-radius-md);
+	background-color: var(--x-raised);
+	color: var(--x-fg);
+	font-size: var(--x-text-sm);
+	transition: border-color var(--x-duration-fast) var(--x-ease-out);
+
+	&:hover:not(:focus-within, :has(:disabled)) {
+		border-color: var(--x-fg-muted);
+	}
+
+	&:has(> input:focus-visible) {
+		border-color: var(--x-accent);
+		outline: var(--x-ring);
+		outline-offset: 0;
+	}
+
+	&:has(> input:is(:user-invalid, [aria-invalid="true"])) {
+		border-color: var(--x-danger);
+	}
+
+	&:has(> input:disabled) {
+		opacity: 0.55;
+	}
+
+	/* On touch screens the arrows sit side by side, each a full target: the field widens to keep room for the value. */
+	@media (pointer: coarse) {
+		inline-size: calc(10rem + 1.5 * var(--x-control));
+		font-size: max(1rem, 1em);
+	}
+
+	& > input {
+		flex: 1;
+		min-inline-size: 0;
+		padding: 0 var(--x-space-1);
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		font-variant-numeric: tabular-nums;
+		text-align: end;
+		outline: none;
+	}
+}
+
+/* The grip: drag sideways to change the value, the pointer hidden in the move like a slider. */
+.x-number-scrub {
+	display: grid;
+	flex: none;
+	place-items: center;
+	inline-size: 2rem;
+	color: var(--x-fg-faint);
+	cursor: ew-resize;
+	touch-action: none;
+	transition: color var(--x-duration-fast) var(--x-ease-out);
+
+	& > svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+
+	&:hover,
+	.x-number[data-scrubbing] > & {
+		color: var(--x-accent);
+	}
+}
+
+.x-number-unit {
+	align-self: center;
+	padding-inline-end: var(--x-space-2);
+	color: var(--x-fg-faint);
+	white-space: nowrap;
+}
+
+/* Two small arrows stacked at the end (side by side on touch screens, each a full-size target). */
+.x-number-steps {
+	display: grid;
+	flex: none;
+	inline-size: 1.5rem;
+	overflow: hidden;
+	border-inline-start: 1px solid var(--x-line);
+	border-start-end-radius: calc(var(--x-radius-md) - 1px);
+	border-end-end-radius: calc(var(--x-radius-md) - 1px);
+
+	@media (pointer: coarse) {
+		grid-auto-flow: column;
+		inline-size: calc(2 * var(--x-control));
+	}
+
+	& > button {
+		display: grid;
+		place-items: center;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--x-fg-muted);
+
+		&::before {
+			content: "";
+			inline-size: 0.75rem;
+			block-size: 0.75rem;
+			background-color: currentcolor;
+			mask: var(--x-icon-chevron) no-repeat center / contain;
+		}
+
+		&[data-step="up"]::before {
+			rotate: 180deg;
+		}
+
+		&:hover:not(:disabled) {
+			background-color: var(--x-hover);
+			color: var(--x-fg);
+		}
+
+		&:disabled {
+			opacity: 0.35;
+			cursor: default;
+		}
 	}
 }
 

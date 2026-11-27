@@ -19,6 +19,7 @@ export function Menu({
 	trigger,
 	label,
 	children,
+	rows,
 	className,
 }: {
 	/** The button; spread the props on it. */
@@ -26,6 +27,8 @@ export function Menu({
 	/** The menu's accessible name. */
 	label: string;
 	children: ReactNode;
+	/** Shows this many items and half the next, then scrolls. */
+	rows?: number;
 	/** Size only. Never a display (flex, grid): it would show the closed menu. */
 	className?: string;
 }): ReactElement {
@@ -46,6 +49,7 @@ export function Menu({
 				popover="auto"
 				role="menu"
 				aria-label={label}
+				style={rows ? ({ '--rows': rows } as React.CSSProperties) : undefined}
 				onToggle={(event) => {
 					setOpen((event.nativeEvent as ToggleEvent).newState === 'open');
 				}}
@@ -61,6 +65,10 @@ export function Menu({
 export interface MenuItemProps {
 	icon?: ReactNode;
 	children: ReactNode;
+	/** A second line under the label, muted (a count, a note). */
+	description?: ReactNode;
+	/** A short value at the end (a format, a size). */
+	detail?: ReactNode;
 	onSelect?: () => void;
 	/** One choice among several: `true` marks it current (a check), `false` an other choice. */
 	checked?: boolean;
@@ -75,7 +83,20 @@ export interface MenuItemProps {
 	disabled?: boolean;
 }
 
-export function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, target, download, disabled }: MenuItemProps): ReactElement {
+export function MenuItem({
+	icon,
+	children,
+	description,
+	detail,
+	onSelect,
+	checked,
+	tone,
+	shortcut,
+	href,
+	target,
+	download,
+	disabled,
+}: MenuItemProps): ReactElement {
 	const menu = useContext(MenuContext);
 	const choose = () => {
 		if (menu) void closeTopLayer(menu);
@@ -84,7 +105,15 @@ export function MenuItem({ icon, children, onSelect, checked, tone, shortcut, hr
 	const content = (
 		<>
 			{icon}
-			<span className="x-truncate">{children}</span>
+			{description ? (
+				<span className="x-menu-text">
+					<span>{children}</span>
+					<small>{description}</small>
+				</span>
+			) : (
+				<span className="x-truncate">{children}</span>
+			)}
+			{detail ? <span data-detail="">{detail}</span> : null}
 			{shortcut ? <kbd className="x-kbd">{shortcut}</kbd> : null}
 		</>
 	);

@@ -192,7 +192,13 @@
 		inline-size: 1.125rem;
 		block-size: 1.125rem;
 
-		&:not([data-current]) {
+		/* Before themeCycle() runs, the icon follows the theme the head script applied, so the button is never empty. */
+		&:is(
+			.x-cycle:has(> [data-current]) > :not([data-current]),
+			:root:not([data-theme]) .x-cycle:not(:has(> [data-current])) > :not([data-v="system"]),
+			:root[data-theme="light"] .x-cycle:not(:has(> [data-current])) > :not([data-v="light"]),
+			:root[data-theme="dark"] .x-cycle:not(:has(> [data-current])) > :not([data-v="dark"])
+		) {
 			opacity: 0;
 			scale: 0.6;
 			rotate: -45deg;

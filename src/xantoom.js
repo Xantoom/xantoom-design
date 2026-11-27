@@ -1,7 +1,8 @@
 // Xantoom design system: the optional behaviour layer (no dependency).
 // The CSS works without it; this adds what HTML and CSS cannot do alone, or not yet in every browser:
-// animated exits outside Chromium, invoker commands and light dismiss where missing, tooltip semantics, tab, menu and
-// command palette keyboards, shortcuts written for the platform, and toasts. Call `enhance()` once the page is parsed,
+// animated exits outside Chromium, invoker commands and light dismiss where missing, a dialog's first focus, menus
+// placed under their button without anchor positioning, tooltip semantics, tab, menu and command palette keyboards,
+// shortcuts written for the platform, and toasts (shown over an open modal too). Call `enhance()` once the page is parsed,
 // and again on content inserted later.
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -54,9 +55,27 @@ export async function closeTopLayer(element, returnValue) {
 	else element.hidePopover();
 }
 
+/**
+ * Puts focus where typing starts: the `[autofocus]` element if there is one, else the first field, else the first
+ * action (in an alert, the safe one: the main action is last). The browser alone picks the first focusable element,
+ * often the close button.
+ */
+export function focusInitial(dialog) {
+	if (dialog.querySelector('[autofocus]')) return;
+	const field = dialog.querySelector('input:not([type="hidden"], [type="button"], :disabled), select:not(:disabled), textarea:not(:disabled)');
+	(field ?? dialog.querySelector('.x-dialog-actions :is(button, a[href]):not(:disabled)'))?.focus();
+}
+
 function dialogs(root) {
 	for (const dialog of within(root, 'dialog.x-dialog:not([data-x-ready])')) {
 		dialog.setAttribute('data-x-ready', '');
+		dialog.addEventListener('toggle', (event) => {
+			if (event.newState !== 'open' || !dialog.matches(':modal')) return;
+			focusInitial(dialog);
+			// Toasts already showing would sit behind the modal, inert: bring them into it.
+			const region = document.querySelector('.x-toaster');
+			if (region?.querySelector('.x-toast')) hostToaster(region);
+		});
 		// Esc and `request-close`: animate where the browser would close at once.
 		dialog.addEventListener('cancel', (event) => {
 			if (nativeExit() || dialog.getAttribute('closedby') === 'none') return;
@@ -106,6 +125,42 @@ function invokerCommands() {
 		else if (command === 'hide-popover') void closeTopLayer(target);
 		else if (command === 'toggle-popover') target.togglePopover({ source: button });
 	});
+}
+
+// --- Menus and popovers under their button where anchor positioning is missing ------------------------------------
+
+let anchors = false;
+function anchorFallback() {
+	if (anchors || CSS.supports('position-area', 'block-end')) return;
+	anchors = true;
+	const sourceOf = (panel, event) =>
+		event.source ?? document.querySelector(`[popovertarget="${CSS.escape(panel.id)}"], [commandfor="${CSS.escape(panel.id)}"]`);
+	const place = (panel, source) => {
+		const a = source.getBoundingClientRect();
+		const r = panel.getBoundingClientRect();
+		const gap = 4;
+		const edge = 8;
+		const below = a.bottom + gap + r.height <= innerHeight - edge || a.top - gap - r.height < edge;
+		const start = getComputedStyle(source).direction === 'rtl' ? a.right - r.width : a.left;
+		Object.assign(panel.style, {
+			inset: 'auto',
+			margin: '0',
+			top: `${Math.max(edge, below ? a.bottom + gap : a.top - gap - r.height)}px`,
+			left: `${Math.min(Math.max(edge, start), innerWidth - r.width - edge)}px`,
+		});
+	};
+	// Placed before it shows (no frame in the middle of the screen), then flipped once its size is known.
+	for (const type of ['beforetoggle', 'toggle'])
+		document.addEventListener(
+			type,
+			(event) => {
+				const panel = event.target;
+				if (event.newState !== 'open' || !panel.matches?.('.x-menu, .x-popover')) return;
+				const source = sourceOf(panel, event);
+				if (source) place(panel, source);
+			},
+			true,
+		);
 }
 
 // --- Tooltips (popover="hint" + interestfor) ------------------------------------------------------------------------
@@ -355,6 +410,24 @@ function closeIcon() {
 
 let lastFocus = null;
 
+/**
+ * While a modal is open the rest of the page is inert, so the toaster moves into the modal (on top, clickable) and
+ * back once it closes.
+ */
+function hostToaster(region) {
+	const modal = [...document.querySelectorAll('dialog:modal')].at(-1);
+	if (!modal || modal.contains(region)) return;
+	const home = [region.parentNode, region.nextSibling];
+	const move = (parent, next) => {
+		const shown = region.matches(':popover-open');
+		if (shown) region.hidePopover();
+		parent.insertBefore(region, next);
+		if (shown || region.querySelector('.x-toast')) region.showPopover();
+	};
+	move(modal, null);
+	modal.addEventListener('close', () => move(...home), { once: true });
+}
+
 async function remove(item, region) {
 	if (!item.isConnected || item.hasAttribute('data-closing')) return;
 	const hadFocus = item.contains(document.activeElement);
@@ -369,7 +442,7 @@ async function remove(item, region) {
 /**
  * Shows a toast in the page's `.x-toaster` region and announces it. Persistent unless `timeout` (ms) is given; the
  * timer pauses while the toast is hovered or focused. The close button's name comes from `closeLabel` or the
- * region's `data-close-label` (the design system holds no text of its own). Waits for an open modal to close.
+ * region's `data-close-label` (the design system holds no text of its own). Shows over an open modal too.
  */
 export function toast(message, { tone, timeout = 0, closeLabel } = {}) {
 	const region = document.querySelector('.x-toaster');
@@ -384,11 +457,7 @@ export function toast(message, { tone, timeout = 0, closeLabel } = {}) {
 	};
 	const show = () => {
 		if (dismissed) return;
-		const modal = document.querySelector('dialog:modal');
-		if (modal) {
-			modal.addEventListener('close', show, { once: true });
-			return;
-		}
+		hostToaster(region);
 		item = document.createElement('div');
 		item.className = 'x-toast';
 		if (tone) item.dataset.tone = tone;
@@ -447,6 +516,7 @@ export function enhance(root = document) {
 		});
 	}
 	invokerCommands();
+	anchorFallback();
 	dialogs(root);
 	hints(root);
 	tabs(root);

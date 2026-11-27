@@ -1,8 +1,20 @@
-import { closeTopLayer, enhance } from 'xantoom-design/js';
+import { closeTopLayer, enhance, focusInitial } from 'xantoom-design/js';
 import { CloseProvider } from './popover';
-import { type ReactElement, type ReactNode, type RefCallback, useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
+import {
+	type DialogHTMLAttributes,
+	type ReactElement,
+	type ReactNode,
+	type RefCallback,
+	useCallback,
+	useId,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 
-export interface DialogProps {
+type Passed = Omit<DialogHTMLAttributes<HTMLDialogElement>, 'open' | 'onClose' | 'title' | 'children' | 'className' | 'role'>;
+
+export interface DialogProps extends Passed {
 	open: boolean;
 	/** Escape, a click outside, a `<form method="dialog">` button or `open` turning false closed it. */
 	onClose: () => void;
@@ -13,8 +25,13 @@ export interface DialogProps {
 	/** A button in the corner, its accessible name. */
 	closeLabel?: string;
 	size?: 'lg';
-	/** A side sheet. */
-	variant?: 'sheet';
+	/** A side sheet, or an alert: a narrow question that needs an answer (role="alertdialog", no click outside). */
+	variant?: 'sheet' | 'alert';
+	/** An icon beside the title, in the tone's colour. */
+	icon?: ReactNode;
+	tone?: 'accent' | 'success' | 'warning' | 'danger' | 'info';
+	/** The sentence the dialog is about, under the title and announced with it. */
+	description?: ReactNode;
 	className?: string;
 }
 
@@ -23,22 +40,49 @@ export interface DialogProps {
  * returns focus to what opened it. A bottom sheet on phones. The content is rendered only while it is open (and
  * during its exit).
  */
-export function Dialog({ open, onClose, title, children, actions, closeLabel, size, variant, className }: DialogProps): ReactElement {
+export function Dialog({
+	open,
+	onClose,
+	title,
+	children,
+	actions,
+	closeLabel,
+	size,
+	variant,
+	icon,
+	tone,
+	description,
+	className,
+	...rest
+}: DialogProps): ReactElement {
 	const titleId = useId();
+	const descriptionId = useId();
 	const { ref, element, shown, closed } = useModal(open, onClose);
+	const alert = variant === 'alert';
 	return (
 		<dialog
+			{...rest}
 			ref={ref}
 			className={className ? `x-dialog ${className}` : 'x-dialog'}
+			role={alert ? 'alertdialog' : undefined}
 			aria-labelledby={titleId}
-			closedby="any"
+			aria-describedby={description ? descriptionId : rest['aria-describedby']}
+			closedby={rest.closedby ?? (alert ? 'closerequest' : 'any')}
 			data-size={size}
-			data-variant={variant}
+			data-variant={variant === 'sheet' ? variant : undefined}
 			onClose={closed}
 		>
 			{shown ? (
 				<CloseProvider element={element}>
-					<h1 id={titleId}>{title}</h1>
+					{icon || description ? (
+						<header className="x-dialog-head" data-tone={tone}>
+							{icon}
+							<h1 id={titleId}>{title}</h1>
+							{description ? <p id={descriptionId}>{description}</p> : null}
+						</header>
+					) : (
+						<h1 id={titleId}>{title}</h1>
+					)}
 					{closeLabel ? (
 						<form method="dialog">
 							<button className="x-button x-dialog-close" data-variant="ghost" data-icon="" aria-label={closeLabel}>
@@ -77,7 +121,10 @@ export function useModal(
 	useLayoutEffect(() => {
 		const dialog = node.current;
 		if (!dialog) return;
-		if (open && !dialog.open) dialog.showModal();
+		if (open && !dialog.open) {
+			dialog.showModal();
+			focusInitial(dialog);
+		}
 		else if (!open && dialog.open) void closeTopLayer(dialog);
 	}, [open, shown]);
 

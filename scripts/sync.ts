@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// `xantoom-design sync [--check]` (and `xantoom-design contrast`, see scripts/contrast.ts), run from a project root (or its postinstall): makes every coding agent aware of
+// `xantoom-design sync [--check]` (and `xantoom-design contrast` and `migrate`, see scripts/contrast.ts and migrate.ts), run from a project root (or its postinstall): makes every coding agent aware of
 // the design system. It copies the skill to .agents/skills/xantoom-design/ (the cross-agent location), links it from
 // .claude/skills/ (Claude Code), and adds a pointer to AGENTS.md and, when it exists, CLAUDE.md. With --check, it
 // changes nothing and exits 1 if anything is out of date (for CI).
@@ -10,6 +10,12 @@ import { argv, cwd, exit } from 'node:process';
 // `xantoom-design contrast …`: the theme contrast check (scripts/contrast.ts).
 if (argv[2] === 'contrast') {
 	const { main } = await import('./contrast.ts');
+	exit(await main(argv.slice(3)));
+}
+
+// `xantoom-design migrate …`: renames an app's colour and radius classes (scripts/migrate.ts).
+if (argv[2] === 'migrate') {
+	const { main } = await import('./migrate.ts');
 	exit(await main(argv.slice(3)));
 }
 

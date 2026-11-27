@@ -63,4 +63,29 @@ All logos share one grammar, so they read as a family:
 
 In the app: `bun add github:Xantoom/xantoom-design#vX.Y.Z`, `bunx xantoom-design sync`, add
 `"postinstall": "xantoom-design sync"`, then import `xantoom-design/css` and `xantoom-design/themes/<app>.css`. Set
-`<meta name="theme-color">` to `--x-bg` in each mode (`media="(prefers-color-scheme: dark)"`).
+`<meta name="theme-color">` to `--x-bg` in each mode (`media="(prefers-color-scheme: dark)"`), and inline
+`xantoom-design/theme-head.js` after them (see the theme switch in components.md).
+
+A site with a size budget imports `xantoom-design/foundation` and only the families it uses. What each one weighs
+(0.5.0):
+
+| File | Raw | gzip | brotli | Holds |
+| --- | --- | --- | --- | --- |
+| `foundation` | 10.5 KB | 3.5 KB | 3.1 KB | Tokens, reset, base, layout, motion, utilities, skip link |
+| `components/actions.css` | 3.6 KB | 1.2 KB | 1.0 KB | Button, button group, cycle |
+| `components/content.css` | 10.1 KB | 2.6 KB | 2.3 KB | Card, card head, dl, badge, avatar, kbd, callout, table, accordion, empty, stats, chip, flag |
+| `components/feedback.css` | 4.2 KB | 1.4 KB | 1.2 KB | Progress, spinner, skeleton, banner, scrubber |
+| `components/forms.css` | 11.8 KB | 2.8 KB | 2.5 KB | Field, input, select, checks, switch, options, number, search, drop zone |
+| `components/navigation.css` | 3.8 KB | 1.3 KB | 1.1 KB | Nav links, breadcrumb, pagination, tabs |
+| `components/overlays.css` | 9.6 KB | 2.6 KB | 2.2 KB | Dialog, sheet, alert, menu, popover, tooltip, command palette, toasts |
+| `xantoom.css` (all) | 54.3 KB | 11.3 KB | 10.0 KB | Everything |
+
+A Tailwind app also runs `@shadcn/lint` (or any lint that checks colours) with the bridge declared as its theme, or
+it rejects every design-system colour. In `.oxlintrc.json`:
+
+```json
+{ "settings": { "shadcn": { "ui": "@/ui", "themeImports": ["^xantoom-design/"] } } }
+```
+
+The same lint then flags classes that produce no style (a colour or radius the bridge does not define): fix each one.
+An app moving to the bridge from its own names follows [migrating.md](migrating.md).

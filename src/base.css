@@ -94,6 +94,21 @@
 	--x-tone: var(--x-info);
 }
 
+/*
+ * A zone with its own colour (an editor, a section): the app names it and gives three colours, contrast-tested like a
+ * theme's: [data-x-accent="video"] { --x-scope: …; --x-scope-ink: …; --x-scope-text: …; }
+ * --x-scope fills (primary buttons, checked controls), --x-scope-ink is the text on it, --x-scope-text colours text,
+ * links and focus rings (defaults to --x-scope). Everything that follows the accent inside the zone takes it.
+ */
+:where([data-x-accent]) {
+	--x-fill-1: var(--x-scope);
+	--x-fill-2: var(--x-scope);
+	--x-fill-3: var(--x-scope);
+	--x-fill: linear-gradient(var(--x-scope) 0 0);
+	--x-on-fill: var(--x-scope-ink);
+	--x-accent: var(--x-scope-text, var(--x-scope));
+}
+
 /* Scripts that need more room between lines, and CJK, which must not be letter-spaced. */
 :where(:lang(ar, fa, ur, ps, he, hi, mr, ne, bn, pa, gu, ta, te, kn, ml, si, th, lo, km, my, bo)) {
 	--x-leading: 1.75;

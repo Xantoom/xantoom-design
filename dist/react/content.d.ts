@@ -62,6 +62,8 @@ export interface Option<T extends string> {
     label: string;
     /** Shown instead of the label, which stays its accessible name. */
     icon?: ReactNode;
+    /** Cannot be picked now: shown faded, skipped by the arrow keys. */
+    disabled?: boolean;
 }
 /** One choice among a few that stay visible (a view, an alignment): radios joined into one control. */
 export declare function Options<T extends string>({ legend, name, value, options, onChange, className, }: {

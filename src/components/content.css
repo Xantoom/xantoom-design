@@ -1,4 +1,4 @@
-/* Content: card, badge, count, avatar, kbd, callout, table, accordion, empty state. */
+/* Content: card, card head, description list, badge, count, avatar, kbd, callout, table, accordion, empty state. */
 
 .x-card {
 	container-type: inline-size;
@@ -51,6 +51,84 @@
 
 	&:focus-visible {
 		outline: none;
+	}
+}
+
+/*
+ * A card's heading row: a mark (a number, an icon) centred on the title, then anything at the end (a badge, a menu).
+ * <header class="x-card-head"><span class="x-card-mark">12</span><h3>Title</h3><span class="x-badge">…</span></header>
+ * When the card is narrow, what follows the title moves under it rather than squeezing it.
+ */
+.x-card-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--x-space-2) var(--x-space-3);
+	min-inline-size: 0;
+
+	& > :is(h1, h2, h3, h4) {
+		flex: 1 1 12ch;
+		min-inline-size: 0;
+		font-size: var(--x-text-lg);
+	}
+}
+
+.x-card-mark {
+	display: grid;
+	flex: none;
+	place-items: center;
+	min-inline-size: 2rem;
+	block-size: 2rem;
+	padding-inline: var(--x-space-1-5);
+	border-radius: var(--x-radius-md);
+	background-color: var(--x-hover);
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-sm);
+	font-weight: var(--x-weight-bold);
+	font-variant-numeric: tabular-nums;
+
+	& > svg {
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
+	}
+}
+
+/*
+ * Labelled text: each term reads as a small heading, its text in the muted colour under it, tight to it; the groups
+ * stand apart. <dl class="x-dl"><div><dt>Today</dt><dd>…</dd></div>…</dl>
+ * data-layout="row": the term beside its text when the container is wide enough (settings summaries, metadata).
+ */
+.x-dl {
+	container-type: inline-size;
+	display: grid;
+	gap: var(--x-space-4);
+	margin: 0;
+
+	& > div {
+		display: grid;
+		gap: var(--x-space-1);
+	}
+
+	& dt {
+		color: var(--x-fg);
+		font-size: var(--x-text-sm);
+		font-weight: var(--x-weight-bold);
+	}
+
+	& dd {
+		margin: 0;
+		color: var(--x-fg-muted);
+	}
+
+	&[data-layout="row"] {
+		gap: var(--x-space-3);
+
+		@container (width >= 32rem) {
+			& > div {
+				grid-template-columns: minmax(8rem, 1fr) 3fr;
+				gap: var(--x-space-4);
+			}
+		}
 	}
 }
 

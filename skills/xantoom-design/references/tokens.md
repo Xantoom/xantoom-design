@@ -48,6 +48,26 @@ The source of truth is `tokens/*.tokens.json` (DTCG 2025.10). A colour's dark va
 The default stylesheet carries the `xantoom` theme. An app loads its own after it. To show several themes on one page
 (a picker, a preview), load `dist/themes/all.css` and set `data-x-theme="<app>"` on a container.
 
+## A colour per zone
+
+A part of an app with its own colour (an editor per media type, a section) sets `data-x-accent="<name>"` and, in the
+app's CSS, three colours for it. Everything inside that follows the accent takes them: primary buttons, switches,
+checked options, links, focus rings.
+
+```css
+@layer app {
+  [data-x-accent="video"] {
+    --x-scope: light-dark(#2f5bff, #5c86ff);       /* fills */
+    --x-scope-ink: light-dark(#fff, #0a0d16);      /* text on the fill, 4.5:1 */
+    --x-scope-text: light-dark(#2448e6, #8eabff);  /* accent text and rings, 4.5:1 on every surface */
+  }
+}
+```
+
+`--x-scope-ink` is required; `--x-scope-text` defaults to `--x-scope`. The zone's fill is flat (`--x-fill` becomes
+`linear-gradient(var(--x-scope) 0 0)`, never a bare colour: it is a background image). Test the colours with
+`xantoom-design contrast` like a theme's.
+
 ## Writing CSS with tokens
 
 ```css

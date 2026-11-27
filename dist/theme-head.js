@@ -1,0 +1,1 @@
+(()=>{(()=>{let e=null;try{e=localStorage.getItem("x-theme")}catch{}if(e!=="light"&&e!=="dark")return;document.documentElement.setAttribute("data-theme",e);let o=[...document.querySelectorAll('meta[name="theme-color"][media]')];for(let t of o)t.dataset.xColor=t.content;let c=o.find((t)=>t.media.includes(e))?.dataset.xColor;if(c)for(let t of o)t.content=c})();})();

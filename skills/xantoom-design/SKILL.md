@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.4.2
+  version: 0.5.0
 ---
 
 # Xantoom design system
@@ -13,8 +13,9 @@ Every Xantoom interface shares one signature and takes one theme. A user who kno
 next from its ground, type, shapes, motion and gradient fill, while its colour and a few knobs tell it apart.
 
 The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pure CSS (`dist/xantoom.css`, about
-7 KB brotli), one theme file per app (`dist/themes/<app>.css`), DTCG tokens (`tokens/`) and an optional script
-(`dist/xantoom.js`, about 3 KB) for what CSS cannot do alone.
+10 KB brotli), one theme file per app (`dist/themes/<app>.css`), DTCG tokens (`tokens/`) and an optional script
+(`dist/xantoom.js`, about 3.5 KB) for what CSS cannot do alone, plus the theme head script and the apps' logos
+(`xantoom-design/brand`).
 
 ## Before you write UI
 
@@ -56,6 +57,9 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
 - **Favicons served right.** Link the icon with a content hash (`/favicon.svg?v=<8 hex of its SHA-256>`) and serve it
   with its type (`image/svg+xml`): without the type the browser ignores it and keeps another app's icon from the
   same port; without the hash it keeps an old one.
+- **Labels read as headings.** A label over its text (a term, a field's caption, a card's section) is the text's
+  colour and bold, the text under it muted, close to it; groups stand further apart than a label from its text. Use
+  `x-dl`, and `x-card-head` for a card's title row. No small uppercase grey labels above brighter text.
 - **Theme contrast.** An app with its own themes runs `bunx xantoom-design contrast <themes.css> --theme <app>` in its
   tests or CI (`--prefix <app>` when it names some colours itself, `--ground <name>` for each ground of its own): text
   pairs reach 4.5:1 and interface colours 3:1 in every theme.
@@ -63,7 +67,7 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
 ## Adding the design system to a project
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.4.2
+bun add github:Xantoom/xantoom-design#v0.5.0
 bunx xantoom-design sync          # copies this skill into .agents/skills/, links .claude/skills/, adds pointers
 ```
 
@@ -132,4 +136,5 @@ project-specific UI in the project, written with the tokens.
 | Languages, RTL, CJK | [references/i18n.md](references/i18n.md) |
 | Screen sizes | [references/responsive.md](references/responsive.md) |
 | Browser support policy | [references/browsers.md](references/browsers.md) |
-| New app: theme, logo, registry | [references/new-app.md](references/new-app.md) |
+| New app: theme, logo, registry, CSS weights, lint | [references/new-app.md](references/new-app.md) |
+| Moving an existing app, and its pitfalls | [references/migrating.md](references/migrating.md) |

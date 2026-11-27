@@ -52,6 +52,11 @@
 		--_width: 48rem;
 	}
 
+	/* An alert: narrow, its question asked by the dialog itself (role="alertdialog"). */
+	&[role="alertdialog"] {
+		--_width: 26rem;
+	}
+
 	/* Scrolling inside the dialog never scrolls the page behind it. */
 	&:modal {
 		overscroll-behavior: contain;
@@ -318,6 +323,39 @@
 }
 
 /*
+ * A dialog's heading with an icon in its tone, and the sentence the dialog is about (aria-describedby):
+ * <header class="x-dialog-head" data-tone="danger"><svg aria-hidden>…</svg><h1 id="…">…</h1><p id="…">…</p></header>
+ */
+.x-dialog-head {
+	--_tone: var(--x-tone, var(--x-fg-muted));
+
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: var(--x-space-2) var(--x-space-3);
+	align-items: center;
+	margin-block-end: var(--x-space-5);
+
+	& > svg {
+		inline-size: 1.5rem;
+		block-size: 1.5rem;
+		color: var(--_tone);
+	}
+
+	& > :is(h1, h2) {
+		font-size: var(--x-text-lg);
+	}
+
+	& > p {
+		grid-column: 1 / -1;
+		color: var(--x-fg-muted);
+	}
+
+	& > svg ~ p {
+		grid-column: 2;
+	}
+}
+
+/*
  * Popover and menu: <button popovertarget="m">…</button><div class="x-menu" id="m" popover>…</div>
  * Anchored to their invoker where anchor positioning exists; centred by the browser elsewhere.
  */
@@ -330,6 +368,12 @@
 	border-radius: var(--x-radius-lg);
 	background-color: var(--x-raised);
 	box-shadow: var(--x-shadow-md);
+
+	/* --rows: N shows N items and half the next, so the list reads as one that scrolls. Unset, no limit. */
+	--_row: calc(var(--x-control) - 0.25rem);
+	max-block-size: calc(var(--_row) * (var(--rows) + 0.5) + 2 * var(--x-space-1));
+	overflow-y: auto;
+	overscroll-behavior: contain;
 
 	@media (prefers-reduced-motion: no-preference) {
 		scale: 0.97;
@@ -388,6 +432,45 @@
 		margin-inline-start: auto;
 	}
 
+	/* A label with a second line under it: <span class="x-menu-text"><span>English</span><small>298 lines</small></span> */
+	& > .x-menu-text {
+		display: grid;
+		flex: 1;
+		gap: var(--x-space-0-5);
+		min-inline-size: 0;
+
+		& > * {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		& > small {
+			color: var(--x-fg-faint);
+			font-size: var(--x-text-xs);
+			font-weight: var(--x-weight-regular);
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	&:has(> .x-menu-text > small) {
+		padding-block: var(--x-space-1-5);
+	}
+
+	/* Two-line items: the row limit counts their height. */
+	.x-menu:has(> & > .x-menu-text > small) {
+		--_row: 3.375rem;
+	}
+
+	/* A value at the end (a format, a count): <span data-detail>SRT</span> */
+	& > [data-detail] {
+		flex: none;
+		margin-inline-start: auto;
+		color: var(--x-fg-faint);
+		font-size: var(--x-text-xs);
+		font-weight: var(--x-weight-regular);
+	}
+
 	&:is(:hover, :focus-visible) {
 		background-color: var(--x-hover);
 		outline-offset: -2px;
@@ -415,6 +498,10 @@
 			background-color: var(--x-accent);
 			mask: var(--x-icon-check) no-repeat center / contain;
 		}
+	}
+
+	&:has(> [data-detail])::after {
+		margin-inline-start: 0;
 	}
 
 	&:is(:disabled, [aria-disabled="true"]) {

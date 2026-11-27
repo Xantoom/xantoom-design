@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.5.0
+
+- Toasts show during a modal: `toast()` moves the toaster into the open modal (the page behind is inert) and back
+  when it closes, instead of waiting for it to close.
+- Dialogs put focus on `[autofocus]`, else the first field, else the first action (`focusInitial()`, run by
+  `enhance()` and `useModal()`).
+- Alerts: `role="alertdialog"` is narrow, and `.x-dialog-head` sets an icon in its tone beside the title with the
+  sentence under it. React `Dialog` takes `variant="alert"`, `icon`, `tone` and `description`, and passes other
+  attributes through.
+- Menus: a second line (`.x-menu-text` with `<small>`) and a value at the end (`[data-detail]`); `--rows` limits the
+  height to N items and half the next. React `MenuItem` takes `description` and `detail`, `Menu` takes `rows`.
+- Menus and popovers open under their button where anchor positioning is missing (`enhance()`), instead of centred.
+- `x-options`: a disabled choice stays in place, faded; React `Option` takes `disabled`.
+- New `x-number`: a number typed freely, dragged sideways from its grip, stepped with the arrow keys or two small
+  arrows at its end. React `NumberField` drives it (limits, Shift ×10, Page Up and Down, Home and End, Intl format).
+- New React components: `Switch`, `SearchField` (shortcut key, clear button, Escape), `FilePicker` and `DropZone`,
+  `Brand`.
+- New `x-card-head` and `x-card-mark` (a card's title row, its mark centred on the title) and `x-dl` (labelled text:
+  bold term, muted text tight under it, groups apart; `data-layout="row"`).
+- `data-x-accent` zones: three colours (`--x-scope`, `--x-scope-ink`, `--x-scope-text`) recolour the fill and the
+  accent inside a part of an app.
+- Theme: `xantoom-design/theme-head.js`, a classic script to inline in `<head>`; `applyTheme()` points the
+  `theme-color` metas at the chosen scheme; `x-cycle` shows the right icon before `themeCycle()` runs.
+- `xantoom-design/brand`: `brand(name, { size, label, id })` returns an app's logo as SVG with unique ids.
+- `xantoom-design migrate <dir> --map old=new --radius old=new [--dry-run]` renames an app's colour and radius
+  classes and variables for the Tailwind bridge.
+- Docs: what each CSS family weighs and the lint's `themeImports` (new-app.md), the migration recipe and its pitfalls
+  (migrating.md), zone colours (tokens.md).
+
 ## 0.4.2
 
 - React: `Popover` (a panel anchored to its button, controlled or not, anchored even when opened from code) and

@@ -32,9 +32,23 @@ name and message comes from the app's translations. `demo/index.html` shows each
 `data-size="sm|lg"`, `data-block` (full width). A link that looks like a button is still an `<a href>`.
 
 `x-cycle` is one button for a choice of two or three states: it shows the current one, a press moves to the next.
-Never a row of buttons or a dropdown for the theme. `xantoom-design/theme.js` makes it the theme switch:
-`applyTheme()` in `<head>` before the first paint, then `themeCycle(button)`; the button's `data-label-system`,
-`data-label-light` and `data-label-dark` are its accessible name in each state (system by default).
+Never a row of buttons or a dropdown for the theme. The theme switch takes two pieces:
+
+- In `<head>`, after the `theme-color` metas and before the stylesheets, inline `xantoom-design/theme-head.js` (a
+  classic script of about 300 bytes; a module would run after the first paint). It applies the stored choice and
+  points the browser's bar at that scheme's `theme-color`.
+- Once the page is parsed, `themeCycle(button)` from `xantoom-design/theme.js`. Until then the CSS already shows the
+  right icon. The button's `data-label-system`, `data-label-light` and `data-label-dark` are its accessible name in
+  each state (system by default). The `theme-color` metas follow each change: no `onChange` needed for them.
+
+```html
+<meta name="theme-color" content="#ebebee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15161c" media="(prefers-color-scheme: dark)">
+<script>/* contents of xantoom-design/theme-head.js (Vite: import it with ?raw and inline it) */</script>
+```
+
+The apps' logos: `import { brand } from 'xantoom-design/brand'`, then `brand('vixion', { size: 40 })` returns the SVG
+with unique ids (`label` to name it, `id` for a stable suffix when rendering on a server); `<Brand>` in React.
 
 ## Forms
 
@@ -59,6 +73,10 @@ Never a row of buttons or a dropdown for the theme. `xantoom-design/theme.js` ma
 <label class="x-dropzone"><svg aria-hidden>…</svg><strong>Drop files here</strong><span>or choose</span>
   <small>MP4, WebM · 4 GB</small><input type="file" class="x-visually-hidden"></label>   <!-- data-drag while dragging -->
 <input type="range" class="x-range">  <input type="file" class="x-file">  <fieldset class="x-fieldset"><legend>…</legend>…</fieldset>
+<div class="x-number"><span class="x-number-scrub" aria-hidden="true"><svg>…</svg></span>
+  <input id="…" type="text" inputmode="decimal" role="spinbutton" aria-valuemin="1" aria-valuemax="500" aria-valuenow="20">
+  <span class="x-number-unit">GB</span><span class="x-number-steps" aria-hidden="true">
+  <button type="button" tabindex="-1" data-step="up"></button><button type="button" tabindex="-1" data-step="down"></button></span></div>
 ```
 
 - A required field gets ` *` after its `.x-label` automatically.
@@ -67,6 +85,12 @@ Never a row of buttons or a dropdown for the theme. `xantoom-design/theme.js` ma
 - `x-options` is for one choice among a few that stay visible (a view, an alignment). More than five, or a
   setting seldom changed: a select.
 - The search shows its shortcut while empty and its clear button once it is not: give it a placeholder (even `" "`).
+- An option that cannot be picked now gets `disabled` on its radio: it stays in place, faded, and the arrow keys
+  skip it. Say why next to the control, never only in a tooltip.
+- A number is typed freely, dragged sideways from its grip (like a design tool's fields: one step per 4 px, Shift
+  for ten), and stepped with the arrow keys or the two small arrows at its end (side by side on touch screens).
+  Never − and + buttons on both sides. Its behaviour is the React `NumberField`'s; without React, use
+  `<input type="number" class="x-input">`.
 - The select's `<button><selectedcontent>` is optional. Chromium and Safari 27 style the picker; elsewhere it is the
   native one.
 
@@ -75,6 +99,8 @@ Never a row of buttons or a dropdown for the theme. `xantoom-design/theme.js` ma
 | Markup | Notes |
 | --- | --- |
 | `<article class="x-card">` | `data-variant="flat"`; `data-interactive` with one `<a class="x-card-link">` makes the whole card clickable |
+| `<header class="x-card-head"><span class="x-card-mark">12</span><h3>…</h3>…</header>` | A card's heading row: the mark (a number, an icon) centred on the title, anything after it at the end |
+| `<dl class="x-dl"><div><dt>Today</dt><dd>…</dd></div>…</dl>` | Labelled text: each term a small bold heading, its text muted and tight under it, the groups well apart. `data-layout="row"`: the term beside its text once the list is 32 rem wide. Never small uppercase grey labels over brighter text: the label must not look quieter than what it labels while weighing more |
 | `<span class="x-badge" data-tone="accent|success|warning|danger|info">` | Always with text, never colour alone. `data-tone` sets `--x-tone` (not inherited) for any component, the app's own included; without it, muted |
 | `<span class="x-count">12</span>` | A number that grows (unread, results): a pill. A word goes in a badge |
 | `<span class="x-avatar">AB</span>` or with an `<img alt>` | `data-size="sm|lg"`, `data-shape="tile"` (app-icon corner) |
@@ -142,11 +168,20 @@ padding on the panel itself: put it on a child.
   </form>
 </dialog>
 
+<!-- Alert: a narrow question; its icon in the tone, its sentence announced with it -->
+<dialog class="x-dialog" role="alertdialog" id="drop" aria-labelledby="drop-title" aria-describedby="drop-text" closedby="closerequest">
+  <header class="x-dialog-head" data-tone="danger"><svg aria-hidden>…</svg><h1 id="drop-title">Delete this recording?</h1>
+    <p id="drop-text">…</p></header>
+  <form method="dialog" class="x-dialog-actions"><button class="x-button">Cancel</button>
+    <button class="x-button" data-variant="danger" value="delete">Delete</button></form>
+</dialog>
+
 <!-- Popover / menu (a group of buttons; add role="menu" + role="menuitem" only with enhance()) -->
 <button class="x-button" popovertarget="actions" aria-label="More"><svg aria-hidden>…</svg></button>
 <div class="x-menu" id="actions" popover>
   <p class="x-menu-label">…</p>
   <button class="x-menu-item" type="button"><svg aria-hidden>…</svg>Rename…<kbd class="x-kbd">F2</kbd></button>
+  <button class="x-menu-item" type="button"><span class="x-menu-text"><span>English</span><small>298 lines</small></span><span data-detail>SRT</span></button>
   <hr class="x-menu-separator">
   <button class="x-menu-item" type="button" data-tone="danger">Delete…</button>
 </div>
@@ -184,18 +219,23 @@ enhance();
 toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without timeout
 ```
 
-- Dialogs: name them (`aria-labelledby`), autofocus the primary field or the safe action, close with
+- Dialogs: name them (`aria-labelledby`); `enhance()` puts focus on `[autofocus]`, else the first field, else the
+  first action (the safe one: the main action is last). Close with
   `<form method="dialog">` or `command="close"`. No `role="dialog"`, `aria-modal`, focus trap or scroll lock: the
   browser does all of it. Use `command="request-close"` and a `cancel` handler for unsaved changes.
 - Menus and popovers anchor to their invoker where CSS anchor positioning exists, and flip at screen edges. Elsewhere
-  the browser centres them.
+  `enhance()` places them under their button (above it when there is no room).
+- A long menu: `style="--rows: 6"` shows six items and half the seventh, then scrolls.
 - A menu item with `aria-current` (a language, a sort order) gets a check at its end.
 - The command palette keeps focus in its search; arrow keys, Home and End move the active option
   (`aria-activedescendant`), Enter clicks it, and the first visible option becomes active after each input.
 - Tooltips show on hover and focus where `interestfor` exists. Never put needed information only in a tooltip: an
   icon button still has its `aria-label`.
-- Toasts are for supplemental news. Never show one during a modal (`toast()` waits), and keep their actions
-  available elsewhere.
+- Toasts are for supplemental news; keep their actions available elsewhere. During a modal, `toast()` moves the
+  region into the modal (the page behind is inert), so a toast shows over it, clickable, and moves back when it
+  closes.
+- An alert (`role="alertdialog"`) asks one question that needs an answer: no click outside
+  (`closedby="closerequest"`), focus on the safe action.
 
 ## Utilities
 
@@ -227,11 +267,16 @@ arrow buttons Windows draws.
 | `<IconButton label shortcut>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) and its shortcut. A toggle takes `aria-pressed`: pressed, it sits in and turns accent |
 | `<Tooltip content>` | `interestfor` on its child and a `popover="hint"` tooltip; describes the child only when it says something else than its name |
 | `<Field label hint error required>{(control) => …}</Field>`, `<TextField>`, `<TextArea>` | Label, hint and error tied to the control (`id`, `aria-describedby`, `aria-invalid`) |
-| `<Menu label trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `checked`, `tone`, `shortcut`, `href`, `target`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns |
+| `<Menu label rows trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `description`, `detail`, `checked`, `tone`, `shortcut`, `href`, `target`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns. `rows` limits its height; `description` is a muted second line, `detail` a value at the end |
 | `<Popover label trigger open onOpenChange>` and `useClose()` | A panel anchored to its button (filters, a small form); its content exists only while open, and `useClose()` closes it from inside. `className` sizes it: a display utility (`flex`) would show it closed, so lay out an inner element |
-| `<Dialog open onClose title actions closeLabel size variant>` | A modal `<dialog closedby="any">`; its content exists only while open. `useModal()` drives any other native modal the same way |
+| `<Dialog open onClose title actions closeLabel size variant icon tone description>` | A modal `<dialog closedby="any">`; its content exists only while open, focus starts in its first field. `variant="alert"`: `role="alertdialog"`, narrow, no click outside, `icon` in the `tone`, `description` announced. Other attributes pass through. `useModal()` drives any other native modal the same way |
+| `<Switch label checked onChange>` | `x-switch` in its `x-check` label: a native checkbox with `switch` and `role="switch"` |
+| `<NumberField label value onChange min max step unit format locale>` | `x-number`: typed freely (checked on leaving or Enter, Escape undoes), dragged from the grip, arrow keys (Shift ×10), Page Up and Down, Home and End, the small arrows; shown with `Intl.NumberFormat` |
+| `<SearchField label value onChange shortcut clearLabel>` | `x-search`: the shortcut (one key, "/") focuses it while empty, then the clear button; Escape clears it before closing what holds it |
+| `<FilePicker accept multiple onFiles>{(pick) => …}</FilePicker>`, `<DropZone title hint detail icon accept multiple onFiles>` | A hidden file input any button opens; the `x-dropzone`, with its drag state |
+| `<Brand name size label>` | An app's logo from `xantoom-design/brand`, its ids unique |
 | `<CommandPalette open onClose label query onQueryChange groups empty>` | `x-command`: the app filters `groups` (`{ id, label, items: [{ id, label, icon, detail, hint, onSelect }] }`); the first item is active, the arrow keys move it, Enter or a click closes and runs it |
 | `<Toaster label closeLabel>` and `toast()` | The toast region, once per page |
 | `<Avatar name src size shape>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails; drawn flags (fr, gb, de, it, es) |
-| `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon |
+| `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon; `disabled` on an option fades it and the arrows skip it |
 | `<ThemeCycle labels icons>` | The `x-cycle` theme switch on `theme.js` |
