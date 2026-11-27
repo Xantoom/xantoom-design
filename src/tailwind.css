@@ -1,0 +1,80 @@
+/*
+ * The design system's tokens as Tailwind 4 theme values, under the design system's own names:
+ * `bg-surface`, `text-fg-muted`, `border-line`, `rounded-md`, `shadow-md`, `duration-fast`, `ease-out`, `text-sm`.
+ * Import it after Tailwind and the foundation; the app's theme stays a file of `--x-*` tokens.
+ *
+ *   @layer theme, base, x, components, utilities;   (preflight under the design system, utilities over it)
+ *   @import 'tailwindcss';
+ *   @import 'xantoom-design/foundation';
+ *   @import 'xantoom-design/themes/<app>.css';
+ *   @import 'xantoom-design/tailwind.css';
+ *
+ * `inline` makes every utility read the live `--x-*` value, so themes and light-dark() switch them too. Tailwind's
+ * palette is cleared: a colour outside the tokens is a decision for the app's own @theme, not a default.
+ */
+@theme inline {
+	--color-*: initial;
+	--color-transparent: transparent;
+	--color-current: currentcolor;
+
+	--color-bg: var(--x-bg);
+	--color-surface: var(--x-surface);
+	--color-raised: var(--x-raised);
+	--color-fg: var(--x-fg);
+	--color-fg-muted: var(--x-fg-muted);
+	--color-fg-faint: var(--x-fg-faint);
+	--color-line: var(--x-line);
+	--color-line-strong: var(--x-line-strong);
+	--color-control-border: var(--x-control-border);
+	--color-accent: var(--x-accent);
+	--color-accent-hover: var(--x-accent-hover);
+	--color-fill-1: var(--x-fill-1);
+	--color-fill-2: var(--x-fill-2);
+	--color-fill-3: var(--x-fill-3);
+	--color-on-fill: var(--x-on-fill);
+	--color-danger: var(--x-danger);
+	--color-on-danger: var(--x-on-danger);
+	--color-warning: var(--x-warning);
+	--color-success: var(--x-success);
+	--color-info: var(--x-info);
+	--color-hover: var(--x-hover);
+	--color-press: var(--x-press);
+	--color-overlay: var(--x-overlay);
+
+	--font-sans: var(--x-font-sans);
+	--font-mono: var(--x-font-mono);
+
+	--text-xs: var(--x-text-xs);
+	--text-sm: var(--x-text-sm);
+	--text-md: var(--x-text-md);
+	--text-lg: var(--x-text-lg);
+	--text-xl: var(--x-text-xl);
+	--text-2xl: var(--x-text-2xl);
+	--text-3xl: var(--x-text-3xl);
+	--text-4xl: var(--x-text-4xl);
+	--text-5xl: var(--x-text-5xl);
+
+	--font-weight-regular: var(--x-weight-regular);
+	--font-weight-medium: var(--x-weight-medium);
+	--font-weight-bold: var(--x-weight-bold);
+
+	--radius-sm: var(--x-radius-sm);
+	--radius-md: var(--x-radius-md);
+	--radius-lg: var(--x-radius-lg);
+	--radius-xl: var(--x-radius-xl);
+
+	--shadow-sm: var(--x-shadow-sm);
+	--shadow-md: var(--x-shadow-md);
+	--shadow-lg: var(--x-shadow-lg);
+
+	--ease-out: var(--x-ease-out);
+	--ease-in-out: var(--x-ease-in-out);
+	--transition-duration-fast: var(--x-duration-fast);
+	--transition-duration-base: var(--x-duration-base);
+	--transition-duration-slow: var(--x-duration-slow);
+	--default-transition-duration: var(--x-duration-fast);
+	--default-transition-timing-function: var(--x-ease-out);
+
+	--container-content: var(--x-size-container);
+	--spacing-control: var(--x-control);
+}

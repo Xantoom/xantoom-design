@@ -6,6 +6,12 @@
 
 const SVG = 'http://www.w3.org/2000/svg';
 
+/** `root` itself when it matches, then its descendants: `enhance(element)` wires the element it is given too. */
+const within = (root, selector) => [
+	...(root instanceof Element && root.matches(selector) ? [root] : []),
+	...root.querySelectorAll(selector),
+];
+
 // --- Top layer exits ---------------------------------------------------------------------------------------------
 
 let displayTransitions;
@@ -49,7 +55,7 @@ export async function closeTopLayer(element, returnValue) {
 }
 
 function dialogs(root) {
-	for (const dialog of root.querySelectorAll('dialog.x-dialog:not([data-x-ready])')) {
+	for (const dialog of within(root, 'dialog.x-dialog:not([data-x-ready])')) {
 		dialog.setAttribute('data-x-ready', '');
 		// Esc and `request-close`: animate where the browser would close at once.
 		dialog.addEventListener('cancel', (event) => {
@@ -124,7 +130,7 @@ const ownedTriggers = new Set();
 let hintsWired = false;
 
 function hints(root) {
-	for (const trigger of root.querySelectorAll('[interestfor]')) {
+	for (const trigger of within(root, '[interestfor]')) {
 		const hint = document.getElementById(trigger.getAttribute('interestfor'));
 		if (hint?.getAttribute('popover') !== 'hint') continue;
 		const name = normalize(nameOf(trigger));
@@ -171,7 +177,7 @@ function hints(root) {
 
 function tabs(root) {
 	const native = 'focusgroup' in HTMLElement.prototype;
-	for (const list of root.querySelectorAll('.x-tablist:not([data-x-ready])')) {
+	for (const list of within(root, '.x-tablist:not([data-x-ready])')) {
 		list.setAttribute('data-x-ready', '');
 		const all = () => [...list.querySelectorAll('[role="tab"]')];
 		const panelOf = (tab) =>
@@ -224,7 +230,7 @@ function tabs(root) {
 // --- Menus (role="menu" only: a plain group of buttons in a popover needs nothing) ----------------------------------
 
 function menus(root) {
-	for (const menu of root.querySelectorAll('.x-menu[role="menu"]:not([data-x-ready])')) {
+	for (const menu of within(root, '.x-menu[role="menu"]:not([data-x-ready])')) {
 		menu.setAttribute('data-x-ready', '');
 		const items = () => [...menu.querySelectorAll('[role^="menuitem"]:not([aria-disabled="true"], :disabled)')];
 		menu.addEventListener('toggle', (event) => {
@@ -244,7 +250,7 @@ function menus(root) {
 // --- Command palette (focus stays in the search; the active option is aria-activedescendant) --------------------------
 
 function commands(root) {
-	for (const input of root.querySelectorAll('.x-command [role="combobox"]:not([data-x-ready])')) {
+	for (const input of within(root, '.x-command [role="combobox"]:not([data-x-ready])')) {
 		input.setAttribute('data-x-ready', '');
 		const list = document.getElementById(input.getAttribute('aria-controls'));
 		if (!list) continue;
@@ -295,7 +301,7 @@ const apple = () => /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform ?? 
 
 function shortcuts(root) {
 	const mac = apple();
-	for (const kbd of root.querySelectorAll('kbd[data-mod]:not([data-x-ready])')) {
+	for (const kbd of within(root, 'kbd[data-mod]:not([data-x-ready])')) {
 		kbd.setAttribute('data-x-ready', '');
 		const symbol = document.createElement('span');
 		symbol.setAttribute('aria-hidden', 'true');

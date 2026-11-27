@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Xantoom design system
@@ -62,7 +62,7 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
 ## Adding the design system to a project
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.3.0
+bun add github:Xantoom/xantoom-design#v0.4.0
 bunx xantoom-design sync          # copies this skill into .agents/skills/, links .claude/skills/, adds pointers
 ```
 
@@ -75,11 +75,29 @@ install. Commit the synced files: an agent reads them before any install.
 @import "xantoom-design/themes/vexode.css";
 ```
 
-An app that brings its own components (React Aria, a Tailwind kit) imports `xantoom-design/foundation` instead of
-`xantoom-design/css`: the same tokens, reset, base, motion and utilities, without the components (about 3 KB brotli
-instead of 8). It still follows the rules below. A site that uses only some components imports the foundation plus
-their families, `xantoom-design/components/<family>.css` (`actions`, `forms`, `content`, `feedback`, `navigation`,
-`overlays`; a toast's close button needs `actions`). The skip link is in the foundation: every page has one.
+A site that uses only some components imports `xantoom-design/foundation` (tokens, reset, base, motion and
+utilities, about 3 KB brotli) plus their families, `xantoom-design/components/<family>.css` (`actions`, `forms`,
+`content`, `feedback`, `navigation`, `overlays`; a toast's close button needs `actions`). The skip link is in the
+foundation: every page has one.
+
+A React and Tailwind app uses the design system's components through `xantoom-design/react` and its tokens through
+`xantoom-design/tailwind.css`: never a second button, menu, field, tooltip or dialog of its own, and never a colour,
+radius, shadow or duration outside the tokens (Tailwind's palette is cleared; an app-only colour goes in the app's
+own `@theme`, defined from `--x-*` tokens). See [references/components.md](references/components.md#react).
+
+```css
+/* Tailwind's preflight under the design system, its utilities over it. */
+@layer theme, base, x, components, utilities;
+@import 'tailwindcss';
+@import 'xantoom-design/foundation';
+@import 'xantoom-design/components/overlays.css';   /* and the other families the app's components use */
+@import 'xantoom-design/themes/vexode.css';
+@import 'xantoom-design/tailwind.css';               /* bg-surface, text-fg-muted, rounded-md, duration-fast… */
+```
+
+```tsx
+import { Button, Dialog, Menu, MenuItem, TextField, Tooltip } from 'xantoom-design/react';
+```
 
 ```html
 <meta name="color-scheme" content="light dark">

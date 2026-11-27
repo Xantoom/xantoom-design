@@ -368,8 +368,9 @@
 		}
 	}
 
-	/* The current choice (a language, a sort order): aria-current, with a check at the end. */
-	&[aria-current]:not([aria-current="false"]) {
+	/* The current choice (a language, a sort order), with a check at the end: aria-current on a link or a plain button,
+	   aria-checked on a menuitemradio. */
+	&:is([aria-current]:not([aria-current="false"]), [aria-checked="true"]) {
 		font-weight: var(--x-weight-medium);
 
 		&::after {

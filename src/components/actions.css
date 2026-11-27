@@ -1,6 +1,6 @@
 /*
  * Buttons. <button class="x-button" data-variant="primary|secondary|ghost|danger" data-size="sm|lg">
- * Icon-only: add data-icon and an aria-label. Busy: aria-busy="true" keeps the label and adds a spinner.
+ * Icon-only: add data-icon and an aria-label. Busy: aria-busy="true" shows a spinner over the kept label.
  */
 
 .x-button {
@@ -96,15 +96,21 @@
 		inline-size: 100%;
 	}
 
-	/* Busy: a spinner before the kept label, and no second submit. */
+	/* Busy: a spinner over the label, which keeps its room (nothing beside the button moves) and stays its name; no
+	   second submit. */
 	&[aria-busy="true"] {
+		position: relative;
+		color: transparent;
 		pointer-events: none;
 
 		&::before {
 			content: "";
+			position: absolute;
+			inset: 0;
+			margin: auto;
 			inline-size: 1em;
 			block-size: 1em;
-			border: 2px solid currentcolor;
+			border: 2px solid var(--_fg);
 			border-inline-end-color: transparent;
 			border-radius: 50%;
 			animation: x-spin 0.8s linear infinite;

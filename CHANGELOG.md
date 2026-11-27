@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.0
+
+- `xantoom-design/react`: thin React components on native elements (Button, IconButton, Tooltip, Field, TextField,
+  TextArea, Menu with its items, Dialog, Toaster and `toast`, Avatar, Flag, Spinner, Options, ThemeCycle). The CSS
+  draws them; they add only behaviour, through `xantoom.js` where it has it. Types included.
+- `xantoom-design/tailwind.css`: the tokens as a Tailwind 4 `@theme inline`, under the design system's names
+  (`bg-surface`, `text-fg-muted`, `rounded-md`, `duration-fast`), with Tailwind's palette cleared. Tailwind apps
+  declare `@layer theme, base, x, components, utilities;` so the preflight sits under the design system.
+- `enhance(element)` also wires the element it is given, not only its descendants.
+- A busy button keeps its width: the spinner sits over the label, which turns transparent.
+- A menu item marks its current choice with `aria-checked="true"` (a `menuitemradio`) as well as `aria-current`.
+- Types for `xantoom-design/js` and `xantoom-design/theme.js`.
+
 ## 0.3.0
 
 - New components: `x-options` (a fieldset of radios, text or icons; replaces `x-segmented`), `x-search` (icon, clear

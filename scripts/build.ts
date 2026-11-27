@@ -1,5 +1,5 @@
 // `bun run build`: tokens → CSS, then one minified stylesheet, one file per theme and the optional script, in dist/.
-import { readdirSync } from 'node:fs';
+import { readdirSync, rmSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { gzipSync, brotliCompressSync } from 'node:zlib';
 import { bundle, transform } from 'lightningcss';
@@ -76,7 +76,23 @@ async function build(): Promise<void> {
 		await Bun.write(at(`dist/${name}.js`), (await js.outputs[0]?.text()) ?? '');
 	}
 
-	for (const file of ['dist/xantoom.css', 'dist/foundation.css', 'dist/xantoom.js', 'dist/theme.js', 'dist/themes/vexode.css']) {
+	// 5. The React components: one module (React and the scripts stay imports, so a page holds one copy of each), and
+	// their types.
+	const react = await Bun.build({
+		entrypoints: [at('src/react/index.ts')],
+		format: 'esm',
+		target: 'browser',
+		minify: { whitespace: true, syntax: true },
+		external: ['react', 'react/jsx-runtime', 'xantoom-design/js', 'xantoom-design/theme.js'],
+		define: { 'process.env.NODE_ENV': '"production"' },
+	});
+	if (!react.success) throw new AggregateError(react.logs, 'react build failed');
+	await Bun.write(at('dist/react.js'), (await react.outputs[0]?.text()) ?? '');
+	rmSync(at('dist/react'), { recursive: true, force: true });
+	const types = Bun.spawnSync(['bun', 'x', '--bun', 'tsc', '-p', at('tsconfig.json'), '--declaration', '--emitDeclarationOnly', '--outDir', at('dist/react'), '--rootDir', at('src/react')], { stdout: 'inherit', stderr: 'inherit' });
+	if (types.exitCode !== 0) throw new Error('react types failed');
+
+	for (const file of ['dist/xantoom.css', 'dist/react.js', 'dist/foundation.css', 'dist/xantoom.js', 'dist/theme.js', 'dist/themes/vexode.css']) {
 		const bytes = await Bun.file(at(file)).bytes();
 		const kb = (n: number): string => `${(n / 1024).toFixed(1)} KB`;
 		console.log(`${file}: ${kb(bytes.length)}, gzip ${kb(gzipSync(bytes).length)}, brotli ${kb(brotliCompressSync(bytes).length)}`);

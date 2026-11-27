@@ -215,3 +215,21 @@ the text colour under `prefers-contrast: more`) on `--x-scrollbar-track`, thicke
 on a box to change its scrollbar; never transition them. Do not set `scrollbar-width` or `scrollbar-color` in app
 code (except `none` through `x-scrollbar-none`): in Chromium they switch off the styled scrollbar and bring back the
 arrow buttons Windows draws.
+
+## React
+
+`xantoom-design/react` puts these classes on native elements and adds only behaviour; it needs React 19.2+ and
+`enhance()` from `xantoom-design/js` (the components call it on what they render).
+
+| Component | Renders |
+| --- | --- |
+| `<Button variant size block busy>` | `.x-button`; `busy` shows the spinner and blocks presses but keeps focus. `buttonProps()` gives a link the look |
+| `<IconButton label>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) |
+| `<Tooltip content>` | `interestfor` on its child and a `popover="hint"` tooltip; describes the child only when it says something else than its name |
+| `<Field label hint error required>{(control) => …}</Field>`, `<TextField>`, `<TextArea>` | Label, hint and error tied to the control (`id`, `aria-describedby`, `aria-invalid`) |
+| `<Menu label trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `checked`, `tone`, `shortcut`, `href`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns |
+| `<Dialog open onClose title actions closeLabel size variant>` | A modal `<dialog closedby="any">`; its content exists only while open |
+| `<Toaster label closeLabel>` and `toast()` | The toast region, once per page |
+| `<Avatar name src size shape>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails; drawn flags (fr, gb, de, it, es) |
+| `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon |
+| `<ThemeCycle labels icons>` | The `x-cycle` theme switch on `theme.js` |

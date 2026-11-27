@@ -1,6 +1,6 @@
 {
 	"name": "xantoom-design",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "The Xantoom design system: tokens, pure-CSS components, motion and an agent skill, one theme per app.",
 	"license": "MIT",
 	"author": "Xantoom",
@@ -25,8 +25,19 @@
 		"./foundation": "./dist/foundation.css",
 		"./components/*": "./dist/components/*",
 		"./themes/*": "./dist/themes/*",
-		"./js": "./dist/xantoom.js",
-		"./theme.js": "./dist/theme.js",
+		"./js": {
+			"types": "./src/xantoom.d.ts",
+			"default": "./dist/xantoom.js"
+		},
+		"./theme.js": {
+			"types": "./src/theme.d.ts",
+			"default": "./dist/theme.js"
+		},
+		"./react": {
+			"types": "./dist/react/index.d.ts",
+			"default": "./dist/react.js"
+		},
+		"./tailwind.css": "./src/tailwind.css",
 		"./tokens/*": "./tokens/*",
 		"./src/*": "./src/*",
 		"./brand/*": "./brand/*"
@@ -37,13 +48,26 @@
 	"scripts": {
 		"build": "bun scripts/build.ts",
 		"test": "bun test",
-		"lint": "oxlint scripts src test",
+		"lint": "oxlint scripts src test && tsc -p tsconfig.json --noEmit",
 		"check": "bun run build && bun run lint && bun test && git diff --exit-code -- dist src/tokens.css",
 		"demo": "bun demo/serve.ts"
 	},
 	"devDependencies": {
 		"@types/bun": "1.4.5",
+		"@types/react": "19.3.3",
+		"@types/react-dom": "19.3.0",
 		"lightningcss": "1.33.0",
-		"oxlint": "1.95.0"
+		"oxlint": "1.95.0",
+		"react": "19.3.1",
+		"react-dom": "19.3.1",
+		"typescript": "7.0.2"
+	},
+	"peerDependencies": {
+		"react": ">=19.2"
+	},
+	"peerDependenciesMeta": {
+		"react": {
+			"optional": true
+		}
 	}
 }
