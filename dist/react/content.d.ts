@@ -1,6 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
-/** A picture, or the name's initials on the theme fill when there is none or it fails to load. */
-export declare function Avatar({ src, name, size, shape, className, }: {
+/** A stable hue (0–359) from an id: the same person keeps one colour on every screen (avatar, cursor, comments). */
+export declare function hueOf(seed: string): number;
+/**
+ * A picture, or the name's initials when there is none or it fails to load: on the theme fill, or with `seed` (the
+ * person's id) on a colour of their own.
+ */
+export declare function Avatar({ src, name, size, shape, seed, className, }: {
     src?: string | null;
     /** Used for the initials and as the picture's text. */
     name: string;
@@ -8,6 +13,8 @@ export declare function Avatar({ src, name, size, shape, className, }: {
     size?: 'sm' | 'lg' | (string & {});
     /** `tile`: the app-icon corner. */
     shape?: 'tile';
+    /** The person's id: their initials on a colour drawn from it, the same everywhere. */
+    seed?: string;
     className?: string;
 }): ReactElement;
 declare const FLAGS: {

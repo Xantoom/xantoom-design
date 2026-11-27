@@ -73,6 +73,44 @@
 	}
 }
 
+/* A total beside the title: quiet, it counts what the card holds rather than calling for attention. */
+.x-card-head > :is(h1, h2, h3, h4) > .x-count {
+	margin-inline-start: var(--x-space-1-5);
+	background-color: var(--x-hover);
+	color: var(--x-fg-muted);
+	vertical-align: 0.125em;
+}
+
+/* Actions at the end of the head: <div class="x-card-actions"><button class="x-button" …>…</button></div> */
+.x-card-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--x-space-1);
+	margin-inline-start: auto;
+}
+
+/*
+ * A card whose content runs edge to edge (a table, a console, a list): <section class="x-card" data-flush>
+ * <header class="x-card-head">…</header><div class="x-table-scroll">…</div></section>. The head keeps its padding
+ * and a line under it; a table inside loses its own frame.
+ */
+.x-card[data-flush] {
+	gap: 0;
+	padding: 0;
+	overflow: clip;
+
+	& > .x-card-head {
+		min-block-size: 3.5rem;
+		padding: var(--x-space-2) var(--x-space-5);
+		border-block-end: 1px solid var(--x-line);
+	}
+
+	& > .x-table-scroll {
+		border: 0;
+		border-radius: 0;
+	}
+}
+
 .x-card-mark {
 	display: grid;
 	flex: none;
@@ -101,23 +139,26 @@
 .x-dl {
 	container-type: inline-size;
 	display: grid;
-	gap: var(--x-space-4);
+	gap: var(--x-space-3);
 	margin: 0;
+	font-size: var(--x-text-sm);
 
+	/* The term sits right on its text, so each pair reads as one block; the pairs stand apart. */
 	& > div {
 		display: grid;
-		gap: var(--x-space-1);
+		gap: var(--x-space-0-5);
 	}
 
 	& dt {
 		color: var(--x-fg);
-		font-size: var(--x-text-sm);
 		font-weight: var(--x-weight-bold);
+		line-height: var(--x-leading-tight);
 	}
 
 	& dd {
 		margin: 0;
 		color: var(--x-fg-muted);
+		line-height: var(--x-leading);
 	}
 
 	&[data-layout="row"] {
@@ -205,6 +246,15 @@
 
 	&[data-shape="tile"] {
 		border-radius: 25%;
+	}
+
+	/*
+	 * Coloured by its person: style="--x-hue: 212" (a stable hue from their id, so they keep one colour everywhere:
+	 * presence, cursors, comments). A tint and its ink at fixed lightness, readable in both modes at any hue.
+	 */
+	&[data-hue] {
+		background: light-dark(oklch(0.87 0.07 var(--x-hue)), oklch(0.4 0.09 var(--x-hue)));
+		color: light-dark(oklch(0.33 0.09 var(--x-hue)), oklch(0.95 0.03 var(--x-hue)));
 	}
 
 	&[data-size="sm"] {
@@ -424,107 +474,6 @@
 }
 
 /*
- * Error, 404 and offline pages: <main class="x-status-page"><span class="x-status-icon"><svg aria-hidden>…</svg></span>
- * <p data-code>404</p><h1>…</h1><p>…</p><div class="x-cluster">…actions…</div></main>
- */
-.x-status-page {
-	display: grid;
-	justify-items: center;
-	align-content: center;
-	gap: var(--x-space-3);
-	max-inline-size: 28rem;
-	min-block-size: 70dvh;
-	margin-inline: auto;
-	padding: var(--x-space-8) var(--x-space-4);
-	text-align: center;
-
-	& > [data-code] {
-		color: var(--x-accent);
-		font-family: var(--x-font-mono);
-		font-size: var(--x-text-sm);
-		letter-spacing: 0.1em;
-	}
-
-	& > :is(h1, h2) {
-		font-size: var(--x-text-2xl);
-	}
-
-	& > p:not([data-code]) {
-		color: var(--x-fg-muted);
-	}
-
-	& > .x-cluster {
-		justify-content: center;
-		margin-block-start: var(--x-space-2);
-	}
-}
-
-.x-status-icon {
-	display: grid;
-	place-items: center;
-	inline-size: 3.5rem;
-	aspect-ratio: 1;
-	border-radius: var(--x-radius-lg);
-	background-color: color-mix(in oklab, var(--x-accent) 14%, transparent);
-	color: var(--x-accent);
-
-	& > svg {
-		inline-size: 1.75rem;
-		block-size: 1.75rem;
-	}
-}
-
-/*
- * Key figures: <dl class="x-stats"><div class="x-stat"><dt>…</dt><dd>1 284</dd><span data-trend="up">…</span></div>…</dl>
- * The tiles wrap on their own and a short last row stretches, so no cell stays empty; data-trend="up|down" colours
- * the trend (its words say it too).
- */
-.x-stats {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--x-space-3);
-	margin: 0;
-}
-
-.x-stat {
-	flex: 1 1 9rem;
-	display: grid;
-	align-content: start;
-	gap: var(--x-space-1);
-	padding: var(--x-space-4);
-	border: 1px solid var(--x-line);
-	border-radius: var(--x-radius-md);
-	background-color: var(--x-surface);
-
-	& > dt {
-		color: var(--x-fg-muted);
-		font-size: var(--x-text-xs);
-	}
-
-	& > dd {
-		margin: 0;
-		font-size: var(--x-text-2xl);
-		font-weight: var(--x-weight-bold);
-		font-variant-numeric: tabular-nums;
-		line-height: 1.1;
-	}
-
-	& > [data-trend] {
-		color: var(--x-fg-muted);
-		font-size: var(--x-text-xs);
-		font-weight: var(--x-weight-medium);
-	}
-
-	& > [data-trend="up"] {
-		color: var(--x-success);
-	}
-
-	& > [data-trend="down"] {
-		color: var(--x-danger);
-	}
-}
-
-/*
  * A state is an icon and a word; colour only where it needs attention (recording, an error).
  * <span class="x-state" data-tone="danger"><svg aria-hidden>…</svg>Recording</span>   Live: <span class="x-live">Live</span>
  */
@@ -658,4 +607,90 @@
 	overflow: hidden;
 	border-radius: 3px;
 	box-shadow: 0 0 0 1px color-mix(in oklab, var(--x-fg) 14%, transparent);
+}
+
+/*
+ * Contents of a long page: <nav class="x-toc" aria-label="…"><a href="#coasts">Coasts</a>…</nav>. xantoom.js marks
+ * the link of the section being read (aria-current="true"); nest a level with <a data-level="2">.
+ */
+.x-toc {
+	display: grid;
+	align-content: start;
+	gap: var(--x-space-0-5);
+	border-inline-start: 1px solid var(--x-line);
+	font-size: var(--x-text-sm);
+
+	& > a {
+		margin-inline-start: -1px;
+		padding: var(--x-space-1) var(--x-space-3);
+		border-inline-start: 2px solid transparent;
+		color: var(--x-fg-muted);
+		text-decoration: none;
+		transition: color var(--x-duration-fast) var(--x-ease-out), border-color var(--x-duration-fast) var(--x-ease-out);
+
+		&:hover {
+			color: var(--x-fg);
+		}
+
+		&[data-level="2"] {
+			padding-inline-start: var(--x-space-6);
+		}
+
+		&[aria-current="true"] {
+			border-color: var(--x-accent);
+			color: var(--x-fg);
+			font-weight: var(--x-weight-medium);
+		}
+	}
+}
+
+/*
+ * A captioned picture that opens large:
+ * <figure class="x-figure"><button type="button" command="show-modal" commandfor="big" aria-label="Enlarge: …">
+ * <img …></button><figcaption>…</figcaption></figure>
+ * <dialog class="x-dialog x-lightbox" id="big" aria-label="…" closedby="any"><button class="x-dialog-close" …>…</button><img …></dialog>
+ */
+.x-figure {
+	display: grid;
+	gap: var(--x-space-2);
+	margin: 0;
+
+	& > button {
+		padding: 0;
+		border: 0;
+		border-radius: var(--x-radius-md);
+		overflow: clip;
+		background: none;
+		cursor: zoom-in;
+		line-height: 0;
+
+		&:focus-visible {
+			outline: var(--x-ring);
+			outline-offset: 2px;
+		}
+	}
+
+	& :is(img, svg, video) {
+		inline-size: 100%;
+		block-size: auto;
+	}
+
+	& > figcaption {
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+	}
+}
+
+.x-lightbox {
+	--_width: 90rem;
+	padding: var(--x-space-3);
+
+	& > :is(img, svg, video) {
+		display: block;
+		inline-size: 100%;
+		block-size: auto;
+		max-block-size: calc(100dvh - 6rem);
+		object-fit: contain;
+		border-radius: var(--x-radius-md);
+	}
 }

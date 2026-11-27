@@ -1,7 +1,8 @@
 export { Button, IconButton, buttonProps, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './button';
-export { Avatar, Flag, Options, Spinner, ThemeCycle, Toaster, type FlagCode, type Option } from './content';
+export { Avatar, Flag, Options, Spinner, ThemeCycle, Toaster, hueOf, type FlagCode, type Option } from './content';
 export { Brand } from './brand';
-export { DropZone, FilePicker, NumberField, SearchField, Switch, type NumberFieldProps } from './controls';
+export { DropZone, DurationField, FilePicker, NumberField, SearchField, Switch, type NumberFieldProps } from './controls';
+export { ColorField, Combobox, Select, SettingRow, Settings, type Choice } from './pickers';
 export { CommandPalette, type CommandGroup, type CommandItem, type CommandPaletteProps } from './command';
 export { Dialog, useModal, type DialogProps } from './dialog';
 export { Field, TextArea, TextField, type ControlProps, type FieldProps } from './field';

@@ -52,8 +52,13 @@ describe('budgets (brotli)', () => {
 	test('the stylesheet stays under 12 KB', () => expect(brotli('dist/xantoom.css')).toBeLessThan(12 * 1024));
 	test('the foundation stays under 4 KB', () => expect(brotli('dist/foundation.css')).toBeLessThan(4 * 1024));
 	test('the script stays under 4 KB', () => expect(brotli('dist/xantoom.js')).toBeLessThan(4 * 1024));
-	// Apps bundle only the components they import (one ES module, tree-shaken): this is the cost of all of them.
-	test('the React components stay under 7 KB', () => expect(brotli('dist/react.js')).toBeLessThan(7 * 1024));
+	// Apps bundle only the components they import (one ES module, tree-shaken): this is the cost of all of them, so it
+	// grows with the catalogue (9 KB since 0.6 added Select, Combobox, ColorField, Settings and DurationField).
+	test('the React components stay under 9 KB', () => expect(brotli('dist/react.js')).toBeLessThan(9 * 1024));
+	test('the extras stay under 2 KB, script and stylesheet', () => {
+		expect(brotli('dist/extras.js')).toBeLessThan(2 * 1024);
+		expect(brotli('dist/components/extras.css')).toBeLessThan(2 * 1024);
+	});
 	test('the theme head script stays under 0.5 KB', () => expect(brotli('dist/theme-head.js')).toBeLessThan(512));
 	test('a theme stays under 0.5 KB', () => {
 		for (const name of THEMES) expect(brotli(`dist/themes/${name}.css`)).toBeLessThan(512);

@@ -1,12 +1,12 @@
-import { type ReactElement, type ReactNode } from 'react';
+import { type ReactElement } from 'react';
 /**
- * A hint shown on hover and focus, through `interestfor` and `popover="hint"` where the browser has them (elsewhere
- * nothing shows, so never put needed information only here). The trigger keeps its own accessible name: when the
- * tooltip says something else, it describes the trigger.
+ * A hint on mouse hover and keyboard focus, in every browser (xantoom.js `data-tip`: one shared tooltip, placed above
+ * its trigger or under it). It names a trigger that has no name, and describes one whose name says something else;
+ * touch screens never show it, so never put needed information only here.
  */
-export declare function Tooltip({ content, children, describes, }: {
-    content: ReactNode;
-    /** Whether the tooltip adds to the trigger's name (`aria-describedby`); by default, when it says something else. */
-    describes?: boolean;
+export declare function Tooltip({ content, sub, children, }: {
+    content: string;
+    /** A second line, quieter (a shortcut, a detail). */
+    sub?: string;
     children: ReactElement<Record<string, unknown>>;
 }): ReactElement;

@@ -20,7 +20,8 @@ describe('react', () => {
 		const out = html(<IconButton label="Settings"><svg /></IconButton>);
 		expect(out).toContain('aria-label="Settings"');
 		expect(out).toContain('data-icon=""');
-		expect(out).toMatch(/interestfor="([^"]+)".*<div class="x-tooltip" id="\1" popover="hint">Settings<\/div>/);
+		expect(out).toContain('data-tip="Settings"');
+		expect(out).not.toContain('aria-describedby');
 		expect(out).not.toContain('aria-describedby');
 	});
 
@@ -69,7 +70,7 @@ describe('react', () => {
 describe('react, shortcuts', () => {
 	test('an icon button shows its shortcut in the tooltip without describing itself twice', () => {
 		const out = html(<IconButton label="Search" shortcut="Ctrl K"><svg /></IconButton>);
-		expect(out).toContain('Search <kbd class="x-kbd">Ctrl K</kbd>');
+		expect(out).toContain('data-tip="Search" data-tip-sub="Ctrl K"');
 		expect(out).not.toContain('aria-describedby');
 	});
 });

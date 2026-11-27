@@ -73,10 +73,15 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
 <label class="x-dropzone"><svg aria-hidden>…</svg><strong>Drop files here</strong><span>or choose</span>
   <small>MP4, WebM · 4 GB</small><input type="file" class="x-visually-hidden"></label>   <!-- data-drag while dragging -->
 <input type="range" class="x-range">  <input type="file" class="x-file">  <fieldset class="x-fieldset"><legend>…</legend>…</fieldset>
-<div class="x-number"><span class="x-number-scrub" aria-hidden="true"><svg>…</svg></span>
+<div class="x-number" data-step="1"><span class="x-number-scrub" aria-hidden="true"><svg>…</svg></span>
   <input id="…" type="text" inputmode="decimal" role="spinbutton" aria-valuemin="1" aria-valuemax="500" aria-valuenow="20">
   <span class="x-number-unit">GB</span><span class="x-number-steps" aria-hidden="true">
   <button type="button" tabindex="-1" data-step="up"></button><button type="button" tabindex="-1" data-step="down"></button></span></div>
+<section class="x-settings" aria-labelledby="rec"><h3 id="rec">Recording</h3><ul>
+  <li><span class="x-setting-text"><label for="chat">Save the chat</label><small id="chat-d">…</small></span>
+    <input type="checkbox" class="x-switch" switch role="switch" id="chat" aria-describedby="chat-d"></li>
+  <li><span class="x-setting-text"><label for="q">Quality</label></span><select class="x-select" id="q">…</select></li>
+</ul></section>
 ```
 
 - A required field gets ` *` after its `.x-label` automatically.
@@ -89,8 +94,14 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
   skip it. Say why next to the control, never only in a tooltip.
 - A number is typed freely, dragged sideways from its grip (like a design tool's fields: one step per 4 px, Shift
   for ten), and stepped with the arrow keys or the two small arrows at its end (side by side on touch screens).
-  Never − and + buttons on both sides. Its behaviour is the React `NumberField`'s; without React, use
-  `<input type="number" class="x-input">`.
+  Never − and + buttons on both sides. React: `NumberField` (or `DurationField` for m:ss.cc). Without React,
+  `numbers()` from `xantoom-design/extras.js` gives it the same keys, steps and grip (limits from the input's
+  `aria-valuemin` and `aria-valuemax`, the step from `data-step`).
+- Settings: rows in one frame, each a label, a muted line saying what it does, and the control at the end. The title
+  reads like an `x-dl` term (never small grey capitals). When the frame is narrow, a control without room moves under
+  its label; a select or a text field then takes the width, a number keeps its own.
+- A combobox (a search picking one choice from a long list) and a colour field are React components (`Combobox`,
+  `ColorField`); their CSS is `x-combobox` with an `x-menu[role="listbox"]`, and `x-color` with `x-swatch`.
 - The select's `<button><selectedcontent>` is optional. Chromium and Safari 27 style the picker; elsewhere it is the
   native one.
 
@@ -99,17 +110,20 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
 | Markup | Notes |
 | --- | --- |
 | `<article class="x-card">` | `data-variant="flat"`; `data-interactive` with one `<a class="x-card-link">` makes the whole card clickable |
-| `<header class="x-card-head"><span class="x-card-mark">12</span><h3>…</h3>…</header>` | A card's heading row: the mark (a number, an icon) centred on the title, anything after it at the end |
+| `<header class="x-card-head"><span class="x-card-mark">12</span><h3>…</h3>…</header>` | A card's heading row: the mark (a number, an icon) centred on the title, anything after it at the end. A total in the title: `<h3>Recordings <span class="x-count">24</span></h3>` (quiet there). Actions: `<div class="x-card-actions">` |
+| `<section class="x-card" data-flush><header class="x-card-head">…</header><div class="x-table-scroll">…</div></section>` | Content edge to edge (a table, a console, a list): the head keeps its padding and a line under it, a table loses its own frame |
 | `<dl class="x-dl"><div><dt>Today</dt><dd>…</dd></div>…</dl>` | Labelled text: each term a small bold heading, its text muted and tight under it, the groups well apart. `data-layout="row"`: the term beside its text once the list is 32 rem wide. Never small uppercase grey labels over brighter text: the label must not look quieter than what it labels while weighing more |
 | `<span class="x-badge" data-tone="accent|success|warning|danger|info">` | Always with text, never colour alone. `data-tone` sets `--x-tone` (not inherited) for any component, the app's own included; without it, muted |
 | `<span class="x-count">12</span>` | A number that grows (unread, results): a pill. A word goes in a badge |
-| `<span class="x-avatar">AB</span>` or with an `<img alt>` | `data-size="sm|lg"`, `data-shape="tile"` (app-icon corner) |
+| `<span class="x-avatar">AB</span>` or with an `<img alt>` | `data-size="sm|lg"`, `data-shape="tile"` (app-icon corner). `data-hue style="--x-hue: 212"`: a colour of the person's own (React `seed`, `hueOf(id)`), readable in both themes |
+| `<nav class="x-toc" aria-label="…"><a href="#coasts">Coasts</a><a href="#light" data-level="2">…</a></nav>` | Contents of a long page; `contents()` from `xantoom-design/extras.js` marks the section being read (`aria-current="true"`) |
+| `<figure class="x-figure"><button type="button" command="show-modal" commandfor="big" aria-label="Enlarge: …"><img …></button><figcaption>…</figcaption></figure>` and `<dialog class="x-dialog x-lightbox" id="big" aria-label="…" closedby="any">…<img …></dialog>` | A captioned picture that opens large |
 | `<kbd class="x-kbd" data-mod>K</kbd>` | `data-mod`: `enhance()` adds ⌘ on Apple devices, Ctrl elsewhere (and says it to screen readers). Join keys with `&nbsp;` |
 | `<button class="x-chip" type="button" aria-pressed="false">Places</button>` | A filter. A removable value: `<span class="x-chip">…<button type="button" aria-label="Remove …">×</button></span>` |
 | `<span class="x-state" data-tone="danger"><svg aria-hidden>…</svg>Recording</span>` | A state is an icon and a word; `data-tone` only where it needs attention. `<span class="x-live">Live</span>` for live media. Nothing pulses |
-| `<dl class="x-stats"><div class="x-stat"><dt>…</dt><dd>1 284</dd><span data-trend="up">+38 this week</span></div></dl>` | Key figures; the trend says it in words too |
+| `<dl class="x-stats"><div class="x-stat"><dt>…</dt><dd>1 284</dd><span data-trend="up">+38 this week</span></div></dl>` | Key figures; the trend says it in words too. In `components/extras.css` |
 | `<svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg>` | Flags fill their box (`preserveAspectRatio="xMidYMid slice"` on each symbol) and always sit next to the language's name |
-| `<main class="x-status-page"><span class="x-status-icon"><svg aria-hidden>…</svg></span><p data-code>404</p><h1>…</h1><p>…</p><div class="x-cluster">…</div></main>` | 404, errors, offline: one layout everywhere, always with a way out |
+| `<main class="x-status-page"><span class="x-status-icon"><svg aria-hidden>…</svg></span><p data-code>404</p><h1>…</h1><p>…</p><div class="x-cluster">…</div></main>` | 404, errors, offline: one layout everywhere, always with a way out. In `components/extras.css` |
 | `<div class="x-callout" data-tone="…" role="status"><svg aria-hidden>…</svg><p>…</p></div>` | Messages in the page. Prefer them to toasts |
 | `<div class="x-table-scroll" role="region" aria-label="…" tabindex="0"><table class="x-table">` | Sticky headers. `data-numeric` on number cells. `<tbody data-long>` renders only rows on screen |
 | `<details class="x-accordion" name="group"><summary>…</summary><div>…</div></details>` | `name` makes the group exclusive |
@@ -123,6 +137,7 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
 <span class="x-skeleton"></span>   <!-- size it (in the app layer) exactly like the content it stands for -->
 <div class="x-banner" data-tone="warning" role="status"><svg aria-hidden>…</svg><p>…</p>
   <button class="x-button" data-size="sm">…</button><button class="x-banner-close" type="button" aria-label="…">…</button></div>
+<!-- Scrubber, a media timeline (components/extras.css) -->
 <div class="x-scrubber" role="slider" tabindex="0" aria-label="…" aria-valuemin="0" aria-valuemax="…" aria-valuenow="…"
   aria-valuetext="1:12:40" style="--value: 35%; --buffered: 62%"><div class="x-scrubber-track"></div>
   <div class="x-scrubber-thumb"></div><output aria-hidden="true">…</output></div>
@@ -194,7 +209,7 @@ padding on the panel itself: put it on a child.
   <a class="x-menu-item" href="/en/" hreflang="en" lang="en"><svg class="x-flag" aria-hidden="true">…</svg>English</a>
 </div>
 
-<!-- Command palette: a dialog with a search and a listbox; the app filters, enhance() adds the keys -->
+<!-- Command palette (components/extras.css): a dialog with a search and a listbox; the app filters, enhance() adds the keys -->
 <dialog class="x-dialog x-command" id="palette" aria-label="Commands" closedby="any">
   <label class="x-command-search"><svg aria-hidden>…</svg><input role="combobox" aria-expanded="true"
     aria-controls="palette-list" aria-autocomplete="list" aria-label="Search commands"></label>
@@ -205,9 +220,8 @@ padding on the panel itself: put it on a child.
   <footer><span><kbd class="x-kbd">↑</kbd> <kbd class="x-kbd">↓</kbd> …</span></footer>
 </dialog>
 
-<!-- Tooltip: the trigger keeps its own accessible name -->
-<button class="x-button" data-icon aria-label="Bold" interestfor="tip-bold"><svg aria-hidden>…</svg></button>
-<div class="x-tooltip" id="tip-bold" popover="hint">Bold <kbd class="x-kbd">Ctrl</kbd></div>
+<!-- Tooltip, in every browser: enhance() shows one on mouse hover and keyboard focus -->
+<button class="x-button" data-icon aria-label="Bold" data-tip="Bold" data-tip-sub="Ctrl B"><svg aria-hidden>…</svg></button>
 
 <!-- Toasts: one region per page, filled by toast() -->
 <section class="x-toaster" popover="manual" role="region" aria-label="Notifications" data-close-label="Dismiss"></section>
@@ -224,13 +238,17 @@ toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without t
   `<form method="dialog">` or `command="close"`. No `role="dialog"`, `aria-modal`, focus trap or scroll lock: the
   browser does all of it. Use `command="request-close"` and a `cancel` handler for unsaved changes.
 - Menus and popovers anchor to their invoker where CSS anchor positioning exists, and flip at screen edges. Elsewhere
-  `enhance()` places them under their button (above it when there is no room).
+  `enhance()` places them under their button (above it when there is no room), keeps them there as the page or a box
+  scrolls, and closes them once the button is out of sight.
 - A long menu: `style="--rows: 6"` shows six items and half the seventh, then scrolls.
 - A menu item with `aria-current` (a language, a sort order) gets a check at its end.
 - The command palette keeps focus in its search; arrow keys, Home and End move the active option
   (`aria-activedescendant`), Enter clicks it, and the first visible option becomes active after each input.
-- Tooltips show on hover and focus where `interestfor` exists. Never put needed information only in a tooltip: an
-  icon button still has its `aria-label`.
+- Tooltips: `data-tip` (and `data-tip-sub`, a quieter second line) on any element. One shared tooltip shows on mouse
+  hover (after 450 ms; at once on a neighbour) and keyboard focus, above its trigger or under it, and hides on Escape,
+  a press or a scroll. It names a trigger that has none and describes one whose name says something else
+  (`aria-description`). Touch screens never show it: never put needed information only there. The older
+  `interestfor` + `popover="hint"` markup still works, in Chromium only.
 - Toasts are for supplemental news; keep their actions available elsewhere. During a modal, `toast()` moves the
   region into the modal (the page behind is inert), so a toast shows over it, clickable, and moves back when it
   closes.
@@ -265,7 +283,12 @@ arrow buttons Windows draws.
 | --- | --- |
 | `<Button variant size block busy>` | `.x-button`; `busy` shows the spinner and blocks presses but keeps focus. `buttonProps()` gives a link the look |
 | `<IconButton label shortcut>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) and its shortcut. A toggle takes `aria-pressed`: pressed, it sits in and turns accent |
-| `<Tooltip content>` | `interestfor` on its child and a `popover="hint"` tooltip; describes the child only when it says something else than its name |
+| `<Tooltip content sub>` | `data-tip` (and `data-tip-sub`) on its child: the shared tooltip, in every browser |
+| `<Select label value onChange options>` | The native `<select class="x-select">` in a field: drawn by the design system where `base-select` exists, the platform's list elsewhere |
+| `<Combobox label value onChange options empty placeholder rows>` | A search picking one option (`{ value, label, detail }`) from a long list: typing filters (accents and case aside) and marks the match, the arrows move, Enter or Tab takes the active option, Escape closes. Focus stays in the field |
+| `<ColorField label value onChange labels>` | A button showing the colour, opening a picker: saturation and brightness on a plane (arrow keys too), hue on a bar, the hex code. `labels` names the three parts |
+| `<Settings title level>` with `<SettingRow label description>{(control) => …}</SettingRow>` | `x-settings`: the control gets the id and description it must carry |
+| `<DurationField label value onChange step min max locale>` | A duration in seconds shown m:ss.cc (h:mm:ss.cc from an hour), on NumberField's grip and keys (a tenth of a second, Shift a second); "2:30", "150.5" or "150,5" typed |
 | `<Field label hint error required>{(control) => …}</Field>`, `<TextField>`, `<TextArea>` | Label, hint and error tied to the control (`id`, `aria-describedby`, `aria-invalid`) |
 | `<Menu label rows trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `description`, `detail`, `checked`, `tone`, `shortcut`, `href`, `target`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns. `rows` limits its height; `description` is a muted second line, `detail` a value at the end |
 | `<Popover label trigger open onOpenChange>` and `useClose()` | A panel anchored to its button (filters, a small form); its content exists only while open, and `useClose()` closes it from inside. `className` sizes it: a display utility (`flex`) would show it closed, so lay out an inner element |
@@ -275,8 +298,8 @@ arrow buttons Windows draws.
 | `<SearchField label value onChange shortcut clearLabel>` | `x-search`: the shortcut (one key, "/") focuses it while empty, then the clear button; Escape clears it before closing what holds it |
 | `<FilePicker accept multiple onFiles>{(pick) => …}</FilePicker>`, `<DropZone title hint detail icon accept multiple onFiles>` | A hidden file input any button opens; the `x-dropzone`, with its drag state |
 | `<Brand name size label>` | An app's logo from `xantoom-design/brand`, its ids unique |
-| `<CommandPalette open onClose label query onQueryChange groups empty>` | `x-command`: the app filters `groups` (`{ id, label, items: [{ id, label, icon, detail, hint, onSelect }] }`); the first item is active, the arrow keys move it, Enter or a click closes and runs it |
+| `<CommandPalette open onClose label query onQueryChange groups empty>` | Needs `xantoom-design/components/extras.css`. `x-command`: the app filters `groups` (`{ id, label, items: [{ id, label, icon, detail, hint, onSelect }] }`); the first item is active, the arrow keys move it, Enter or a click closes and runs it |
 | `<Toaster label closeLabel>` and `toast()` | The toast region, once per page |
-| `<Avatar name src size shape>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails; drawn flags (fr, gb, de, it, es) |
+| `<Avatar name src size shape seed>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails, on a colour of the person's own with `seed` (their id; `hueOf(id)` gives the same hue for a cursor or a name); drawn flags (fr, gb, de, it, es) |
 | `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon; `disabled` on an option fades it and the arrows skip it |
 | `<ThemeCycle labels icons>` | The `x-cycle` theme switch on `theme.js` |

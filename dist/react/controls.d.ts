@@ -26,7 +26,12 @@ export interface NumberFieldProps extends Pick<FieldProps, 'label' | 'hint' | 'e
  * A number: typed freely (checked against the limits when the field is left or on Enter), dragged sideways from the
  * grip, stepped with the arrow keys, Page Up and Down (ten steps), Home and End, or the two small arrows.
  */
-export declare function NumberField({ label, hint, error, required, className, value, onChange, min, max, step, unit, format, locale, disabled, name, ref, }: NumberFieldProps): ReactElement;
+export declare function NumberField({ format, locale, step, ...props }: NumberFieldProps): ReactElement;
+/**
+ * A duration in seconds, shown m:ss.cc: the grip, arrows and keys of NumberField (a tenth of a second by default,
+ * Shift ten times that), and free typing ("2:30", "150.5" or "150,5").
+ */
+export declare function DurationField({ locale, step, min, ...props }: Omit<NumberFieldProps, 'format' | 'unit'>): ReactElement;
 /**
  * A search box: its icon, the shortcut that focuses it while it is empty (a single key such as "/"), then a button
  * that clears it. Escape clears it too.

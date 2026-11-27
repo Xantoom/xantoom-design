@@ -58,3 +58,32 @@ describe('contrast, generic blocks and app grounds', () => {
 		expect(pair('a', '--x-fg', '--app-inset')?.ok).toBe(true);
 	});
 });
+
+describe('contrast, accent zones', () => {
+	const css = `
+[data-x-accent="video"] { --x-scope: light-dark(#2f5bff, #5c86ff); --x-scope-ink: light-dark(#ffffff, #0a0d16); --x-scope-text: light-dark(#2448e6, #8eabff); }
+[data-x-accent="gif"] { --x-scope: #2dcb85; --x-scope-ink: #ffffff; }
+`;
+	const results = checkContrast(css);
+	const zone = (name: string): typeof results => results.filter((r) => r.theme.endsWith(`zone ${name}`));
+
+	test('checks each zone in light and dark when the file has no theme', () => {
+		expect([...new Set(zone('video').map((r) => r.theme))].sort()).toEqual(['dark, zone video', 'light, zone video']);
+	});
+
+	test('passes a legible zone', () => {
+		expect(zone('video').filter((r) => !r.ok)).toEqual([]);
+	});
+
+	test('flags white ink on a light fill, and a fill too light to colour text', () => {
+		const failing = zone('gif').filter((r) => !r.ok).map((r) => `${r.fg} on ${r.bg}`);
+		expect(failing).toContain('--x-scope-ink on --x-scope');
+		expect(failing.some((f) => f.startsWith('--x-scope on'))).toBe(true);
+	});
+
+	test('checks zones inside each theme of an app', () => {
+		const app = checkContrast(`:root, [data-theme="day"] { color-scheme: light; --app-ink: #111111; } [data-x-accent="gif"] { --x-scope: #2dcb85; --x-scope-ink: #ffffff; }`);
+		expect(app.some((r) => r.theme === 'day, zone gif')).toBe(true);
+		expect(app.some((r) => r.theme === 'day' && r.fg === '--app-ink')).toBe(true);
+	});
+});

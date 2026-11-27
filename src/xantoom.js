@@ -1,8 +1,9 @@
 // Xantoom design system: the optional behaviour layer (no dependency).
 // The CSS works without it; this adds what HTML and CSS cannot do alone, or not yet in every browser:
 // animated exits outside Chromium, invoker commands and light dismiss where missing, a dialog's first focus, menus
-// placed under their button without anchor positioning, tooltip semantics, tab, menu and command palette keyboards,
-// shortcuts written for the platform, and toasts (shown over an open modal too). Call `enhance()` once the page is parsed,
+// placed under their button without anchor positioning, tooltips in every browser, tab, menu and command palette
+// keyboards, shortcuts written for the platform, and toasts (shown over an open modal too). What few pages need is
+// in extras.js. Call `enhance()` once the page is parsed,
 // and again on content inserted later.
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -133,8 +134,8 @@ let anchors = false;
 function anchorFallback() {
 	if (anchors || CSS.supports('position-area', 'block-end')) return;
 	anchors = true;
-	const sourceOf = (panel, event) =>
-		event.source ?? document.querySelector(`[popovertarget="${CSS.escape(panel.id)}"], [commandfor="${CSS.escape(panel.id)}"]`);
+	const sourceOf = (panel, event, id = CSS.escape(panel.id)) =>
+		event.source ?? document.querySelector(`[popovertarget="${id}"],[commandfor="${id}"],[aria-controls="${id}"]`);
 	const place = (panel, source) => {
 		const a = source.getBoundingClientRect();
 		const r = panel.getBoundingClientRect();
@@ -149,18 +150,33 @@ function anchorFallback() {
 			left: `${Math.min(Math.max(edge, start), innerWidth - r.width - edge)}px`,
 		});
 	};
+	const open = new Map();
 	// Placed before it shows (no frame in the middle of the screen), then flipped once its size is known.
 	for (const type of ['beforetoggle', 'toggle'])
 		document.addEventListener(
 			type,
 			(event) => {
 				const panel = event.target;
-				if (event.newState !== 'open' || !panel.matches?.('.x-menu, .x-popover')) return;
-				const source = sourceOf(panel, event);
-				if (source) place(panel, source);
+				if (!panel.matches?.('.x-menu, .x-popover')) return;
+				if (event.newState !== 'open') return open.delete(panel);
+				const source = sourceOf(panel, event) ?? open.get(panel);
+				if (!source) return;
+				open.set(panel, source);
+				place(panel, source);
 			},
 			true,
 		);
+	// Kept on its button as the page or a box scrolls; closed once the button is out of sight.
+	const follow = (event) => {
+		for (const [panel, source] of open) {
+			const a = source.getBoundingClientRect();
+			const box = event.target.contains?.(source) ? event.target.getBoundingClientRect() : {}; // {}: the viewport alone
+			if (a.bottom < box.top || a.top > box.bottom || a.bottom < 0 || a.top > innerHeight) void closeTopLayer(panel);
+			else place(panel, source);
+		}
+	};
+	addEventListener('scroll', follow, { capture: true, passive: true });
+	addEventListener('resize', follow);
 }
 
 // --- Tooltips (popover="hint" + interestfor) ------------------------------------------------------------------------
@@ -226,6 +242,82 @@ function hints(root) {
 			},
 			true,
 		);
+}
+
+// --- Tooltips on [data-tip]: one shared tooltip, on mouse hover and keyboard focus, in every browser ---------------
+
+let tip;
+let tipHost = null;
+let tipTimer = 0;
+let tipLeft = 0;
+
+/** Names an unnamed trigger by its tooltip, or adds the tooltip as its description when it says something else. */
+function tipLabel(element) {
+	const name = normalize(nameOf(element));
+	const text = normalize(element.dataset.tip);
+	if (!name) element.setAttribute('aria-label', text);
+	else if (name !== text && !element.hasAttribute('aria-description')) element.setAttribute('aria-description', text);
+}
+
+function showTip(host) {
+	clearTimeout(tipTimer);
+	tipHost = host;
+	tipLabel(host);
+	tip.replaceChildren(host.dataset.tip);
+	if (host.dataset.tipSub) tip.append(Object.assign(document.createElement('small'), { textContent: host.dataset.tipSub }));
+	// Over a modal or in full screen, the rest of the page is hidden: the tooltip goes where its trigger is.
+	const layer = host.closest('dialog:modal, :popover-open') ?? document.fullscreenElement ?? document.body;
+	if (tip.parentElement !== layer) {
+		tip.togglePopover(false);
+		layer.append(tip);
+	}
+	tip.togglePopover(true);
+	const a = host.getBoundingClientRect();
+	const r = tip.getBoundingClientRect();
+	const above = a.top - r.height - 6 >= 8;
+	Object.assign(tip.style, {
+		top: `${above ? a.top - r.height - 6 : a.bottom + 6}px`,
+		left: `${Math.min(Math.max(8, a.left + a.width / 2 - r.width / 2), innerWidth - r.width - 8)}px`,
+	});
+}
+
+function hideTip() {
+	clearTimeout(tipTimer);
+	if (tipHost) tipLeft = Date.now();
+	tipHost = null;
+	tip?.togglePopover(false);
+}
+
+/** Wires `data-tip` (and `data-tip-sub`, a second line) for the whole document; `enhance()` calls it. */
+export function tooltips(root = document) {
+	for (const element of within(root, '[data-tip]')) tipLabel(element);
+	if (tip) return;
+	// Hidden from assistive technology: what it says is already the trigger's name or description.
+	tip = Object.assign(document.createElement('div'), { className: 'x-tooltip', id: 'x-tip', popover: 'manual' });
+	tip.setAttribute('aria-hidden', 'true');
+	// In the page from the start: a popover hidden while disconnected throws.
+	document.body.append(tip);
+	const hostOf = (event) => event.target.closest?.('[data-tip]');
+	// The first waits; a neighbour hovered right after shows at once.
+	document.addEventListener('pointerover', (event) => {
+		const host = hostOf(event);
+		if (!host || host === tipHost || event.pointerType !== 'mouse') return;
+		clearTimeout(tipTimer);
+		tipTimer = setTimeout(() => showTip(host), Date.now() - tipLeft < 600 ? 0 : 450);
+	});
+	document.addEventListener('pointerout', (event) => {
+		const host = hostOf(event);
+		if (host && !host.contains(event.relatedTarget)) hideTip();
+	});
+	document.addEventListener('focusin', (event) => {
+		const host = hostOf(event);
+		if (host?.matches(':focus-visible')) showTip(host);
+	});
+	for (const type of ['focusout', 'pointerdown']) document.addEventListener(type, hideTip, true);
+	addEventListener('scroll', hideTip, { capture: true, passive: true });
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') hideTip();
+	});
 }
 
 // --- Tabs -----------------------------------------------------------------------------------------------------------
@@ -519,6 +611,7 @@ export function enhance(root = document) {
 	anchorFallback();
 	dialogs(root);
 	hints(root);
+	tooltips(root);
 	tabs(root);
 	menus(root);
 	commands(root);

@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.5.1
+  version: 0.6.0
 ---
 
 # Xantoom design system
@@ -14,8 +14,9 @@ next from its ground, type, shapes, motion and gradient fill, while its colour a
 
 The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pure CSS (`dist/xantoom.css`, about
 10 KB brotli), one theme file per app (`dist/themes/<app>.css`), DTCG tokens (`tokens/`) and an optional script
-(`dist/xantoom.js`, about 3.5 KB) for what CSS cannot do alone, plus the theme head script and the apps' logos
-(`xantoom-design/brand`).
+(`dist/xantoom.js`, about 4 KB) for what CSS cannot do alone, plus the theme head script and the apps' logos
+(`xantoom-design/brand`). What few pages need is apart: `components/extras.css` (command palette, scrubber, error
+pages, key figures) and `extras.js` (contents that follow the reading, number fields without React).
 
 ## Before you write UI
 
@@ -48,9 +49,10 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
   everything clickable (the reset does it for native controls).
 - **Performance first.** No `transition: all`, no animated layout properties (accordion height is the one
   exception), `content-visibility` for long lists, and no blur filters on large surfaces.
-- **Native first.** Build on the platform (`<dialog>`, `popover`, `<select>`, `interestfor`, radios) and this design
+- **Native first.** Build on the platform (`<dialog>`, `popover`, `<select>`, radios) and this design
   system's classes. Add an interface library (React Aria and the like) only where the platform still lacks the
-  behaviour (accessible drag and drop, a combobox, a styled select in Firefox), and say why in a comment.
+  behaviour (accessible drag and drop, a virtualised tree), and say why in a comment. A combobox and a select are
+  the design system's (`Combobox`, `Select`).
 - **Reorganise, do not stack.** When room runs out, a component changes its layout instead of wrapping: secondary
   settings fold behind one button, the main action becomes an icon, the search takes the width. Key it to its
   container (`@container`), so it also holds in a narrow panel on a wide screen. No wasted space at any width.
@@ -62,7 +64,7 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
   `x-dl`, and `x-card-head` for a card's title row. No small uppercase grey labels above brighter text.
 - **Theme contrast.** An app with its own themes runs `bunx xantoom-design contrast <themes.css> --theme <app>` in its
   tests or CI (`--prefix <app>` when it names some colours itself, `--ground <name>` for each ground of its own): text
-  pairs reach 4.5:1 and interface colours 3:1 in every theme.
+  pairs reach 4.5:1 and interface colours 3:1 in every theme. It checks the `data-x-accent` zones in the file too.
 
 ## Adding the design system to a project
 
@@ -70,7 +72,7 @@ The CSS goes in the project; this skill stays on the machine (`bunx github:Xanto
 updates it). A project never holds a copy of the skill.
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.5.1
+bun add github:Xantoom/xantoom-design#v0.6.0
 ```
 
 ```css
@@ -81,7 +83,7 @@ bun add github:Xantoom/xantoom-design#v0.5.1
 
 A site that uses only some components imports `xantoom-design/foundation` (tokens, reset, base, motion and
 utilities, about 3 KB brotli) plus their families, `xantoom-design/components/<family>.css` (`actions`, `forms`,
-`content`, `feedback`, `navigation`, `overlays`; a toast's close button needs `actions`). The skip link is in the
+`content`, `feedback`, `navigation`, `overlays`, `extras`; a toast's close button needs `actions`). The skip link is in the
 foundation: every page has one.
 
 A React and Tailwind app uses the design system's components through `xantoom-design/react` and its tokens through

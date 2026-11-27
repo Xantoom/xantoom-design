@@ -1,30 +1,21 @@
-import { cloneElement, type ReactElement, type ReactNode, useId } from 'react';
+import { tooltips } from 'xantoom-design/js';
+import { cloneElement, type ReactElement, useEffect } from 'react';
 
 /**
- * A hint shown on hover and focus, through `interestfor` and `popover="hint"` where the browser has them (elsewhere
- * nothing shows, so never put needed information only here). The trigger keeps its own accessible name: when the
- * tooltip says something else, it describes the trigger.
+ * A hint on mouse hover and keyboard focus, in every browser (xantoom.js `data-tip`: one shared tooltip, placed above
+ * its trigger or under it). It names a trigger that has no name, and describes one whose name says something else;
+ * touch screens never show it, so never put needed information only here.
  */
 export function Tooltip({
 	content,
+	sub,
 	children,
-	describes = typeof content !== 'string' || content !== children.props['aria-label'],
 }: {
-	content: ReactNode;
-	/** Whether the tooltip adds to the trigger's name (`aria-describedby`); by default, when it says something else. */
-	describes?: boolean;
+	content: string;
+	/** A second line, quieter (a shortcut, a detail). */
+	sub?: string;
 	children: ReactElement<Record<string, unknown>>;
 }): ReactElement {
-	const id = useId();
-	return (
-		<>
-			{cloneElement(children, {
-				interestfor: id,
-				...(describes ? { 'aria-describedby': id } : {}),
-			})}
-			<div className="x-tooltip" id={id} popover="hint" role={describes ? 'tooltip' : undefined}>
-				{content}
-			</div>
-		</>
-	);
+	useEffect(() => tooltips(), []);
+	return cloneElement(children, { 'data-tip': content, 'data-tip-sub': sub });
 }

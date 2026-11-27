@@ -6,7 +6,11 @@
 // `--ground <name>` adds an app's own ground (`--<prefix>-<name>`) that text and interface colours must read on. Colours
 // are read by role whatever the app calls its properties (`--vx-ink` or `--x-fg` is the text colour), then resolved:
 // `var()` within the file or to the design system's tokens (`--theme` adds an app theme's), `light-dark()` by the
-// block's `color-scheme`, hex, rgb() and oklch(). Text pairs need 4.5:1, interface colours 3:1. Exits 1 on a failure.
+// block's `color-scheme`, hex, rgb() and oklch(). Text pairs need 4.5:1, interface colours 3:1.
+//
+// Accent zones (`[data-x-accent="name"] { --x-scope; --x-scope-ink; --x-scope-text }`) are checked in every theme (in
+// light and dark when the file has none): the ink on the fill 4.5:1, the zone's accent on each ground 3:1, like the
+// theme's own. Exits 1 on a failure.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { contrast, declaration, flatten, type Color } from './tokens.ts';
@@ -153,7 +157,17 @@ export function checkContrast(
 			);
 		});
 
-	const names = blocks.flatMap((b) => b.declarations.map(([k]) => k)).filter((k) => k.startsWith('--'));
+	const zoneOf = (selector: string): string | undefined => /\[data-x-accent=["']?([\w-]+)["']?\]/.exec(selector)?.[1];
+	const zones = new Map<string, Declarations>();
+	for (const block of blocks) {
+		const zone = zoneOf(block.selector);
+		if (!zone) continue;
+		const decls = zones.get(zone) ?? new Map();
+		for (const [k, v] of block.declarations) decls.set(k, v);
+		zones.set(zone, decls);
+	}
+
+	const names = blocks.filter((b) => !zoneOf(b.selector)).flatMap((b) => b.declarations.map(([k]) => k)).filter((k) => k.startsWith('--'));
 	const counts = new Map<string, number>();
 	for (const n of names) {
 		const p = /^--([a-z]+)-/.exec(n)?.[1];
@@ -163,12 +177,15 @@ export function checkContrast(
 	const ds = designTokens(theme);
 	const themes = [...new Set(blocks.flatMap((b) => idsOf(b.selector)))];
 
-	return themes.flatMap((id) => {
+	// A file with zones but no theme: its zones on the design system's own ground, in both modes.
+	const contexts = themes.length > 0 || zones.size === 0 ? themes : ['light', 'dark'];
+	return contexts.flatMap((id) => {
 		const decls: Declarations = new Map();
 		for (const block of blocks)
-			if (isRoot(block.selector) || forAll(block.selector, id) || idsOf(block.selector).includes(id))
+			if (!zoneOf(block.selector) && (isRoot(block.selector) || forAll(block.selector, id) || idsOf(block.selector).includes(id)))
 				for (const [k, v] of block.declarations) decls.set(k, v);
-		const dark = /\bdark\b/.test(decls.get('color-scheme') ?? '') && !/\blight\b/.test(decls.get('color-scheme') ?? '');
+		const scheme = themes.length > 0 ? (decls.get('color-scheme') ?? '') : id;
+		const dark = /\bdark\b/.test(scheme) && !/\blight\b/.test(scheme);
 		const colour = (role: string): { name: string; color: Color } | undefined => {
 			// The app's own names first, then design-system names it sets, then the design system's values.
 			const aliases: readonly string[] = role in ROLES ? ROLES[role as Role] : [role];
@@ -184,12 +201,32 @@ export function checkContrast(
 			}
 			return undefined;
 		};
-		return pairs([...GROUNDS, ...grounds]).flatMap(([fgRole, bgRole, min]) => {
+		const theme = themes.length > 0 ? pairs([...GROUNDS, ...grounds]).flatMap(([fgRole, bgRole, min]) => {
 			const [fg, bg] = [colour(fgRole), colour(bgRole)];
 			if (!fg || !bg) return [];
 			const ratio = contrast(fg.color, bg.color);
 			return [{ theme: id, fg: fg.name, bg: bg.name, ratio, min, ok: ratio >= min }];
+		}) : [];
+		const zoned = [...zones].flatMap(([zone, own]) => {
+			const read = (name: string): { name: string; color: Color } | undefined => {
+				const raw = own.get(name);
+				const color = raw === undefined ? undefined : parse(resolve(raw, new Map([...decls, ...own]), ds, dark));
+				return color ? { name, color } : undefined;
+			};
+			const fill = read('--x-scope');
+			const ink = read('--x-scope-ink');
+			const text = read('--x-scope-text') ?? fill;
+			const checks: [typeof fill, typeof fill, number][] = [
+				[ink, fill, 4.5],
+				...[...GROUNDS, ...grounds].map((role): [typeof fill, typeof fill, number] => [text, colour(role), 3]),
+			];
+			return checks.flatMap(([fg, bg, min]) => {
+				if (!fg || !bg) return [];
+				const ratio = contrast(fg.color, bg.color);
+				return [{ theme: `${id}, zone ${zone}`, fg: fg.name, bg: bg.name, ratio, min, ok: ratio >= min }];
+			});
 		});
+		return [...theme, ...zoned];
 	});
 }
 

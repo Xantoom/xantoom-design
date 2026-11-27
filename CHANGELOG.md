@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.6.0
+
+- Tooltips in every browser: `data-tip` (and `data-tip-sub`, a second line) on any element; `enhance()` shows one
+  shared tooltip on mouse hover and keyboard focus, above or under its trigger, and names or describes the trigger
+  (`aria-label`, `aria-description`). React `Tooltip` takes `content` and `sub` (strings) and sets them; `IconButton`'s
+  `shortcut` is the second line. Breaking: `Tooltip` no longer renders an `interestfor` popover, and `describes` is
+  gone.
+- Settings: `x-settings` (rows in one frame: label, muted description, control at the end; under the label when
+  narrow), React `Settings` and `SettingRow`.
+- React `Select` (the native select in a field) and `Combobox` (a search picking one option: filters without accents
+  or case, marks the match, arrows, Enter or Tab takes the active option, Escape closes), `ColorField` (plane, hue
+  bar, hex code), `DurationField` (m:ss.cc on NumberField's grip and keys).
+- Cards: a quiet `x-count` in the title, `x-card-actions` at the end of the head, `x-card[data-flush]` for content
+  edge to edge.
+- Avatars coloured by their person: `data-hue` with `--x-hue`; React `Avatar seed` and `hueOf()`.
+- Long pages: `x-toc` (its current link marked by `contents()`) and `x-figure` with an `x-lightbox` dialog.
+- Menus placed by `enhance()` without anchor positioning follow their button as the page or a box scrolls, and close
+  once it is out of sight.
+- A two-line menu row is computed from the sizes that draw it, not a fixed 3.375 rem.
+- `x-dl`: the term sits right on its text (2 px), both at 14 px; pairs 12 px apart.
+- `xantoom-design contrast` checks `[data-x-accent]` zones: ink on fill 4.5:1, the zone's accent on each ground 3:1,
+  in every theme (light and dark when the file has none).
+- Extras: the command palette, scrubber, error page and key figures moved to `components/extras.css` (out of
+  `xantoom.css`, which stays under its budget); `xantoom-design/extras.js` holds `contents()` and `numbers()` (a plain
+  `x-number` field's keys, steps and grip). Breaking: a page with one of those components imports
+  `xantoom-design/components/extras.css`.
+
 ## 0.5.1
 
 - The skill and the CSS install apart. `xantoom-design skill` installs the skill on the machine

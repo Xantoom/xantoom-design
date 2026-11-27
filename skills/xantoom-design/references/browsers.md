@@ -24,7 +24,7 @@ Measured in November 2026 (caniuse and web-features, global usage):
 | Customizable `<select>` (`appearance: base-select`) | 73 % | The native picker |
 | `interpolate-size` / `::details-content` | 71 % | The accordion opens without animating |
 | `if()` | 70 % | Do not use it in the design system yet |
-| `interestfor`, `popover="hint"` | 67 % | No hover tooltip; the trigger keeps its accessible name |
+| `interestfor`, `popover="hint"` | 67 % | No hover tooltip; the trigger keeps its accessible name. `data-tip` (xantoom.js) shows tooltips everywhere |
 | `overlay` (top-layer exits) | Chromium | `closeTopLayer()` plays the exit through `data-closing` |
 | `ariaNotify()` | Baseline 2026 | Live region (built into `toast()`) |
 | `focusgroup` | Chromium | Arrow keys from `enhance()` |

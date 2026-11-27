@@ -45,9 +45,9 @@ export function Button({ variant, size, block, busy = false, type = 'button', cl
 export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'block'> {
 	/** The accessible name, also shown as a tooltip (`tooltip={false}` to show none). */
 	label: string;
-	tooltip?: boolean | ReactNode;
-	/** A keyboard shortcut shown in the tooltip after the label, e.g. "Ctrl K". */
-	shortcut?: ReactNode;
+	tooltip?: boolean | string;
+	/** A keyboard shortcut, shown on the tooltip's second line, e.g. "Ctrl K". */
+	shortcut?: string;
 	/** The icon, `aria-hidden`. */
 	children: ReactNode;
 }
@@ -56,16 +56,8 @@ export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'block'>
 export function IconButton({ label, tooltip = true, shortcut, variant = 'ghost', ...props }: IconButtonProps): ReactElement {
 	const button = <Button variant={variant} data-icon="" aria-label={label} {...props} />;
 	if (tooltip === false) return button;
-	const content =
-		tooltip !== true ? tooltip : shortcut ? (
-			<>
-				{label} <kbd className="x-kbd">{shortcut}</kbd>
-			</>
-		) : (
-			label
-		);
 	return (
-		<Tooltip content={content} describes={tooltip !== true}>
+		<Tooltip content={tooltip === true ? label : tooltip} sub={shortcut}>
 			{button}
 		</Tooltip>
 	);

@@ -71,11 +71,17 @@ export interface NumberFieldProps extends Pick<FieldProps, 'label' | 'hint' | 'e
 	ref?: Ref<HTMLInputElement>;
 }
 
-/**
- * A number: typed freely (checked against the limits when the field is left or on Enter), dragged sideways from the
- * grip, stepped with the arrow keys, Page Up and Down (ten steps), Home and End, or the two small arrows.
- */
-export function NumberField({
+type SpinProps = Omit<NumberFieldProps, 'format' | 'locale'> & {
+	show: (value: number) => string;
+	/** The typed text as a number (NaN when it is not one). */
+	read: (text: string) => number;
+	decimal: boolean;
+	/** Decimals kept (default: the step's). */
+	digits?: number;
+};
+
+/** What NumberField and DurationField share: typing, keys, the grip and the two arrows. */
+function Spin({
 	label,
 	hint,
 	error,
@@ -87,28 +93,26 @@ export function NumberField({
 	max = Number.POSITIVE_INFINITY,
 	step = 1,
 	unit,
-	format,
-	locale,
 	disabled,
 	name,
 	ref,
-}: NumberFieldProps): ReactElement {
+	show,
+	read,
+	decimal,
+	digits = decimalsOf(step),
+}: SpinProps): ReactElement {
 	const [text, setText] = useState<string | null>(null);
 	const [scrubbing, setScrubbing] = useState(false);
 	const drag = useRef<{ x: number; from: number } | null>(null);
-	const formatter = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: decimalsOf(step), ...format }), [locale, format, step]);
-	const { decimal, group } = useMemo(() => separators(locale), [locale]);
 
-	const fit = (next: number): number => Math.min(max, Math.max(min, Number(next.toFixed(decimalsOf(step)))));
 	const set = (next: number): void => {
-		const fitted = fit(next);
+		const fitted = Math.min(max, Math.max(min, Number(next.toFixed(digits))));
 		if (fitted !== value) onChange(fitted);
 	};
 	const commit = (): void => {
 		if (text === null) return;
-		const raw = text.replaceAll(group, '').replaceAll(/\s/g, '').replace(decimal, '.').replace(',', '.');
-		const parsed = Number(raw);
-		if (raw !== '' && Number.isFinite(parsed)) set(parsed);
+		const parsed = read(text);
+		if (text.trim() !== '' && Number.isFinite(parsed)) set(parsed);
 		setText(null);
 	};
 	const keys = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -149,11 +153,12 @@ export function NumberField({
 		setScrubbing(false);
 	};
 
-	const shown = text ?? (Number.isFinite(value) ? formatter.format(value) : '');
+	const shown = text ?? (Number.isFinite(value) ? show(value) : '');
 	return (
 		<Field label={label} hint={hint} error={error} required={required} className={className}>
 			{(control) => (
-				<div className="x-number" data-scrubbing={scrubbing ? '' : undefined}>
+				// data-x-ready: React drives it, extras.js `numbers()` leaves it alone.
+				<div className="x-number" data-x-ready="" data-scrubbing={scrubbing ? '' : undefined}>
 					<span className="x-number-scrub" aria-hidden="true" onPointerDown={press} onPointerMove={move} onPointerUp={release} onPointerCancel={release}>
 						<svg {...ICON}>
 							<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />
@@ -164,14 +169,14 @@ export function NumberField({
 						ref={ref}
 						name={name}
 						type="text"
-						inputMode={decimalsOf(step) > 0 || min < 0 ? 'decimal' : 'numeric'}
+						inputMode={decimal || min < 0 ? 'decimal' : 'numeric'}
 						role="spinbutton"
 						autoComplete="off"
 						disabled={disabled}
 						aria-valuenow={Number.isFinite(value) ? value : undefined}
 						aria-valuemin={Number.isFinite(min) ? min : undefined}
 						aria-valuemax={Number.isFinite(max) ? max : undefined}
-						aria-valuetext={unit ? `${formatter.format(value)} ${unit}` : undefined}
+						aria-valuetext={unit ? `${show(value)} ${unit}` : show(value)}
 						value={shown}
 						onChange={(event) => setText(event.target.value)}
 						onBlur={commit}
@@ -186,6 +191,46 @@ export function NumberField({
 			)}
 		</Field>
 	);
+}
+
+/**
+ * A number: typed freely (checked against the limits when the field is left or on Enter), dragged sideways from the
+ * grip, stepped with the arrow keys, Page Up and Down (ten steps), Home and End, or the two small arrows.
+ */
+export function NumberField({ format, locale, step = 1, ...props }: NumberFieldProps): ReactElement {
+	const formatter = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: decimalsOf(step), ...format }), [locale, format, step]);
+	const { decimal, group } = useMemo(() => separators(locale), [locale]);
+	const read = (text: string): number =>
+		Number(text.replaceAll(group, '').replaceAll(/\s/g, '').replace(decimal, '.').replace(',', '.'));
+	return <Spin {...props} step={step} show={(n) => formatter.format(n)} read={read} decimal={decimalsOf(step) > 0} />;
+}
+
+/** Seconds as m:ss.cc (h:mm:ss.cc from an hour), with the locale's decimal mark. */
+function clock(value: number, decimal: string, digits: number): string {
+	// Rounded first, so 59.999 reads 1:00.00 and never 0:60.00.
+	const seconds = Number(value.toFixed(digits));
+	const whole = Math.floor(seconds);
+	const h = Math.floor(whole / 3600);
+	const m = Math.floor((whole % 3600) / 60);
+	const s = (seconds % 60).toFixed(digits).padStart(digits ? digits + 3 : 2, '0').replace('.', decimal);
+	return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
+}
+
+/** "1:04.25", "1:02:03", "64.25" or "64,25" as seconds. */
+function seconds(text: string): number {
+	const parts = text.trim().replace(',', '.').split(':');
+	if (parts.length > 3 || parts.some((p) => !/^\d+(\.\d*)?$/.test(p))) return Number.NaN;
+	return parts.reduce((total, part) => total * 60 + Number(part), 0);
+}
+
+/**
+ * A duration in seconds, shown m:ss.cc: the grip, arrows and keys of NumberField (a tenth of a second by default,
+ * Shift ten times that), and free typing ("2:30", "150.5" or "150,5").
+ */
+export function DurationField({ locale, step = 0.1, min = 0, ...props }: Omit<NumberFieldProps, 'format' | 'unit'>): ReactElement {
+	const { decimal } = useMemo(() => separators(locale), [locale]);
+	const digits = Math.max(2, decimalsOf(step));
+	return <Spin {...props} step={step} min={min} show={(n) => clock(n, decimal, digits)} read={seconds} decimal digits={digits} />;
 }
 
 const editable = (target: EventTarget | null): boolean =>

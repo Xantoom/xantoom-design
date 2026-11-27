@@ -14,6 +14,11 @@
 	align-content: start;
 }
 
+/* A button standing for the control (a colour, a date): its own width, not the field's. */
+.x-field > .x-button {
+	justify-self: start;
+}
+
 .x-label {
 	font-size: var(--x-text-sm);
 	font-weight: var(--x-weight-medium);
@@ -738,5 +743,237 @@ textarea.x-input {
 		margin-block-end: var(--x-space-2);
 		padding: 0;
 		font-weight: var(--x-weight-bold);
+	}
+}
+
+/*
+ * Settings: rows in one frame, each a label (and a line saying what it does) with its control at the end. When the
+ * frame is narrow, a wide control (a select, a number) moves under its label; a switch stays beside it.
+ * <section class="x-settings" aria-labelledby="h"><h3 id="h">Recording</h3><ul>
+ *   <li><span class="x-setting-text"><label for="chat">Save the chat</label><small id="chat-d">…</small></span>
+ *     <input type="checkbox" class="x-switch" switch role="switch" id="chat" aria-describedby="chat-d"></li>…
+ * </ul></section>
+ */
+.x-settings {
+	container-type: inline-size;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--x-space-2);
+
+	/* The title reads like an x-dl term: the page's text, bold, never small grey capitals. */
+	& > :is(h2, h3, h4) {
+		padding-inline: var(--x-space-1);
+		font-size: var(--x-text-sm);
+		font-weight: var(--x-weight-bold);
+	}
+
+	& > ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border: 1px solid var(--x-line);
+		border-radius: var(--x-radius-lg);
+		background-color: var(--x-raised);
+	}
+
+	& li {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--x-space-2) var(--x-space-4);
+		min-block-size: 3.5rem;
+		padding: var(--x-space-3) var(--x-space-4);
+
+		& + li {
+			border-block-start: 1px solid var(--x-line);
+		}
+
+		& > :last-child:not(.x-setting-text) {
+			flex: none;
+		}
+
+		& > .x-select {
+			inline-size: auto;
+			min-inline-size: 8rem;
+		}
+	}
+
+	/* Narrow: a control that has no room moves under its label; a list or a text field then takes the width, a number
+	keeps its own (stretched, its value would sit far from its label). */
+	@container (width < 24rem) {
+		& li {
+			flex-wrap: wrap;
+
+			& > :is(.x-select, .x-options, .x-input):last-child {
+				flex: 1 1 100%;
+				inline-size: 100%;
+			}
+		}
+	}
+}
+
+.x-setting-text {
+	display: grid;
+	flex: 1 1 10rem;
+	gap: var(--x-space-0-5);
+	min-inline-size: 0;
+
+	& > :is(label, span) {
+		font-size: var(--x-text-sm);
+		font-weight: var(--x-weight-medium);
+	}
+
+	& > small {
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+		line-height: var(--x-leading);
+	}
+}
+
+/*
+ * Combobox: a text field and the list it filters, in a popover under it (xantoom-design/react `Combobox`).
+ * <div class="x-combobox"><input class="x-input" role="combobox" …><svg aria-hidden>…</svg></div>
+ * <div class="x-menu" role="listbox" popover="manual"><div class="x-menu-item" role="option" aria-selected>…</div></div>
+ */
+.x-combobox {
+	position: relative;
+	display: flex;
+	align-items: center;
+	inline-size: 100%;
+
+	& > .x-input {
+		padding-inline-end: calc(var(--x-space-3) + 1.25rem);
+	}
+
+	& > svg {
+		position: absolute;
+		inset-inline-end: var(--x-space-3);
+		inline-size: 1rem;
+		block-size: 1rem;
+		color: var(--x-fg-muted);
+		pointer-events: none;
+	}
+}
+
+.x-menu[role="listbox"] {
+	& > [role="option"] {
+		cursor: pointer;
+
+		&[aria-selected="true"] {
+			background-color: var(--x-hover);
+		}
+
+		/* The typed part of each option, so the eye finds why it matched. */
+		& mark {
+			background: none;
+			color: inherit;
+			font-weight: var(--x-weight-bold);
+		}
+	}
+
+	& > .x-menu-empty {
+		margin: 0;
+		padding: var(--x-space-2);
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-sm);
+	}
+}
+
+/*
+ * Colour field (xantoom-design/react `ColorField`): a button showing the colour, opening a popover with a
+ * saturation-brightness square, a hue bar and the hex code. The swatch takes the colour from --x-swatch.
+ */
+.x-swatch {
+	flex: none;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	border-radius: var(--x-radius-sm);
+	background: var(--x-swatch);
+	box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--x-fg) 20%, transparent);
+}
+
+.x-color {
+	display: grid;
+	gap: var(--x-space-3);
+	inline-size: 15rem;
+
+	/* White to the hue across, then black from the bottom: the plane every colour picker uses. */
+	& > [data-plane] {
+		position: relative;
+		block-size: 9rem;
+		border-radius: var(--x-radius-md);
+		background:
+			linear-gradient(to top, black, transparent),
+			linear-gradient(to right, white, hwb(var(--_hue, 0) 0% 0%));
+		cursor: crosshair;
+		touch-action: none;
+
+		&:dir(rtl) {
+			background:
+				linear-gradient(to top, black, transparent),
+				linear-gradient(to left, white, hwb(var(--_hue, 0) 0% 0%));
+		}
+
+		&:focus-visible {
+			outline: var(--x-ring);
+			outline-offset: 2px;
+		}
+
+		& > span {
+			position: absolute;
+			inset-block-start: var(--_y);
+			inset-inline-start: var(--_x);
+			inline-size: 0.875rem;
+			block-size: 0.875rem;
+			margin: -0.4375rem;
+			border: 2px solid white;
+			border-radius: 50%;
+			box-shadow: 0 0 0 1px color-mix(in srgb, black 40%, transparent);
+			pointer-events: none;
+		}
+	}
+
+	& > input[type="range"] {
+		appearance: none;
+		inline-size: 100%;
+		block-size: 0.75rem;
+		border-radius: 999px;
+		background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
+		cursor: pointer;
+
+		&:dir(rtl) {
+			background: linear-gradient(to left, red, yellow, lime, cyan, blue, magenta, red);
+		}
+
+		&::-webkit-slider-thumb {
+			appearance: none;
+			inline-size: 1rem;
+			block-size: 1rem;
+			border: 2px solid white;
+			border-radius: 50%;
+			background: transparent;
+			box-shadow: 0 0 0 1px color-mix(in srgb, black 40%, transparent);
+		}
+
+		&::-moz-range-thumb {
+			inline-size: 0.75rem;
+			block-size: 0.75rem;
+			border: 2px solid white;
+			border-radius: 50%;
+			background: transparent;
+			box-shadow: 0 0 0 1px color-mix(in srgb, black 40%, transparent);
+		}
+	}
+
+	& > div {
+		display: flex;
+		align-items: center;
+		gap: var(--x-space-2);
+
+		& > .x-swatch {
+			inline-size: var(--x-control);
+			block-size: var(--x-control);
+			border-radius: var(--x-radius-md);
+		}
 	}
 }

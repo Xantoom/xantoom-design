@@ -10,12 +10,23 @@ const initials = (name: string): string =>
 		.map((word) => [...word][0] ?? '')
 		.join('');
 
-/** A picture, or the name's initials on the theme fill when there is none or it fails to load. */
+/** A stable hue (0–359) from an id: the same person keeps one colour on every screen (avatar, cursor, comments). */
+export function hueOf(seed: string): number {
+	let hash = 0;
+	for (const char of seed) hash = (Math.imul(hash, 31) + (char.codePointAt(0) ?? 0)) >>> 0;
+	return hash % 360;
+}
+
+/**
+ * A picture, or the name's initials when there is none or it fails to load: on the theme fill, or with `seed` (the
+ * person's id) on a colour of their own.
+ */
 export function Avatar({
 	src,
 	name,
 	size,
 	shape,
+	seed,
 	className,
 }: {
 	src?: string | null;
@@ -25,16 +36,20 @@ export function Avatar({
 	size?: 'sm' | 'lg' | (string & {});
 	/** `tile`: the app-icon corner. */
 	shape?: 'tile';
+	/** The person's id: their initials on a colour drawn from it, the same everywhere. */
+	seed?: string;
 	className?: string;
 }): ReactElement {
 	const [failed, setFailed] = useState<string | null>(null);
 	const named = size === 'sm' || size === 'lg';
+	const style = { ...(size && !named ? { '--_size': size } : {}), ...(seed === undefined ? {} : { '--x-hue': hueOf(seed) }) };
 	return (
 		<span
 			className={className ? `x-avatar ${className}` : 'x-avatar'}
 			data-size={named ? size : undefined}
 			data-shape={shape}
-			style={size && !named ? ({ '--_size': size } as React.CSSProperties) : undefined}
+			data-hue={seed === undefined ? undefined : ''}
+			style={Object.keys(style).length > 0 ? (style as React.CSSProperties) : undefined}
 			role={src && failed !== src ? undefined : 'img'}
 			aria-label={src && failed !== src ? undefined : name}
 		>

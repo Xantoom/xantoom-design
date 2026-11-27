@@ -13,10 +13,13 @@ One signature, one theme per app. The design language of every Xantoom web proje
   from 320 px to 8K, ultra-wide and square.
 - **Motion everywhere**, compositor-only, opt-in under `prefers-reduced-motion`, with entry and exit transitions on
   every overlay.
-- **Optional script** (about 3 KB): exit animations outside Chromium, tooltip semantics, tab, menu and command
+- **Optional script** (about 4 KB): exit animations outside Chromium, tooltips in every browser, tab, menu and command
   palette keyboards, shortcuts written for the platform, toasts, and fallbacks for invoker commands and `closedby`.
   `theme.js` (0.4 KB) applies the system, light or dark choice before the first paint and drives the theme button.
-- **React and Tailwind**: `xantoom-design/react` (2.7 KB brotli) and `xantoom-design/tailwind.css`.
+- **Extras** for few pages: `components/extras.css` (command palette, scrubber, error pages, key figures) and
+  `extras.js` (contents that follow the reading, number fields without React).
+- **React and Tailwind**: `xantoom-design/react` (about 8 KB brotli for all of it; apps bundle what they import) and
+  `xantoom-design/tailwind.css`.
 - **The family's logos** in [`brand/`](brand), one source for every site that shows them.
 - **Theme contrast check** for apps with their own themes: `bunx xantoom-design contrast src/themes.css --theme <app> [--prefix <app> --ground <name>]`.
 - **Agent skill**: [`skills/xantoom-design`](skills/xantoom-design/SKILL.md), in the open Agent Skills format, so any
@@ -42,11 +45,12 @@ instead (`ln -s <checkout>/skills/xantoom-design ~/.claude/skills/xantoom-design
 
 A site that uses only some components imports `xantoom-design/foundation` (tokens, reset, base, motion and
 utilities) plus their families: `@import "xantoom-design/components/forms.css";` (`actions`, `forms`, `content`,
-`feedback`, `navigation`, `overlays`).
+`feedback`, `navigation`, `overlays`, and `extras` for the rare ones).
 
 React and Tailwind apps import the foundation, the families they use and `xantoom-design/tailwind.css`, which gives
 Tailwind the tokens under the design system's names and clears its palette. `xantoom-design/react` holds thin
-components (button, icon button, field, menu, tooltip, dialog, toaster, avatar, flag, options, theme switch) that put
+components (button, icon button, field, select, combobox, number, duration, colour, settings, menu, tooltip, dialog,
+toaster, avatar, flag, options, theme switch) that put
 the classes on native elements; the CSS draws them and `xantoom.js` drives them.
 
 ```css
