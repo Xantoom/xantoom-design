@@ -113,7 +113,7 @@
 	"shape": {
 		"$type": "number",
 		"radius": {
-			"$value": 1.2,
+			"$value": 1.1,
 			"$description": "Multiplies every radius."
 		},
 		"density": {

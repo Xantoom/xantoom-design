@@ -69,12 +69,14 @@ async function build(): Promise<void> {
 	}
 	await Bun.write(at('dist/themes/all.css'), `@layer x.theme {\n${all.join('')}}\n`);
 
-	// 4. The optional behaviour layer.
-	const js = await Bun.build({ entrypoints: [at('src/xantoom.js')], minify: true, format: 'esm', target: 'browser' });
-	if (!js.success) throw new AggregateError(js.logs, 'script build failed');
-	await Bun.write(at('dist/xantoom.js'), (await js.outputs[0]?.text()) ?? '');
+	// 4. The optional behaviour layer, and the colour scheme choice (small enough to run before the first paint).
+	for (const name of ['xantoom', 'theme']) {
+		const js = await Bun.build({ entrypoints: [at(`src/${name}.js`)], minify: true, format: 'esm', target: 'browser' });
+		if (!js.success) throw new AggregateError(js.logs, 'script build failed');
+		await Bun.write(at(`dist/${name}.js`), (await js.outputs[0]?.text()) ?? '');
+	}
 
-	for (const file of ['dist/xantoom.css', 'dist/foundation.css', 'dist/xantoom.js', 'dist/themes/vexode.css']) {
+	for (const file of ['dist/xantoom.css', 'dist/foundation.css', 'dist/xantoom.js', 'dist/theme.js', 'dist/themes/vexode.css']) {
 		const bytes = await Bun.file(at(file)).bytes();
 		const kb = (n: number): string => `${(n / 1024).toFixed(1)} KB`;
 		console.log(`${file}: ${kb(bytes.length)}, gzip ${kb(gzipSync(bytes).length)}, brotli ${kb(brotliCompressSync(bytes).length)}`);

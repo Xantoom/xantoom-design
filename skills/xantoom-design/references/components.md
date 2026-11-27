@@ -26,9 +26,15 @@ name and message comes from the app's translations. `demo/index.html` shows each
 <button class="x-button" data-variant="danger">Delete…</button>
 <button class="x-button" data-variant="primary" aria-busy="true" disabled>Saving…</button>
 <div class="x-button-group">…buttons…</div>
+<button class="x-cycle" type="button" aria-label="…"><svg data-v="system" data-current>…</svg><svg data-v="light">…</svg><svg data-v="dark">…</svg></button>
 ```
 
 `data-size="sm|lg"`, `data-block` (full width). A link that looks like a button is still an `<a href>`.
+
+`x-cycle` is one button for a choice of two or three states: it shows the current one, a press moves to the next.
+Never a row of buttons or a dropdown for the theme. `xantoom-design/theme.js` makes it the theme switch:
+`applyTheme()` in `<head>` before the first paint, then `themeCycle(button)`; the button's `data-label-system`,
+`data-label-light` and `data-label-dark` are its accessible name in each state (system by default).
 
 ## Forms
 
@@ -45,15 +51,22 @@ name and message comes from the app's translations. `demo/index.html` shows each
 <label class="x-check"><input type="checkbox" class="x-checkbox" name="…"> Label</label>
 <label class="x-check"><input type="radio" class="x-radio" name="…"> Label</label>
 <label class="x-check"><input type="checkbox" class="x-switch" switch role="switch"> Label</label>
-<fieldset class="x-segmented"><legend>View</legend>
+<fieldset class="x-options"><legend>View</legend>
   <label><input type="radio" name="view" checked> List</label><label><input type="radio" name="view"> Grid</label>
-</fieldset>
+</fieldset>                                           <!-- data-icons: icon-only, aria-label on each input -->
+<div class="x-search"><svg aria-hidden>…</svg><input class="x-input" type="search" placeholder=" " aria-label="…">
+  <kbd class="x-kbd">/</kbd><button type="button" aria-label="Clear"><svg aria-hidden>…</svg></button></div>
+<label class="x-dropzone"><svg aria-hidden>…</svg><strong>Drop files here</strong><span>or choose</span>
+  <small>MP4, WebM · 4 GB</small><input type="file" class="x-visually-hidden"></label>   <!-- data-drag while dragging -->
 <input type="range" class="x-range">  <input type="file" class="x-file">  <fieldset class="x-fieldset"><legend>…</legend>…</fieldset>
 ```
 
 - A required field gets ` *` after its `.x-label` automatically.
 - Invalid fields turn red on `:user-invalid` (after interaction) or `aria-invalid="true"`. On submit, move focus to
   the first error.
+- `x-options` is for one choice among a few that stay visible (a view, an alignment). More than five, or a
+  setting seldom changed: a select.
+- The search shows its shortcut while empty and its clear button once it is not: give it a placeholder (even `" "`).
 - The select's `<button><selectedcontent>` is optional. Chromium and Safari 27 style the picker; elsewhere it is the
   native one.
 
@@ -63,8 +76,14 @@ name and message comes from the app's translations. `demo/index.html` shows each
 | --- | --- |
 | `<article class="x-card">` | `data-variant="flat"`; `data-interactive` with one `<a class="x-card-link">` makes the whole card clickable |
 | `<span class="x-badge" data-tone="accent|success|warning|danger|info">` | Always with text, never colour alone. `data-tone` sets `--x-tone` (not inherited) for any component, the app's own included; without it, muted |
+| `<span class="x-count">12</span>` | A number that grows (unread, results): a pill. A word goes in a badge |
 | `<span class="x-avatar">AB</span>` or with an `<img alt>` | `data-size="sm|lg"`, `data-shape="tile"` (app-icon corner) |
-| `<kbd class="x-kbd">⌘</kbd>` | Join keys with `&nbsp;` |
+| `<kbd class="x-kbd" data-mod>K</kbd>` | `data-mod`: `enhance()` adds ⌘ on Apple devices, Ctrl elsewhere (and says it to screen readers). Join keys with `&nbsp;` |
+| `<button class="x-chip" type="button" aria-pressed="false">Places</button>` | A filter. A removable value: `<span class="x-chip">…<button type="button" aria-label="Remove …">×</button></span>` |
+| `<span class="x-state" data-tone="danger"><svg aria-hidden>…</svg>Recording</span>` | A state is an icon and a word; `data-tone` only where it needs attention. `<span class="x-live">Live</span>` for live media. Nothing pulses |
+| `<dl class="x-stats"><div class="x-stat"><dt>…</dt><dd>1 284</dd><span data-trend="up">+38 this week</span></div></dl>` | Key figures; the trend says it in words too |
+| `<svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg>` | Flags fill their box (`preserveAspectRatio="xMidYMid slice"` on each symbol) and always sit next to the language's name |
+| `<main class="x-status-page"><span class="x-status-icon"><svg aria-hidden>…</svg></span><p data-code>404</p><h1>…</h1><p>…</p><div class="x-cluster">…</div></main>` | 404, errors, offline: one layout everywhere, always with a way out |
 | `<div class="x-callout" data-tone="…" role="status"><svg aria-hidden>…</svg><p>…</p></div>` | Messages in the page. Prefer them to toasts |
 | `<div class="x-table-scroll" role="region" aria-label="…" tabindex="0"><table class="x-table">` | Sticky headers. `data-numeric` on number cells. `<tbody data-long>` renders only rows on screen |
 | `<details class="x-accordion" name="group"><summary>…</summary><div>…</div></details>` | `name` makes the group exclusive |
@@ -76,7 +95,16 @@ name and message comes from the app's translations. `demo/index.html` shows each
 <progress class="x-progress" value="40" max="100" aria-label="Upload"></progress>   <!-- no value: indeterminate -->
 <span class="x-spinner" role="status" aria-label="Loading…"></span>
 <span class="x-skeleton"></span>   <!-- size it (in the app layer) exactly like the content it stands for -->
+<div class="x-banner" data-tone="warning" role="status"><svg aria-hidden>…</svg><p>…</p>
+  <button class="x-button" data-size="sm">…</button><button class="x-banner-close" type="button" aria-label="…">…</button></div>
+<div class="x-scrubber" role="slider" tabindex="0" aria-label="…" aria-valuemin="0" aria-valuemax="…" aria-valuenow="…"
+  aria-valuetext="1:12:40" style="--value: 35%; --buffered: 62%"><div class="x-scrubber-track"></div>
+  <div class="x-scrubber-thumb"></div><output aria-hidden="true">…</output></div>
 ```
+
+The banner is about the app (an announcement, maintenance, an update): it stays until closed, across the top. The
+scrubber is drawn by the CSS; the app sets `--value`, `--buffered`, `--hover` and the hovered time, and owns the
+keyboard (arrow keys, `aria-valuetext` with the time).
 
 Show a spinner or skeleton only after about 200 ms, and for at least about 400 ms once shown.
 
@@ -124,6 +152,24 @@ padding on the panel itself: put it on a child.
 </div>
 <div class="x-popover" id="details" popover>…</div>
 
+<!-- Language menu: flags next to names, the current one marked -->
+<button class="x-button" data-variant="ghost" popovertarget="lang" aria-label="Language: Français"><svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg></button>
+<div class="x-menu" id="lang" popover>
+  <a class="x-menu-item" href="/fr/" hreflang="fr" lang="fr" aria-current="true"><svg class="x-flag" aria-hidden="true">…</svg>Français</a>
+  <a class="x-menu-item" href="/en/" hreflang="en" lang="en"><svg class="x-flag" aria-hidden="true">…</svg>English</a>
+</div>
+
+<!-- Command palette: a dialog with a search and a listbox; the app filters, enhance() adds the keys -->
+<dialog class="x-dialog x-command" id="palette" aria-label="Commands" closedby="any">
+  <label class="x-command-search"><svg aria-hidden>…</svg><input role="combobox" aria-expanded="true"
+    aria-controls="palette-list" aria-autocomplete="list" aria-label="Search commands"></label>
+  <div class="x-command-list" role="listbox" id="palette-list" aria-label="Results">
+    <div role="group" aria-labelledby="g-pages"><span id="g-pages">Pages</span>
+      <div role="option" id="o-1" aria-selected="true"><span>…</span><small>…</small></div></div>
+  </div>
+  <footer><span><kbd class="x-kbd">↑</kbd> <kbd class="x-kbd">↓</kbd> …</span></footer>
+</dialog>
+
 <!-- Tooltip: the trigger keeps its own accessible name -->
 <button class="x-button" data-icon aria-label="Bold" interestfor="tip-bold"><svg aria-hidden>…</svg></button>
 <div class="x-tooltip" id="tip-bold" popover="hint">Bold <kbd class="x-kbd">Ctrl</kbd></div>
@@ -143,6 +189,9 @@ toast(t('saved'), { tone: 'success', timeout: 6000 });   // persistent without t
   browser does all of it. Use `command="request-close"` and a `cancel` handler for unsaved changes.
 - Menus and popovers anchor to their invoker where CSS anchor positioning exists, and flip at screen edges. Elsewhere
   the browser centres them.
+- A menu item with `aria-current` (a language, a sort order) gets a check at its end.
+- The command palette keeps focus in its search; arrow keys, Home and End move the active option
+  (`aria-activedescendant`), Enter clicks it, and the first visible option becomes active after each input.
 - Tooltips show on hover and focus where `interestfor` exists. Never put needed information only in a tooltip: an
   icon button still has its `aria-label`.
 - Toasts are for supplemental news. Never show one during a modal (`toast()` waits), and keep their actions

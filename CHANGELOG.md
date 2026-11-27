@@ -1,7 +1,27 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
+- New components: `x-options` (a fieldset of radios, text or icons; replaces `x-segmented`), `x-search` (icon, clear
+  button and shortcut hint, all CSS), `x-dropzone`, `x-count`, `x-banner` (narrow screens put its action under the
+  text), `x-scrubber` (a media timeline with buffered range, hover time and RTL), `x-command` (a command palette on
+  `x-dialog`, with filtering and keys in the script), `x-cycle` (one button cycling through icons),
+  `x-stats` (tiles that stretch to fill the last row instead of leaving a hole), `x-state` and `x-live` (status
+  lines), `x-flag`, `x-status-page` (404 and other error pages).
+- `xantoom-design/theme.js`: the stored theme choice (`x-theme`), applied before paint, cycled by an `x-cycle` button
+  whose labels and order come from its markup, and kept in sync across tabs.
+- The script labels `kbd[data-mod]` as ⌘ on Apple systems and Ctrl elsewhere, with a spoken name; `x-kbd` stays
+  left-to-right inside right-to-left text.
+- Menus mark the current item (`aria-current`) with a check; chips give their remove button a 28 px hit area and
+  tint the chip in danger while it is hovered.
+- Less rounded: radii are 6, 8, 10 and 14 px (badges take the small one); the select picker's options follow the
+  picker's curve. Vixely's and Vixion's radius knobs move to 0.9 and 1.1.
+- A field in an `x-cluster` takes its content's width instead of the whole row.
+- `xantoom-design contrast <file.css>`: checks an app's themes (by role, whatever it names its properties, through
+  `var()`, `light-dark()`, hex, rgb() and oklch()) against WCAG 2.2 AA; exits 1 on a failure.
+- `xantoom-design/brand/*`: the Vexode, Vixion, Vixely and Vixeeny logos.
+- The skill: native elements first, reorganise rather than stack on narrow screens, favicons served with their type,
+  theme contrast checked with the CLI.
 - Fix: the shadow tokens rendered nothing. `light-dark()` takes colours only, so a whole shadow inside it was invalid
   and `box-shadow` fell back to `none`. Both modes now share one geometry and each layer switches its colour; the
   build refuses shadows whose light and dark geometry differ, and a test rejects `light-dark()` around anything but
@@ -14,8 +34,8 @@
 - `data-tone` is now a foundation rule setting `--x-tone` (not inherited), usable by any component.
 - An `Inter Fallback` face (Arial or Liberation Sans scaled to Inter Variable's widths and metrics) right after Inter
   in `--x-font-sans`, so text does not reflow when Inter loads.
-- Removed: `x-meter` (it drew nothing), and the `cursor`, `font` and `touch-action` declarations the reset already
-  makes.
+- Removed: `x-meter` (it drew nothing), `x-segmented` (use `x-options`), and the `cursor`, `font` and
+  `touch-action` declarations the reset already makes.
 
 ## 0.2.2
 

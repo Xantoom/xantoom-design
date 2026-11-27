@@ -545,19 +545,19 @@
 		},
 		"md": {
 			"$value": {
-				"value": 0.625,
+				"value": 0.5,
 				"unit": "rem"
 			}
 		},
 		"lg": {
 			"$value": {
-				"value": 1,
+				"value": 0.625,
 				"unit": "rem"
 			}
 		},
 		"xl": {
 			"$value": {
-				"value": 1.375,
+				"value": 0.875,
 				"unit": "rem"
 			}
 		}

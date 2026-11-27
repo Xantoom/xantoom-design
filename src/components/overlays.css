@@ -161,6 +161,130 @@
 }
 
 /*
+ * Command palette, a dialog holding a search and a listbox:
+ * <dialog class="x-dialog x-command" aria-label="…" closedby="any">
+ *   <label class="x-command-search"><svg aria-hidden>…</svg><input role="combobox" aria-expanded="true"
+ *     aria-controls="cmds" aria-autocomplete="list" aria-label="…"></label>
+ *   <div class="x-command-list" role="listbox" id="cmds" aria-label="…">
+ *     <div role="group" aria-labelledby="g1"><span id="g1">Pages</span>
+ *       <div role="option" id="o1" aria-selected="true"><svg aria-hidden>…</svg><span>…</span><small>…</small></div>…
+ *   </div>
+ *   <footer>…</footer>
+ * </dialog>
+ * The app filters the options; xantoom.js moves the active one with the arrow keys and clicks it on Enter.
+ */
+.x-command {
+	--_width: 34rem;
+	--_inset: var(--x-space-1);
+
+	display: none;
+	padding: 0;
+	overflow: hidden;
+	border-radius: var(--x-radius-lg);
+
+	&[open] {
+		display: flex;
+		flex-direction: column;
+	}
+
+	@media (width >= 40rem) {
+		margin-block-start: 12dvh;
+		max-block-size: min(76dvh, 32rem);
+	}
+
+	& > footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--x-space-2) var(--x-space-4);
+		padding: var(--x-space-2) var(--x-space-4);
+		border-block-start: 1px solid var(--x-line);
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+	}
+}
+
+.x-command-search {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: var(--x-space-2);
+	padding: var(--x-space-3) var(--x-space-4);
+	border-block-end: 1px solid var(--x-line);
+
+	& > svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+		color: var(--x-fg-muted);
+	}
+
+	& > input {
+		flex: 1;
+		min-inline-size: 0;
+		padding: 0;
+		border: 0;
+		outline: none;
+		background: none;
+		font-size: var(--x-text-md);
+	}
+
+	&:has(:focus-visible) {
+		box-shadow: inset 0 -2px 0 var(--x-accent);
+	}
+}
+
+.x-command-list {
+	display: grid;
+	align-content: start;
+	gap: 1px;
+	padding: var(--_inset);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+
+	& [role="group"] > span {
+		display: block;
+		padding: var(--x-space-2) 0.625rem var(--x-space-1);
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+	}
+
+	& [role="option"] {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: var(--x-space-2) 0.625rem;
+		border-radius: calc(var(--x-radius-lg) - var(--_inset));
+		font-size: var(--x-text-sm);
+		cursor: pointer;
+
+		& > svg {
+			inline-size: 1rem;
+			block-size: 1rem;
+			color: var(--x-fg-muted);
+		}
+
+		& > :is(small, .x-kbd) {
+			margin-inline-start: auto;
+		}
+
+		& > small {
+			color: var(--x-fg-muted);
+			font-size: var(--x-text-xs);
+		}
+
+		&:is(:hover, [aria-selected="true"]) {
+			background-color: var(--x-hover);
+		}
+
+		&[aria-selected="true"] {
+			@media (forced-colors: active) {
+				outline: 2px solid Highlight;
+				outline-offset: -2px;
+			}
+		}
+	}
+}
+
+/*
  * Popover and menu: <button popovertarget="m">…</button><div class="x-menu" id="m" popover>…</div>
  * Anchored to their invoker where anchor positioning exists; centred by the browser elsewhere.
  */
@@ -241,6 +365,21 @@
 
 		& > svg {
 			color: inherit;
+		}
+	}
+
+	/* The current choice (a language, a sort order): aria-current, with a check at the end. */
+	&[aria-current]:not([aria-current="false"]) {
+		font-weight: var(--x-weight-medium);
+
+		&::after {
+			content: "";
+			flex: none;
+			inline-size: 1rem;
+			block-size: 1rem;
+			margin-inline-start: auto;
+			background-color: var(--x-accent);
+			mask: var(--x-icon-check) no-repeat center / contain;
 		}
 	}
 

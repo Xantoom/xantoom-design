@@ -4,7 +4,7 @@ One signature, one theme per app. The design language of every Xantoom web proje
 (Vixion, [Vixely](https://vixely.app), Vexode, Vixeeny,
 [xantoom.dev](https://xantoom.dev)): tokens, pure-CSS components, motion and an agent skill.
 
-- **Pure CSS**, about 7 KB brotli for every component, in cascade layers that an app's own CSS always overrides.
+- **Pure CSS**, about 9 KB brotli for every component (or the foundation plus only the families a page uses), in cascade layers that an app's own CSS always overrides.
 - **Native HTML underneath**: `<dialog>`, `popover`, `<details>`, `<select>`, invoker commands. The browser handles
   focus, top layer, Esc and form semantics.
 - **Accessible**: WCAG 2.2 AA. Every colour pair is contrast-tested in both modes, focus is always visible, targets
@@ -13,15 +13,18 @@ One signature, one theme per app. The design language of every Xantoom web proje
   from 320 px to 8K, ultra-wide and square.
 - **Motion everywhere**, compositor-only, opt-in under `prefers-reduced-motion`, with entry and exit transitions on
   every overlay.
-- **Optional script** (about 3 KB): exit animations outside Chromium, tooltip semantics, tab and menu keyboards,
-  toasts, and fallbacks for invoker commands and `closedby`.
+- **Optional script** (about 3 KB): exit animations outside Chromium, tooltip semantics, tab, menu and command
+  palette keyboards, shortcuts written for the platform, toasts, and fallbacks for invoker commands and `closedby`.
+  `theme.js` (0.4 KB) applies the system, light or dark choice before the first paint and drives the theme button.
+- **The family's logos** in [`brand/`](brand), one source for every site that shows them.
+- **Theme contrast check** for apps with their own themes: `bunx xantoom-design contrast src/themes.css --theme <app>`.
 - **Agent skill**: [`skills/xantoom-design`](skills/xantoom-design/SKILL.md), in the open Agent Skills format, so any
   coding agent working in a Xantoom project knows the rules.
 
 ## Use it
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.2.2
+bun add github:Xantoom/xantoom-design#v0.3.0
 bunx xantoom-design sync
 ```
 

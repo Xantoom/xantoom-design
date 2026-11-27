@@ -94,6 +94,11 @@
 	}
 }
 
+/* In a row of controls, a field takes its content's width instead of the whole row. */
+.x-cluster > :is(.x-input, .x-select) {
+	inline-size: auto;
+}
+
 textarea.x-input {
 	field-sizing: content;
 	min-block-size: calc(3lh + var(--x-space-4));
@@ -149,9 +154,10 @@ textarea.x-input {
 			rotate: 180deg;
 		}
 
+		/* The list's corners and its options' stay parallel: option radius = list radius − the 2 px between them. */
 		&::picker(select) {
 			margin-block: var(--x-space-1);
-			padding: var(--x-space-1);
+			padding: 2px;
 			border: 1px solid var(--x-line);
 			border-radius: var(--x-radius-lg);
 			background-color: var(--x-raised);
@@ -178,7 +184,7 @@ textarea.x-input {
 			align-items: center;
 			min-block-size: calc(var(--x-control) - 0.25rem);
 			padding-inline: var(--x-space-2);
-			border-radius: var(--x-radius-sm);
+			border-radius: calc(var(--x-radius-lg) - 2px);
 			cursor: pointer;
 
 			&:is(:hover, :focus-visible) {
@@ -348,15 +354,19 @@ textarea.x-input {
 
 }
 
-/* Segmented control: a fieldset of radios drawn as one bar. Keyboard: the radios' own arrow keys. */
-.x-segmented {
+/*
+ * Options: one choice among a few, joined in one frame. Native radios, so the arrow keys move between them.
+ * <fieldset class="x-options"><legend>View</legend><label><input type="radio" name="view" checked> List</label>…</fieldset>
+ * data-icons: icon-only options (each label holds an svg and an aria-label on its input).
+ */
+.x-options {
 	display: inline-flex;
 	inline-size: fit-content;
 	max-inline-size: 100%;
-	gap: var(--x-space-0-5);
 	margin: 0;
-	padding: var(--x-space-0-5);
-	border: 1px solid var(--x-line);
+	padding: 0;
+	overflow: hidden;
+	border: 1px solid var(--x-line-strong);
 	border-radius: var(--x-radius-md);
 	background-color: var(--x-surface);
 
@@ -370,40 +380,180 @@ textarea.x-input {
 	}
 
 	& > label {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		gap: var(--x-space-1-5);
-		min-block-size: calc(var(--x-control) - 0.375rem);
+		min-block-size: calc(var(--x-control) - 0.5rem);
 		padding-inline: var(--x-space-3);
-		border-radius: calc(var(--x-radius-md) - 2px);
 		color: var(--x-fg-muted);
 		font-size: var(--x-text-sm);
-		font-weight: var(--x-weight-medium);
+		white-space: nowrap;
 		transition-property: background-color, color;
 		transition-duration: var(--x-duration-fast);
+		transition-timing-function: var(--x-ease-out);
+
+		& + label {
+			border-inline-start: 1px solid var(--x-line-strong);
+		}
 
 		&:hover {
+			background-color: var(--x-hover);
 			color: var(--x-fg);
 		}
 
+		/* The radio covers its label: the whole option is its hit area, and the focus ring is drawn on the label. */
+		& > input {
+			position: absolute;
+			inset: 0;
+			margin: 0;
+			opacity: 0;
+		}
+
+		& > svg {
+			inline-size: 1rem;
+			block-size: 1rem;
+		}
+
 		&:has(:checked) {
-			background-color: var(--x-raised);
+			background-color: color-mix(in oklab, var(--x-accent) 14%, var(--x-surface));
 			color: var(--x-fg);
-			box-shadow: var(--x-shadow-sm);
-			outline: 1px solid transparent;
+			font-weight: var(--x-weight-medium);
+
+			& > svg {
+				color: var(--x-accent);
+			}
+
+			@media (forced-colors: active) {
+				outline: 2px solid Highlight;
+				outline-offset: -2px;
+			}
 		}
 
 		&:has(:focus-visible) {
 			outline: var(--x-ring);
-			outline-offset: 1px;
+			outline-offset: -2px;
+		}
+	}
+
+	&[data-icons] > label {
+		inline-size: calc(var(--x-control) - 0.5rem);
+		padding-inline: 0;
+	}
+}
+
+/*
+ * Search: <div class="x-search"><svg aria-hidden>…</svg><input class="x-input" type="search" placeholder=" " aria-label="…">
+ * <kbd class="x-kbd">/</kbd><button type="button" aria-label="…">×</button></div>
+ * The shortcut shows while the field is empty, the clear button once it is not (needs a placeholder, even " ").
+ */
+.x-search {
+	position: relative;
+	display: flex;
+	align-items: center;
+	inline-size: 100%;
+
+	& > svg {
+		position: absolute;
+		inset-inline-start: var(--x-space-3);
+		inline-size: 1rem;
+		block-size: 1rem;
+		color: var(--x-fg-muted);
+		pointer-events: none;
+	}
+
+	& > input {
+		padding-inline: calc(var(--x-space-3) + 1.5rem) calc(var(--x-space-3) + 2rem);
+
+		&::-webkit-search-cancel-button {
+			display: none;
+		}
+	}
+
+	& > :is(.x-kbd, button) {
+		position: absolute;
+		inset-inline-end: var(--x-space-2);
+	}
+
+	& > button {
+		display: none;
+		place-items: center;
+		inline-size: 1.75rem;
+		block-size: 1.75rem;
+		padding: 0;
+		border: 0;
+		border-radius: var(--x-radius-sm);
+		background: none;
+		color: var(--x-fg-muted);
+
+		&:hover {
+			background-color: var(--x-hover);
+			color: var(--x-fg);
 		}
 
-		& > input {
-			position: absolute;
-			opacity: 0;
-			pointer-events: none;
+		& > svg {
+			inline-size: 1rem;
+			block-size: 1rem;
 		}
+	}
+
+	&:has(> input:not(:placeholder-shown)) {
+		& > button {
+			display: grid;
+		}
+
+		& > .x-kbd {
+			display: none;
+		}
+	}
+}
+
+/*
+ * Drop zone: a label around a file input, so it is clickable and reachable with the keyboard.
+ * <label class="x-dropzone"><svg aria-hidden>…</svg><strong>…</strong><span>…</span><small>…</small>
+ * <input type="file" class="x-visually-hidden"></label>   The app sets data-drag while a file is dragged over it.
+ */
+.x-dropzone {
+	display: grid;
+	justify-items: center;
+	gap: var(--x-space-2);
+	padding: var(--x-space-8) var(--x-space-6);
+	border: 1.5px dashed var(--x-line-strong);
+	border-radius: var(--x-radius-lg);
+	color: var(--x-fg-muted);
+	text-align: center;
+	transition-property: border-color, background-color, color;
+	transition-duration: var(--x-duration-fast);
+	transition-timing-function: var(--x-ease-out);
+
+	& > svg {
+		inline-size: 2rem;
+		block-size: 2rem;
+	}
+
+	& > strong {
+		color: var(--x-fg);
+		font-weight: var(--x-weight-medium);
+	}
+
+	& > small {
+		font-size: var(--x-text-xs);
+	}
+
+	&:is(:hover, [data-drag]) {
+		border-color: var(--x-accent);
+		background-color: color-mix(in oklab, var(--x-accent) 8%, transparent);
+		color: var(--x-fg);
+	}
+
+	&[data-drag] {
+		border-style: solid;
+	}
+
+	&:has(:focus-visible) {
+		outline: var(--x-ring);
+		outline-offset: 2px;
 	}
 }
 

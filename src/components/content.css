@@ -1,4 +1,4 @@
-/* Content: card, badge, avatar, kbd, callout, table, accordion, empty state. */
+/* Content: card, badge, count, avatar, kbd, callout, table, accordion, empty state. */
 
 .x-card {
 	container-type: inline-size;
@@ -62,7 +62,7 @@
 	gap: var(--x-space-1);
 	min-block-size: 1.375rem;
 	padding-inline: var(--x-space-2);
-	border-radius: 999px;
+	border-radius: var(--x-radius-sm);
 	background-color: color-mix(in oklab, var(--_tone) 14%, transparent);
 	color: var(--_tone);
 	font-size: var(--x-text-xs);
@@ -74,6 +74,27 @@
 		inline-size: 1em;
 		block-size: 1em;
 	}
+
+	@media (forced-colors: active) {
+		border: 1px solid CanvasText;
+	}
+}
+
+/* A number that grows (unread, results): a pill, so 1 and 999 keep one shape. <span class="x-count">12</span> */
+.x-count {
+	display: inline-grid;
+	place-items: center;
+	min-inline-size: 1.125rem;
+	block-size: 1.125rem;
+	padding-inline: 0.3125rem;
+	border-radius: 999px;
+	/* The fill, not the accent: on-fill is tested against every fill stop, in both modes. */
+	background-color: var(--x-fill-2);
+	color: var(--x-on-fill);
+	font-size: 0.6875rem;
+	font-weight: var(--x-weight-bold);
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
 
 	@media (forced-colors: active) {
 		border: 1px solid CanvasText;
@@ -121,7 +142,11 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	gap: 0.3em;
 	min-inline-size: 1.6em;
+	/* A shortcut reads left to right in every language. */
+	direction: ltr;
+	unicode-bidi: isolate;
 	padding-inline: 0.35em;
 	border: 1px solid var(--x-line);
 	border-block-end-width: 2px;
@@ -318,4 +343,241 @@
 		color: var(--x-fg);
 		font-size: var(--x-text-lg);
 	}
+}
+
+/*
+ * Error, 404 and offline pages: <main class="x-status-page"><span class="x-status-icon"><svg aria-hidden>…</svg></span>
+ * <p data-code>404</p><h1>…</h1><p>…</p><div class="x-cluster">…actions…</div></main>
+ */
+.x-status-page {
+	display: grid;
+	justify-items: center;
+	align-content: center;
+	gap: var(--x-space-3);
+	max-inline-size: 28rem;
+	min-block-size: 70dvh;
+	margin-inline: auto;
+	padding: var(--x-space-8) var(--x-space-4);
+	text-align: center;
+
+	& > [data-code] {
+		color: var(--x-accent);
+		font-family: var(--x-font-mono);
+		font-size: var(--x-text-sm);
+		letter-spacing: 0.1em;
+	}
+
+	& > :is(h1, h2) {
+		font-size: var(--x-text-2xl);
+	}
+
+	& > p:not([data-code]) {
+		color: var(--x-fg-muted);
+	}
+
+	& > .x-cluster {
+		justify-content: center;
+		margin-block-start: var(--x-space-2);
+	}
+}
+
+.x-status-icon {
+	display: grid;
+	place-items: center;
+	inline-size: 3.5rem;
+	aspect-ratio: 1;
+	border-radius: var(--x-radius-lg);
+	background-color: color-mix(in oklab, var(--x-accent) 14%, transparent);
+	color: var(--x-accent);
+
+	& > svg {
+		inline-size: 1.75rem;
+		block-size: 1.75rem;
+	}
+}
+
+/*
+ * Key figures: <dl class="x-stats"><div class="x-stat"><dt>…</dt><dd>1 284</dd><span data-trend="up">…</span></div>…</dl>
+ * The tiles wrap on their own and a short last row stretches, so no cell stays empty; data-trend="up|down" colours
+ * the trend (its words say it too).
+ */
+.x-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--x-space-3);
+	margin: 0;
+}
+
+.x-stat {
+	flex: 1 1 9rem;
+	display: grid;
+	align-content: start;
+	gap: var(--x-space-1);
+	padding: var(--x-space-4);
+	border: 1px solid var(--x-line);
+	border-radius: var(--x-radius-md);
+	background-color: var(--x-surface);
+
+	& > dt {
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+	}
+
+	& > dd {
+		margin: 0;
+		font-size: var(--x-text-2xl);
+		font-weight: var(--x-weight-bold);
+		font-variant-numeric: tabular-nums;
+		line-height: 1.1;
+	}
+
+	& > [data-trend] {
+		color: var(--x-fg-muted);
+		font-size: var(--x-text-xs);
+		font-weight: var(--x-weight-medium);
+	}
+
+	& > [data-trend="up"] {
+		color: var(--x-success);
+	}
+
+	& > [data-trend="down"] {
+		color: var(--x-danger);
+	}
+}
+
+/*
+ * A state is an icon and a word; colour only where it needs attention (recording, an error).
+ * <span class="x-state" data-tone="danger"><svg aria-hidden>…</svg>Recording</span>   Live: <span class="x-live">Live</span>
+ */
+.x-state {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--x-space-1-5);
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-sm);
+
+	& > svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+
+	&[data-tone="danger"] {
+		color: var(--x-danger);
+	}
+
+	&[data-tone="success"] > svg {
+		color: var(--x-success);
+	}
+}
+
+.x-live {
+	display: inline-flex;
+	align-items: center;
+	block-size: 1.25rem;
+	padding-inline: var(--x-space-1-5);
+	border-radius: calc(var(--x-radius-sm) * 0.5);
+	background-color: var(--x-danger);
+	color: var(--x-on-danger);
+	font-size: var(--x-text-xs);
+	font-weight: var(--x-weight-bold);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+
+	@media (forced-colors: active) {
+		border: 1px solid CanvasText;
+	}
+}
+
+/*
+ * Chips. A filter: <button class="x-chip" type="button" aria-pressed="false">Places</button>
+ * A removable value: <span class="x-chip">Aster<button type="button" aria-label="Remove Aster"><svg aria-hidden>×</svg></button></span>
+ * Hovering the cross tints the whole chip: what will go is what lights up.
+ */
+.x-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--x-space-1-5);
+	min-block-size: 1.75rem;
+	padding-inline: 0.625rem;
+	border: 1px solid var(--x-line);
+	border-radius: var(--x-radius-sm);
+	background-color: var(--x-surface);
+	color: var(--x-fg);
+	font-size: var(--x-text-sm);
+	white-space: nowrap;
+	transition-property: border-color, background-color;
+	transition-duration: var(--x-duration-fast);
+	transition-timing-function: var(--x-ease-out);
+
+	& > svg {
+		inline-size: 0.875rem;
+		block-size: 0.875rem;
+		color: var(--x-fg-muted);
+	}
+
+	&:is(button):hover {
+		border-color: var(--x-line-strong);
+	}
+
+	&[aria-pressed="true"] {
+		border-color: color-mix(in oklab, var(--x-accent) 55%, transparent);
+		background-color: color-mix(in oklab, var(--x-accent) 12%, var(--x-surface));
+
+		@media (forced-colors: active) {
+			outline: 2px solid Highlight;
+		}
+	}
+
+	/* The cross: a quiet glyph with a 28 px hit area around it. */
+	& > button {
+		position: relative;
+		display: grid;
+		place-items: center;
+		inline-size: 0.875rem;
+		block-size: 0.875rem;
+		margin-inline-start: var(--x-space-0-5);
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--x-fg-muted);
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset: -0.4375rem;
+		}
+
+		& > svg {
+			inline-size: 0.75rem;
+			block-size: 0.75rem;
+		}
+
+		&:hover {
+			color: var(--x-danger);
+		}
+
+		&:focus-visible {
+			border-radius: 2px;
+		}
+	}
+
+	&:has(> button:hover) {
+		border-color: color-mix(in oklab, var(--x-danger) 55%, transparent);
+		background-color: color-mix(in oklab, var(--x-danger) 7%, var(--x-surface));
+	}
+}
+
+/*
+ * A flag, filling its box at its own proportions: <svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg>,
+ * each symbol drawn with preserveAspectRatio="xMidYMid slice". Always next to the language's name.
+ */
+.x-flag {
+	display: block;
+	flex: none;
+	inline-size: 1.35rem;
+	block-size: 0.95rem;
+	overflow: hidden;
+	border-radius: 3px;
+	box-shadow: 0 0 0 1px color-mix(in oklab, var(--x-fg) 14%, transparent);
 }

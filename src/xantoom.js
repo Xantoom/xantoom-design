@@ -1,7 +1,8 @@
 // Xantoom design system: the optional behaviour layer (no dependency).
 // The CSS works without it; this adds what HTML and CSS cannot do alone, or not yet in every browser:
-// animated exits outside Chromium, invoker commands and light dismiss where missing, tooltip semantics, tab and menu
-// keyboards, and toasts. Call `enhance()` once the page is parsed, and again on content inserted later.
+// animated exits outside Chromium, invoker commands and light dismiss where missing, tooltip semantics, tab, menu and
+// command palette keyboards, shortcuts written for the platform, and toasts. Call `enhance()` once the page is parsed,
+// and again on content inserted later.
 
 const SVG = 'http://www.w3.org/2000/svg';
 
@@ -240,6 +241,72 @@ function menus(root) {
 	}
 }
 
+// --- Command palette (focus stays in the search; the active option is aria-activedescendant) --------------------------
+
+function commands(root) {
+	for (const input of root.querySelectorAll('.x-command [role="combobox"]:not([data-x-ready])')) {
+		input.setAttribute('data-x-ready', '');
+		const list = document.getElementById(input.getAttribute('aria-controls'));
+		if (!list) continue;
+		const options = () => [...list.querySelectorAll('[role="option"]:not([hidden], [aria-disabled="true"])')];
+		const activate = (option) => {
+			for (const o of options()) o.setAttribute('aria-selected', String(o === option));
+			if (!option) return input.removeAttribute('aria-activedescendant');
+			if (!option.id) option.id = `x-option-${Math.random().toString(36).slice(2, 9)}`;
+			input.setAttribute('aria-activedescendant', option.id);
+			option.scrollIntoView({ block: 'nearest', container: 'nearest' });
+		};
+		// The app re-filters on input: the first visible option becomes active once it has (a frame later), unless a key
+		// comes first, which then starts from that first option.
+		let pending = 0;
+		const settleFilter = () => {
+			cancelAnimationFrame(pending);
+			pending = 0;
+			activate(options()[0]);
+		};
+		input.addEventListener('input', () => {
+			cancelAnimationFrame(pending);
+			pending = requestAnimationFrame(settleFilter);
+		});
+		input.addEventListener('keydown', (event) => {
+			if (pending) settleFilter();
+			const all = options();
+			const index = all.findIndex((o) => o.getAttribute('aria-selected') === 'true');
+			if (event.key === 'Enter' && index >= 0) {
+				event.preventDefault();
+				all[index].click();
+				return;
+			}
+			const next = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: all.length - 1 }[event.key];
+			if (next === undefined || all.length === 0) return;
+			event.preventDefault();
+			activate(all.at(next % all.length));
+		});
+		list.addEventListener('pointermove', (event) => {
+			const option = event.target.closest?.('[role="option"]');
+			if (option && option.getAttribute('aria-selected') !== 'true') activate(option);
+		});
+	}
+}
+
+// --- Shortcuts written for the platform: <kbd class="x-kbd" data-mod>K</kbd> reads ⌘ K on Apple devices, Ctrl K elsewhere
+
+const apple = () => /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform ?? navigator.platform ?? '');
+
+function shortcuts(root) {
+	const mac = apple();
+	for (const kbd of root.querySelectorAll('kbd[data-mod]:not([data-x-ready])')) {
+		kbd.setAttribute('data-x-ready', '');
+		const symbol = document.createElement('span');
+		symbol.setAttribute('aria-hidden', 'true');
+		symbol.textContent = mac ? '⌘' : 'Ctrl';
+		const spoken = document.createElement('span');
+		spoken.className = 'x-visually-hidden';
+		spoken.textContent = mac ? 'Command ' : 'Control ';
+		kbd.prepend(symbol, spoken);
+	}
+}
+
 // --- Toasts ---------------------------------------------------------------------------------------------------------
 
 function announce(message) {
@@ -376,4 +443,6 @@ export function enhance(root = document) {
 	hints(root);
 	tabs(root);
 	menus(root);
+	commands(root);
+	shortcuts(root);
 }

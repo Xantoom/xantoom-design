@@ -7,6 +7,7 @@
 		<meta name="theme-color" content="#ebebee" media="(prefers-color-scheme: light)">
 		<meta name="theme-color" content="#15161c" media="(prefers-color-scheme: dark)">
 		<title>Xantoom design system</title>
+		<script type="module">import { applyTheme } from '../dist/theme.js'; applyTheme();</script>
 		<link rel="stylesheet" href="../dist/xantoom.css">
 		<link rel="stylesheet" href="../dist/themes/all.css">
 		<style>
@@ -14,7 +15,11 @@
 
 			@layer demo {
 				body {
-					padding-block: var(--x-space-6) var(--x-space-24);
+					padding-block-end: var(--x-space-24);
+				}
+
+				main {
+					padding-block-start: var(--x-space-6);
 				}
 
 				.bar {
@@ -52,13 +57,37 @@
 	</head>
 	<body>
 		<a class="x-skip-link" href="#main">Skip to content</a>
+		<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+			<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+			<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+			<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+			<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+			<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+			<symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></symbol>
+			<symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+			<symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/></symbol>
+			<symbol id="i-rec" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></symbol>
+			<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></symbol>
+			<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+			<symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+			<symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+			<symbol id="flag-fr" viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice"><rect width="1" height="2" fill="#002654"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce1126"/></symbol>
+			<symbol id="flag-de" viewBox="0 0 5 3" preserveAspectRatio="xMidYMid slice"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#dd0000"/><rect y="2" width="5" height="1" fill="#ffce00"/></symbol>
+			<symbol id="flag-it" viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></symbol>
+		</svg>
+		<div class="x-banner" data-tone="info" role="status" id="banner">
+			<svg aria-hidden="true"><use href="#i-info"/></svg>
+			<p>Version 0.3.0: options, search, chips, command palette, banner and more.</p>
+			<button class="x-button" data-size="sm" type="button" command="show-modal" commandfor="palette">Try the palette</button>
+			<button class="x-banner-close" type="button" aria-label="Close" onclick="this.parentElement.remove()"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+		</div>
 
 		<header class="bar">
 			<div class="x-container x-cluster" data-justify="between">
 				<div class="x-cluster" data-gap="2">
 					<span class="x-tile" aria-hidden="true"></span>
 					<strong translate="no">Xantoom design system</strong>
-					<span class="x-badge" data-tone="accent">0.1.1</span>
+					<span class="x-badge" data-tone="accent">0.3.0</span>
 				</div>
 				<div class="x-cluster" data-gap="2">
 					<label class="x-visually-hidden" for="theme">Theme</label>
@@ -69,13 +98,13 @@
 						<option value="vexode">Vexode</option>
 						<option value="vixeeny">Vixeeny</option>
 					</select>
-					<fieldset class="x-segmented" id="mode">
-						<legend>Colour scheme</legend>
-						<label><input type="radio" name="mode" value="system" checked>Auto</label>
-						<label><input type="radio" name="mode" value="light">Light</label>
-						<label><input type="radio" name="mode" value="dark">Dark</label>
-					</fieldset>
-					<fieldset class="x-segmented" id="dir">
+					<button class="x-cycle" id="mode" type="button" data-label-system="Colour scheme: system. Switch to light"
+						data-label-light="Colour scheme: light. Switch to dark" data-label-dark="Colour scheme: dark. Switch to system">
+						<svg data-v="system" aria-hidden="true"><use href="#i-monitor"/></svg>
+						<svg data-v="light" aria-hidden="true"><use href="#i-sun"/></svg>
+						<svg data-v="dark" aria-hidden="true"><use href="#i-moon"/></svg>
+					</button>
+					<fieldset class="x-options" id="dir">
 						<legend>Direction</legend>
 						<label><input type="radio" name="dir" value="ltr" checked>LTR</label>
 						<label><input type="radio" name="dir" value="rtl">RTL</label>
@@ -185,7 +214,7 @@
 							<label class="x-label" for="volume">Volume</label>
 							<input class="x-range" id="volume" name="volume" type="range" value="60">
 						</div>
-						<fieldset class="x-segmented">
+						<fieldset class="x-options">
 							<legend>View</legend>
 							<label><input type="radio" name="view" checked>List</label>
 							<label><input type="radio" name="view">Grid</label>
@@ -224,6 +253,74 @@
 					</div>
 				</div>
 				<p class="x-muted">Press <kbd class="x-kbd">Ctrl</kbd>&nbsp;+&nbsp;<kbd class="x-kbd">K</kbd> to search.</p>
+			</section>
+
+			<section class="x-stack">
+				<h2>More components</h2>
+				<div class="x-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr))">
+					<div class="x-stack" data-gap="3">
+						<div class="x-search">
+							<svg aria-hidden="true"><use href="#i-search"/></svg>
+							<input class="x-input" type="search" placeholder="Search places" aria-label="Search places">
+							<kbd class="x-kbd">/</kbd>
+							<button type="button" aria-label="Clear" onclick="const i=this.parentElement.querySelector('input');i.value='';i.focus()"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+						</div>
+						<div class="x-cluster" data-gap="2">
+							<button class="x-chip" type="button" aria-pressed="true" onclick="this.ariaPressed=String(this.ariaPressed!=='true')">Characters</button>
+							<button class="x-chip" type="button" aria-pressed="false" onclick="this.ariaPressed=String(this.ariaPressed!=='true')">Places</button>
+							<span class="x-chip">Aster<button type="button" aria-label="Remove Aster" onclick="this.parentElement.remove()"><svg aria-hidden="true"><use href="#i-x"/></svg></button></span>
+						</div>
+						<div class="x-cluster" data-gap="3">
+							<fieldset class="x-options" data-icons>
+								<legend>Layout</legend>
+								<label><input type="radio" name="layout" aria-label="List" checked><svg aria-hidden="true"><use href="#i-list"/></svg></label>
+								<label><input type="radio" name="layout" aria-label="Grid"><svg aria-hidden="true"><use href="#i-grid"/></svg></label>
+							</fieldset>
+							<span class="x-badge" data-tone="accent">Beta</span>
+							<span>Inbox <span class="x-count">12</span></span>
+							<span>Open the palette <kbd class="x-kbd" data-mod>K</kbd></span>
+						</div>
+						<div class="x-cluster" data-gap="4">
+							<span class="x-live">Live</span>
+							<span class="x-state" data-tone="danger"><svg aria-hidden="true"><use href="#i-rec"/></svg>Recording</span>
+							<span class="x-state"><svg aria-hidden="true"><use href="#i-refresh"/></svg>Syncing</span>
+							<span class="x-state" data-tone="success"><svg aria-hidden="true"><use href="#i-check"/></svg>Up to date</span>
+						</div>
+						<div class="x-cluster" data-gap="2">
+							<button class="x-button" data-variant="ghost" type="button" popovertarget="lang" aria-label="Language: Français"><svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg></button>
+							<div class="x-menu" id="lang" popover>
+								<a class="x-menu-item" href="#lang" hreflang="fr" lang="fr" aria-current="true"><svg class="x-flag" aria-hidden="true"><use href="#flag-fr"/></svg>Français</a>
+								<a class="x-menu-item" href="#lang" hreflang="de" lang="de"><svg class="x-flag" aria-hidden="true"><use href="#flag-de"/></svg>Deutsch</a>
+								<a class="x-menu-item" href="#lang" hreflang="it" lang="it"><svg class="x-flag" aria-hidden="true"><use href="#flag-it"/></svg>Italiano</a>
+							</div>
+							<button class="x-button" type="button" command="show-modal" commandfor="palette">Command palette</button>
+						</div>
+						<div class="x-scrubber" id="scrub" role="slider" tabindex="0" aria-label="Position" aria-valuemin="0" aria-valuemax="7458" aria-valuenow="2610" aria-valuetext="0:43:30" style="--value: 35%; --buffered: 62%">
+							<div class="x-scrubber-track"></div><div class="x-scrubber-thumb"></div><output aria-hidden="true">0:00:00</output>
+						</div>
+					</div>
+					<div class="x-stack" data-gap="3">
+						<dl class="x-stats">
+							<div class="x-stat"><dt>Recordings</dt><dd>1,284</dd><span data-trend="up">+38 this week</span></div>
+							<div class="x-stat"><dt>Space used</dt><dd>412 GB</dd><span data-trend="down">6 % left</span></div>
+							<div class="x-stat"><dt>Channels</dt><dd>27</dd><span data-trend>steady</span></div>
+						</dl>
+						<label class="x-dropzone">
+							<svg aria-hidden="true"><use href="#i-upload"/></svg>
+							<strong>Drop files here</strong><span>or click to choose</span><small>MP4, MKV, WebM · 4 GB max.</small>
+							<input type="file" class="x-visually-hidden">
+						</label>
+					</div>
+				</div>
+				<div class="x-card" data-variant="flat">
+					<div class="x-status-page" style="min-block-size: 0">
+						<span class="x-status-icon"><svg aria-hidden="true"><use href="#i-compass"/></svg></span>
+						<p data-code>404</p>
+						<h2>This page does not exist</h2>
+						<p>The link may be old, or the page has moved.</p>
+						<div class="x-cluster"><a class="x-button" data-variant="primary" href="#main">Back home</a></div>
+					</div>
+				</div>
 			</section>
 
 			<section>
@@ -353,19 +450,56 @@
 			</div>
 		</dialog>
 
+		<dialog class="x-dialog x-command" id="palette" aria-label="Commands" closedby="any">
+			<label class="x-command-search">
+				<svg aria-hidden="true"><use href="#i-search"/></svg>
+				<input id="palette-input" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" aria-label="Search commands" autofocus>
+			</label>
+			<div class="x-command-list" role="listbox" id="palette-list" aria-label="Results">
+				<div role="group" aria-labelledby="g-pages"><span id="g-pages">Pages</span>
+					<div role="option" aria-selected="true"><span>Map of Aster</span><small>Places</small></div>
+					<div role="option"><span>Tide charts</span><small>Notes</small></div>
+					<div role="option"><span>Northern coast</span><small>Places</small></div>
+				</div>
+				<div role="group" aria-labelledby="g-actions"><span id="g-actions">Actions</span>
+					<div role="option"><span>Import a map</span><kbd class="x-kbd" data-mod>I</kbd></div>
+					<div role="option"><span>New character</span><kbd class="x-kbd" data-mod>N</kbd></div>
+				</div>
+			</div>
+			<footer><span><kbd class="x-kbd">↑</kbd> <kbd class="x-kbd">↓</kbd> move</span><span><kbd class="x-kbd">Enter</kbd> open</span><span><kbd class="x-kbd">Esc</kbd> close</span></footer>
+		</dialog>
+
 		<section class="x-toaster" popover="manual" role="region" aria-label="Notifications" data-close-label="Dismiss"></section>
 
 		<script type="module">
 			import { enhance, toast } from '../dist/xantoom.js';
+			import { themeCycle } from '../dist/theme.js';
 
 			enhance();
 			const root = document.documentElement;
 			document.getElementById('theme').addEventListener('change', (event) => {
 				root.dataset.xTheme = event.target.value;
 			});
-			document.getElementById('mode').addEventListener('change', (event) => {
-				if (event.target.value === 'system') delete root.dataset.theme;
-				else root.dataset.theme = event.target.value;
+			themeCycle(document.getElementById('mode'));
+			// The palette: filter the options as you type (the design system leaves filtering to the app).
+			document.getElementById('palette-input').addEventListener('input', (event) => {
+				const q = event.target.value.toLowerCase();
+				for (const o of document.querySelectorAll('#palette-list [role="option"]')) o.hidden = !o.textContent.toLowerCase().includes(q);
+			});
+			for (const o of document.querySelectorAll('#palette-list [role="option"]'))
+				o.addEventListener('click', () => {
+					document.getElementById('palette').close();
+					toast(`Opened “${o.querySelector('span').textContent}”.`, { timeout: 4000 });
+				});
+			// The scrubber: the hovered time.
+			const scrub = document.getElementById('scrub');
+			const fmt = (s) => `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+			scrub.addEventListener('pointermove', (event) => {
+				const r = scrub.getBoundingClientRect();
+				let f = Math.min(1, Math.max(0, (event.clientX - r.left) / r.width));
+				if (getComputedStyle(scrub).direction === 'rtl') f = 1 - f;
+				scrub.style.setProperty('--hover', `${f * 100}%`);
+				scrub.querySelector('output').textContent = fmt(f * 7458);
 			});
 			document.getElementById('dir').addEventListener('change', (event) => {
 				root.dir = event.target.value;

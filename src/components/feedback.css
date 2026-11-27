@@ -1,4 +1,4 @@
-/* Progress, spinner, skeleton. */
+/* Progress, spinner, skeleton, banner, scrubber. */
 
 /* <progress class="x-progress" value="40" max="100" aria-label="…">; without `value` it is indeterminate. */
 .x-progress {
@@ -96,3 +96,171 @@
 		border-radius: 50%;
 	}
 }
+
+/*
+ * Banner: one line across the top of the app (an announcement, maintenance, an update ready). Unlike a toast it stays;
+ * unlike a callout it is about the app, not the content.
+ * <div class="x-banner" data-tone="info|warning|danger" role="status"><svg aria-hidden>…</svg><p>…</p>
+ * <button class="x-button" data-size="sm">…</button><button class="x-banner-close" type="button" aria-label="…">×</button></div>
+ */
+.x-banner {
+	--_tone: var(--x-tone, var(--x-accent));
+
+	display: flex;
+	align-items: center;
+	gap: var(--x-space-3);
+	padding-block: var(--x-space-2);
+	padding-inline: max(var(--x-space-4), env(safe-area-inset-left)) max(var(--x-space-4), env(safe-area-inset-right));
+	border-block: 1px solid color-mix(in oklab, var(--_tone) 35%, transparent);
+	background-color: color-mix(in oklab, var(--_tone) 12%, var(--x-bg));
+	font-size: var(--x-text-sm);
+
+	& > svg {
+		flex: none;
+		inline-size: 1rem;
+		block-size: 1rem;
+		color: var(--_tone);
+	}
+
+	& > p {
+		flex: 1;
+		min-inline-size: 0;
+	}
+
+	/* Narrow: the action moves under the text instead of squeezing it into a column. */
+	@media (width < 36rem) {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		row-gap: var(--x-space-2);
+
+		& > .x-button {
+			grid-area: 2 / 2;
+			justify-self: start;
+		}
+	}
+
+	@media (forced-colors: active) {
+		border-color: CanvasText;
+	}
+}
+
+.x-banner-close {
+	display: grid;
+	flex: none;
+	place-items: center;
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+	padding: 0;
+	border: 0;
+	border-radius: var(--x-radius-sm);
+	background: none;
+	color: var(--x-fg-muted);
+
+	&:hover {
+		background-color: var(--x-hover);
+		color: var(--x-fg);
+	}
+
+	& > svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+}
+
+/*
+ * Scrubber (a media timeline): the app sets --value, --buffered and --hover (percentages) and the time in <output>;
+ * the keyboard is the app's (role="slider", arrow keys, aria-valuetext with the time).
+ * <div class="x-scrubber" role="slider" tabindex="0" aria-label="…" aria-valuemin="0" aria-valuemax="…"
+ *   aria-valuenow="…" aria-valuetext="1:12:40"><div class="x-scrubber-track"></div><div class="x-scrubber-thumb"></div>
+ *   <output aria-hidden="true">1:44:10</output></div>
+ */
+.x-scrubber {
+	position: relative;
+	display: grid;
+	align-items: center;
+	block-size: 1.5rem;
+	cursor: pointer;
+	touch-action: none;
+
+	&:dir(rtl) {
+		--_flip: -1;
+	}
+}
+
+.x-scrubber-track {
+	position: relative;
+	block-size: 0.25rem;
+	overflow: hidden;
+	border-radius: 999px;
+	background-color: color-mix(in oklab, var(--x-fg) 15%, transparent);
+	transition: scale var(--x-duration-fast) var(--x-ease-out);
+
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		border-radius: inherit;
+	}
+
+	&::before {
+		inline-size: var(--buffered, 0%);
+		background-color: color-mix(in oklab, var(--x-fg) 25%, transparent);
+	}
+
+	&::after {
+		inline-size: var(--value, 0%);
+		background-color: var(--x-accent);
+	}
+
+	@media (forced-colors: active) {
+		border: 1px solid CanvasText;
+	}
+}
+
+.x-scrubber-thumb {
+	position: absolute;
+	inset-inline-start: var(--value, 0%);
+	inline-size: 0.875rem;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background-color: var(--x-accent);
+	translate: calc(var(--_flip, 1) * -50%) 0;
+	scale: 0;
+	transition: scale var(--x-duration-fast) var(--x-ease-out);
+}
+
+.x-scrubber > output {
+	position: absolute;
+	inset-block-end: 100%;
+	inset-inline-start: var(--hover, 0%);
+	padding: 0.125rem 0.375rem;
+	border: 1px solid var(--x-line);
+	border-radius: var(--x-radius-sm);
+	background-color: var(--x-raised);
+	font-family: var(--x-font-mono);
+	font-size: var(--x-text-xs);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	translate: calc(var(--_flip, 1) * -50%) -0.25rem;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity var(--x-duration-fast) var(--x-ease-out);
+}
+
+/* Thicker under the pointer or focus: scaled, so nothing around it moves. */
+.x-scrubber:is(:hover, :focus-visible) {
+	& > .x-scrubber-track {
+		scale: 1 1.5;
+	}
+
+	& > .x-scrubber-thumb {
+		scale: 1;
+	}
+}
+
+.x-scrubber:hover > output {
+	opacity: 1;
+}
+

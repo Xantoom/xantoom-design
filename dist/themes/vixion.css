@@ -8,7 +8,7 @@
 		--x-fill-3: #ff94bf;
 		--x-on-fill: #2a1508;
 		--x-accent: light-dark(#a8461c, #ffb08f);
-		--x-radius: 1.2;
+		--x-radius: 1.1;
 		--x-density: 1;
 		--x-fill: linear-gradient(115deg, var(--x-fill-1), var(--x-fill-2) 48%, var(--x-fill-3));
 		--x-brand: linear-gradient(115deg, var(--x-brand-1), var(--x-brand-2) 48%, var(--x-brand-3));

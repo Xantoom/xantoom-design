@@ -147,3 +147,47 @@
 		position: relative;
 	}
 }
+
+/*
+ * Cycle: one button for a choice of two or three states (the theme, a density). It shows the current state's icon;
+ * a press moves to the next. <button class="x-cycle" type="button" aria-label="…"><svg data-v="system" data-current>…</svg>
+ * <svg data-v="light">…</svg><svg data-v="dark">…</svg></button>   The theme: xantoom-design/theme.js wires it.
+ */
+.x-cycle {
+	display: inline-grid;
+	place-items: center;
+	inline-size: var(--x-control);
+	block-size: var(--x-control);
+	padding: 0;
+	border: 0;
+	border-radius: var(--x-radius-md);
+	background: none;
+	color: var(--x-fg-muted);
+	transition-property: background-color, color;
+	transition-duration: var(--x-duration-fast);
+	transition-timing-function: var(--x-ease-out);
+
+	&:hover {
+		background-color: var(--x-hover);
+		color: var(--x-fg);
+	}
+
+	& > svg {
+		grid-area: 1 / 1;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
+
+		&:not([data-current]) {
+			opacity: 0;
+			scale: 0.6;
+			rotate: -45deg;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			transition:
+				opacity var(--x-duration-fast) var(--x-ease-out),
+				scale var(--x-duration-base) var(--x-ease-out),
+				rotate var(--x-duration-base) var(--x-ease-out);
+		}
+	}
+}
