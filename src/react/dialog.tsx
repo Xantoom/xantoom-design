@@ -109,6 +109,8 @@ export function useModal(
 	onClose: () => void,
 ): { ref: RefCallback<HTMLDialogElement>; element: HTMLDialogElement | null; shown: boolean; closed: () => void } {
 	const node = useRef<HTMLDialogElement | null>(null);
+	// Closed by the cleanup below, not by the user: its close event must not reach onClose.
+	const dropped = useRef(false);
 	const [shown, setShown] = useState(open);
 	const [element, setElement] = useState<HTMLDialogElement | null>(null);
 	if (open && !shown) setShown(true);
@@ -128,15 +130,22 @@ export function useModal(
 		else if (!open && dialog.open) void closeTopLayer(dialog);
 	}, [open, shown]);
 
-	// Removed while open (its parent went): close it first, so focus goes back where it was.
+	// Removed while open (its parent went): close it first, so focus goes back where it was. Under StrictMode React
+	// runs this on a pretend unmount too, then the effect above shows the dialog again: that close is not the user's.
 	useLayoutEffect(
 		() => () => {
-			if (node.current?.open) node.current.close();
+			if (!node.current?.open) return;
+			dropped.current = true;
+			node.current.close();
 		},
 		[],
 	);
 
 	const closed = useCallback(() => {
+		if (dropped.current) {
+			dropped.current = false;
+			return;
+		}
 		setShown(false);
 		onClose();
 	}, [onClose]);

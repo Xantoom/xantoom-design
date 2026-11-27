@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.4
+
+- React `Dialog` stays open under StrictMode: the close its unmount cleanup makes on React's pretend unmount no longer
+  reaches `onClose`, which made the parent drop the dialog as soon as it opened.
+- The tooltip of a focused trigger shows after the frame, so focus that moves while another popover is being shown
+  no longer throws `InvalidStateError`.
+
 ## 0.7.3
 
 - React `NumberField`, `DurationField` and `Switch` work without `label`: the bare control, named by `id`,

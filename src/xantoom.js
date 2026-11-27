@@ -327,9 +327,10 @@ export function tooltips(root = document) {
 		const host = hostOf(event);
 		if (host && event.pointerType === 'mouse' && !host.contains(event.relatedTarget)) hideTip();
 	});
+	// After the frame: focus that lands while a popover is being shown must not show another in the same operation.
 	document.addEventListener('focusin', (event) => {
 		const host = hostOf(event);
-		if (host?.matches(':focus-visible')) showTip(host);
+		if (host) requestAnimationFrame(() => host.matches(':focus-visible') && host === document.activeElement && showTip(host));
 	});
 	document.addEventListener('focusout', (event) => hostOf(event) === tipHost && hideTip());
 	document.addEventListener(

@@ -91,3 +91,15 @@ describe('bare controls', () => {
 		expect(html(<Switch label="Chat" checked onChange={noop} />)).toContain('<label class="x-check">');
 	});
 });
+
+describe('0.7.4 fixes', () => {
+	test('a dialog closed by its own cleanup (StrictMode) does not report a close', () => {
+		const dialog = source('src/react/dialog.tsx');
+		expect(dialog).toContain('dropped.current = true;');
+		expect(dialog).toMatch(/if \(dropped\.current\) \{\s*dropped\.current = false;\s*return;/);
+	});
+
+	test('a focused trigger shows its tooltip after the frame, not inside another popover show', () => {
+		expect(source('src/xantoom.js')).toMatch(/focusin[\s\S]{0,200}requestAnimationFrame/);
+	});
+});
