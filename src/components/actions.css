@@ -1,6 +1,6 @@
 /*
  * Buttons. <button class="x-button" data-variant="primary|secondary|ghost|danger" data-size="sm|lg">
- * Icon-only: add data-icon and an aria-label. Busy: aria-busy="true" shows a spinner over the kept label.
+ * Icon-only: add data-icon and an aria-label. A toggle: aria-pressed. Busy: aria-busy="true" shows a spinner over the kept label.
  */
 
 .x-button {
@@ -69,6 +69,15 @@
 	&[data-variant="ghost"] {
 		--_bg: transparent;
 		--_edge: transparent;
+	}
+
+	/* A toggle (aria-pressed): pressed, it sits in and takes the accent, whatever its variant. */
+	&[aria-pressed="true"] {
+		--_bg: var(--x-raised);
+		--_image: none;
+		--_tint: var(--x-press);
+		--_fg: var(--x-accent);
+		--_edge: var(--x-line);
 	}
 
 	&[data-variant="danger"] {

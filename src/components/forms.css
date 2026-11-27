@@ -235,7 +235,7 @@ textarea.x-input {
 	aspect-ratio: 1;
 	margin: 0;
 	border: 1.5px solid var(--x-control-border);
-	border-radius: var(--x-radius-sm);
+	border-radius: min(var(--x-radius-sm), 0.25rem); /* a square that reads as one at 1rem */
 	background-color: var(--x-raised);
 	transition-property: background-color, border-color;
 	transition-duration: var(--x-duration-fast);

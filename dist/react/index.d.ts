@@ -1,8 +1,10 @@
 export { Button, IconButton, buttonProps, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './button';
 export { Avatar, Flag, Options, Spinner, ThemeCycle, Toaster, type FlagCode, type Option } from './content';
-export { Dialog, type DialogProps } from './dialog';
+export { CommandPalette, type CommandGroup, type CommandItem, type CommandPaletteProps } from './command';
+export { Dialog, useModal, type DialogProps } from './dialog';
 export { Field, TextArea, TextField, type ControlProps, type FieldProps } from './field';
 export { Menu, MenuGroup, MenuItem, MenuLabel, MenuSeparator, type MenuItemProps, type MenuTriggerProps } from './menu';
+export { CloseProvider, Popover, useClose, type PopoverTriggerProps } from './popover';
 export { Tooltip } from './tooltip';
 export { toast } from 'xantoom-design/js';
 declare module 'react' {

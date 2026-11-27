@@ -1,7 +1,7 @@
 // xantoom-design/react renders the design system's markup: classes, data-* variants and the ARIA ties.
 import { describe, expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Avatar, Button, Field, Flag, IconButton, Menu, MenuItem, Options, TextField } from '../src/react';
+import { Avatar, Button, CommandPalette, Field, Flag, IconButton, Menu, MenuItem, Options, TextField } from '../src/react';
 
 const html = (node: React.ReactElement): string => renderToStaticMarkup(node);
 
@@ -63,5 +63,39 @@ describe('react', () => {
 		);
 		expect(html(<Avatar name="Ada" size="3rem" />)).toContain('style="--_size:3rem"');
 		expect(html(<Flag code="fr" />)).toContain('class="x-flag"');
+	});
+});
+
+describe('react, shortcuts', () => {
+	test('an icon button shows its shortcut in the tooltip without describing itself twice', () => {
+		const out = html(<IconButton label="Search" shortcut="Ctrl K"><svg /></IconButton>);
+		expect(out).toContain('Search <kbd class="x-kbd">Ctrl K</kbd>');
+		expect(out).not.toContain('aria-describedby');
+	});
+});
+
+describe('react, command palette', () => {
+	const groups = [
+		{ id: 'pages', label: 'Pages', items: [{ id: 'a', label: 'Atlas', detail: 'the map', onSelect: () => undefined }] },
+		{ id: 'none', label: 'Empty', items: [] },
+	];
+	const palette = (open: boolean, list = groups) =>
+		html(
+			<CommandPalette open={open} onClose={() => undefined} label="Search" query="" onQueryChange={() => undefined} groups={list} empty="Nothing" />,
+		);
+
+	test('a search tied to its listbox, groups named, empty groups left out', () => {
+		const out = palette(true);
+		const list = /role="listbox" id="([^"]+)"/.exec(out)?.[1];
+		expect(out).toContain(`aria-controls="${list}"`);
+		expect(out).toContain('role="combobox"');
+		expect(out).toMatch(/role="group" aria-labelledby="([^"]+)"><span id="\1">Pages<\/span>/);
+		expect(out).not.toContain('Empty');
+		expect(out).toContain('<span class="x-command-detail">the map</span>');
+	});
+
+	test('says when nothing matches, and renders nothing while closed', () => {
+		expect(palette(true, [])).toContain('<p class="x-command-empty">Nothing</p>');
+		expect(palette(false)).not.toContain('combobox');
 	});
 });

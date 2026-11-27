@@ -15,6 +15,12 @@
 	box-sizing: border-box;
 }
 
+/* The browser centres dialogs and popovers with margin: auto; a reset placed before this one (Tailwind's preflight)
+   must not pin them to a corner. */
+:where(dialog, [popover]) {
+	margin: auto;
+}
+
 :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, pre) {
 	margin: 0;
 }

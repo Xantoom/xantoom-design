@@ -15,6 +15,7 @@ export declare function Menu({ trigger, label, children, className, }: {
     /** The menu's accessible name. */
     label: string;
     children: ReactNode;
+    /** Size only. Never a display (flex, grid): it would show the closed menu. */
     className?: string;
 }): ReactElement;
 export interface MenuItemProps {
@@ -28,10 +29,12 @@ export interface MenuItemProps {
     shortcut?: ReactNode;
     /** A link instead of an action. */
     href?: string;
+    /** Where the link opens (`_blank`: a new tab, with `rel="noopener"`). */
+    target?: string;
     download?: boolean | string;
     disabled?: boolean;
 }
-export declare function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, download, disabled }: MenuItemProps): ReactElement;
+export declare function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, target, download, disabled }: MenuItemProps): ReactElement;
 export declare function MenuLabel({ children }: {
     children: ReactNode;
 }): ReactElement;

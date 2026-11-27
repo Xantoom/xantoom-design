@@ -224,11 +224,13 @@ arrow buttons Windows draws.
 | Component | Renders |
 | --- | --- |
 | `<Button variant size block busy>` | `.x-button`; `busy` shows the spinner and blocks presses but keeps focus. `buttonProps()` gives a link the look |
-| `<IconButton label>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) |
+| `<IconButton label shortcut>` | A ghost icon button named by `label`, with a tooltip repeating it (`tooltip={false}` for none) and its shortcut. A toggle takes `aria-pressed`: pressed, it sits in and turns accent |
 | `<Tooltip content>` | `interestfor` on its child and a `popover="hint"` tooltip; describes the child only when it says something else than its name |
 | `<Field label hint error required>{(control) => …}</Field>`, `<TextField>`, `<TextArea>` | Label, hint and error tied to the control (`id`, `aria-describedby`, `aria-invalid`) |
-| `<Menu label trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `checked`, `tone`, `shortcut`, `href`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns |
-| `<Dialog open onClose title actions closeLabel size variant>` | A modal `<dialog closedby="any">`; its content exists only while open |
+| `<Menu label trigger={(props) => <Button {...props}>…</Button>}>` with `MenuItem` (`icon`, `checked`, `tone`, `shortcut`, `href`, `target`), `MenuLabel`, `MenuGroup`, `MenuSeparator` | A `popover` menu anchored to its button; a choice closes it and focus returns |
+| `<Popover label trigger open onOpenChange>` and `useClose()` | A panel anchored to its button (filters, a small form); its content exists only while open, and `useClose()` closes it from inside. `className` sizes it: a display utility (`flex`) would show it closed, so lay out an inner element |
+| `<Dialog open onClose title actions closeLabel size variant>` | A modal `<dialog closedby="any">`; its content exists only while open. `useModal()` drives any other native modal the same way |
+| `<CommandPalette open onClose label query onQueryChange groups empty>` | `x-command`: the app filters `groups` (`{ id, label, items: [{ id, label, icon, detail, hint, onSelect }] }`); the first item is active, the arrow keys move it, Enter or a click closes and runs it |
 | `<Toaster label closeLabel>` and `toast()` | The toast region, once per page |
 | `<Avatar name src size shape>`, `<Flag code>`, `<Spinner label>` | Initials when the picture is missing or fails; drawn flags (fr, gb, de, it, es) |
 | `<Options legend name value options onChange>` | `x-options`; icon-only when every option has an icon |

@@ -5,10 +5,17 @@ import { cloneElement, type ReactElement, type ReactNode, useId } from 'react';
  * nothing shows, so never put needed information only here). The trigger keeps its own accessible name: when the
  * tooltip says something else, it describes the trigger.
  */
-export function Tooltip({ content, children }: { content: ReactNode; children: ReactElement<Record<string, unknown>> }): ReactElement {
+export function Tooltip({
+	content,
+	children,
+	describes = typeof content !== 'string' || content !== children.props['aria-label'],
+}: {
+	content: ReactNode;
+	/** Whether the tooltip adds to the trigger's name (`aria-describedby`); by default, when it says something else. */
+	describes?: boolean;
+	children: ReactElement<Record<string, unknown>>;
+}): ReactElement {
 	const id = useId();
-	const name = children.props['aria-label'];
-	const describes = typeof content !== 'string' || content !== name;
 	return (
 		<>
 			{cloneElement(children, {

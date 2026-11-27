@@ -1,5 +1,6 @@
 import { closeTopLayer, enhance } from 'xantoom-design/js';
-import { type ReactElement, type ReactNode, useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
+import { CloseProvider } from './popover';
+import { type ReactElement, type ReactNode, type RefCallback, useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
 
 export interface DialogProps {
 	open: boolean;
@@ -24,11 +25,52 @@ export interface DialogProps {
  */
 export function Dialog({ open, onClose, title, children, actions, closeLabel, size, variant, className }: DialogProps): ReactElement {
 	const titleId = useId();
+	const { ref, element, shown, closed } = useModal(open, onClose);
+	return (
+		<dialog
+			ref={ref}
+			className={className ? `x-dialog ${className}` : 'x-dialog'}
+			aria-labelledby={titleId}
+			closedby="any"
+			data-size={size}
+			data-variant={variant}
+			onClose={closed}
+		>
+			{shown ? (
+				<CloseProvider element={element}>
+					<h1 id={titleId}>{title}</h1>
+					{closeLabel ? (
+						<form method="dialog">
+							<button className="x-button x-dialog-close" data-variant="ghost" data-icon="" aria-label={closeLabel}>
+								<svg viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentcolor" strokeWidth="2" strokeLinecap="round" />
+								</svg>
+							</button>
+						</form>
+					) : null}
+					{children}
+					{actions ? <div className="x-dialog-actions">{actions}</div> : null}
+				</CloseProvider>
+			) : null}
+		</dialog>
+	);
+}
+
+/**
+ * A native modal <dialog> driven by `open`: shown with showModal(), closed with its exit, content kept only while it
+ * shows. Spread `ref` and `onClose={closed}` on the dialog.
+ */
+export function useModal(
+	open: boolean,
+	onClose: () => void,
+): { ref: RefCallback<HTMLDialogElement>; element: HTMLDialogElement | null; shown: boolean; closed: () => void } {
 	const node = useRef<HTMLDialogElement | null>(null);
 	const [shown, setShown] = useState(open);
+	const [element, setElement] = useState<HTMLDialogElement | null>(null);
 	if (open && !shown) setShown(true);
 	const ref = useCallback((dialog: HTMLDialogElement | null) => {
 		node.current = dialog;
+		setElement(dialog);
 		if (dialog) enhance(dialog);
 	}, []);
 
@@ -47,35 +89,9 @@ export function Dialog({ open, onClose, title, children, actions, closeLabel, si
 		[],
 	);
 
-	return (
-		<dialog
-			ref={ref}
-			className={className ? `x-dialog ${className}` : 'x-dialog'}
-			aria-labelledby={titleId}
-			closedby="any"
-			data-size={size}
-			data-variant={variant}
-			onClose={() => {
-				setShown(false);
-				onClose();
-			}}
-		>
-			{shown ? (
-				<>
-					<h1 id={titleId}>{title}</h1>
-					{closeLabel ? (
-						<form method="dialog">
-							<button className="x-button x-dialog-close" data-variant="ghost" data-icon="" aria-label={closeLabel}>
-								<svg viewBox="0 0 24 24" aria-hidden="true">
-									<path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentcolor" strokeWidth="2" strokeLinecap="round" />
-								</svg>
-							</button>
-						</form>
-					) : null}
-					{children}
-					{actions ? <div className="x-dialog-actions">{actions}</div> : null}
-				</>
-			) : null}
-		</dialog>
-	);
+	const closed = useCallback(() => {
+		setShown(false);
+		onClose();
+	}, [onClose]);
+	return { ref, element, shown, closed };
 }

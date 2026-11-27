@@ -78,3 +78,14 @@
 	--container-content: var(--x-size-container);
 	--spacing-control: var(--x-control);
 }
+
+/*
+ * With the preflight under the design system, its content links (accent, underlined) would reach every link of the
+ * interface; in a Tailwind app links are interface and inherit, as the preflight had them. Prose keeps its links.
+ */
+@layer components {
+	:where(a:any-link):not(:where(.x-prose *)) {
+		color: inherit;
+		text-decoration: inherit;
+	}
+}

@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode } from 'react';
+import { type ReactElement, type ReactNode, type RefCallback } from 'react';
 export interface DialogProps {
     open: boolean;
     /** Escape, a click outside, a `<form method="dialog">` button or `open` turning false closed it. */
@@ -20,3 +20,13 @@ export interface DialogProps {
  * during its exit).
  */
 export declare function Dialog({ open, onClose, title, children, actions, closeLabel, size, variant, className }: DialogProps): ReactElement;
+/**
+ * A native modal <dialog> driven by `open`: shown with showModal(), closed with its exit, content kept only while it
+ * shows. Spread `ref` and `onClose={closed}` on the dialog.
+ */
+export declare function useModal(open: boolean, onClose: () => void): {
+    ref: RefCallback<HTMLDialogElement>;
+    element: HTMLDialogElement | null;
+    shown: boolean;
+    closed: () => void;
+};

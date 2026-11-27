@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.2
+
+- React: `Popover` (a panel anchored to its button, controlled or not, anchored even when opened from code) and
+  `useClose()` to close a popover, menu or dialog from inside; `CommandPalette` on `x-command`, which keeps its active
+  option in React so the list can change under it; `useModal()`, the native modal behind `Dialog`.
+- `IconButton` takes a `shortcut`, shown in its tooltip; `MenuItem` takes a `target` (`_blank` adds `rel="noopener"`).
+- A button with `aria-pressed="true"` shows as pressed (accent, sunk), whatever its variant.
+- `x-command`: an option can hold a second line (`.x-command-detail`) and the list an empty state
+  (`.x-command-empty`); the first option is active as soon as the palette opens.
+- The reset gives `dialog` and `[popover]` back their `margin: auto`, which a reset loaded before it (Tailwind's
+  preflight) removed, leaving them in a corner.
+- Checkboxes stay square: their radius is capped at 0.25rem.
+- `tailwind.css`: interface links inherit their colour, as with the preflight; prose keeps its links.
+
 ## 0.4.1
 
 - `xantoom-design contrast` reads blocks for every theme (`[data-theme]`, with `:not([data-theme^="…"])` or

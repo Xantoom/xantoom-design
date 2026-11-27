@@ -274,6 +274,8 @@ function commands(root) {
 			cancelAnimationFrame(pending);
 			pending = requestAnimationFrame(settleFilter);
 		});
+		// Opened: the first option is active, so Enter runs it straight away.
+		pending = requestAnimationFrame(settleFilter);
 		input.addEventListener('keydown', (event) => {
 			if (pending) settleFilter();
 			const all = options();

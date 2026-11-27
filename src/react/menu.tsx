@@ -1,4 +1,5 @@
 import { closeTopLayer, enhance } from 'xantoom-design/js';
+import { CloseProvider } from './popover';
 import { createContext, type ReactElement, type ReactNode, useCallback, useContext, useId, useState } from 'react';
 
 /** What the menu's button must carry: it opens the menu, and says so. */
@@ -25,6 +26,7 @@ export function Menu({
 	/** The menu's accessible name. */
 	label: string;
 	children: ReactNode;
+	/** Size only. Never a display (flex, grid): it would show the closed menu. */
 	className?: string;
 }): ReactElement {
 	const id = useId();
@@ -48,7 +50,9 @@ export function Menu({
 					setOpen((event.nativeEvent as ToggleEvent).newState === 'open');
 				}}
 			>
-				<MenuContext value={panel}>{children}</MenuContext>
+				<MenuContext value={panel}>
+					<CloseProvider element={panel}>{children}</CloseProvider>
+				</MenuContext>
 			</div>
 		</>
 	);
@@ -65,11 +69,13 @@ export interface MenuItemProps {
 	shortcut?: ReactNode;
 	/** A link instead of an action. */
 	href?: string;
+	/** Where the link opens (`_blank`: a new tab, with `rel="noopener"`). */
+	target?: string;
 	download?: boolean | string;
 	disabled?: boolean;
 }
 
-export function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, download, disabled }: MenuItemProps): ReactElement {
+export function MenuItem({ icon, children, onSelect, checked, tone, shortcut, href, target, download, disabled }: MenuItemProps): ReactElement {
 	const menu = useContext(MenuContext);
 	const choose = () => {
 		if (menu) void closeTopLayer(menu);
@@ -84,7 +90,17 @@ export function MenuItem({ icon, children, onSelect, checked, tone, shortcut, hr
 	);
 	if (href)
 		return (
-			<a className="x-menu-item" role="menuitem" tabIndex={-1} href={href} download={download} data-tone={tone} onClick={choose}>
+			<a
+				className="x-menu-item"
+				role="menuitem"
+				tabIndex={-1}
+				href={href}
+				target={target}
+				rel={target === '_blank' ? 'noopener' : undefined}
+				download={download}
+				data-tone={tone}
+				onClick={choose}
+			>
 				{content}
 			</a>
 		);

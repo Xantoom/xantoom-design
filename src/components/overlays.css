@@ -171,6 +171,8 @@
  *   </div>
  *   <footer>…</footer>
  * </dialog>
+ * An option's text can hold a second line: <span class="x-command-label">Title<span class="x-command-detail">…</span></span>.
+ * No result: <p class="x-command-empty"> in the list.
  * The app filters the options; xantoom.js moves the active one with the arrow keys and clicks it on Enter.
  */
 .x-command {
@@ -271,6 +273,13 @@
 			font-size: var(--x-text-xs);
 		}
 
+		& > .x-command-label {
+			display: grid;
+			gap: 0.125rem;
+			min-inline-size: 0;
+			overflow-wrap: anywhere;
+		}
+
 		&:is(:hover, [aria-selected="true"]) {
 			background-color: var(--x-hover);
 		}
@@ -282,6 +291,30 @@
 			}
 		}
 	}
+}
+
+.x-command-detail {
+	display: -webkit-box;
+	overflow: hidden;
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-xs);
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+
+	& mark {
+		background: none;
+		color: var(--x-fg);
+		font-weight: var(--x-weight-medium);
+	}
+}
+
+.x-command-empty {
+	margin: 0;
+	padding: var(--x-space-6) var(--x-space-4);
+	color: var(--x-fg-muted);
+	font-size: var(--x-text-sm);
+	text-align: center;
 }
 
 /*
