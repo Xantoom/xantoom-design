@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode } from 'react';
 /** What the menu's button must carry: it opens the menu, and says so. */
 export interface MenuTriggerProps {
-    popovertarget: string;
+    popoverTarget: string;
     'aria-haspopup': 'menu';
     'aria-expanded': boolean;
 }

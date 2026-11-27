@@ -4,7 +4,7 @@ import { createContext, type ReactElement, type ReactNode, useCallback, useConte
 
 /** What the menu's button must carry: it opens the menu, and says so. */
 export interface MenuTriggerProps {
-	popovertarget: string;
+	popoverTarget: string;
 	'aria-haspopup': 'menu';
 	'aria-expanded': boolean;
 }
@@ -41,7 +41,7 @@ export function Menu({
 	}, []);
 	return (
 		<>
-			{trigger({ popovertarget: id, 'aria-haspopup': 'menu', 'aria-expanded': open })}
+			{trigger({ popoverTarget: id, 'aria-haspopup': 'menu', 'aria-expanded': open })}
 			<div
 				ref={ref}
 				id={id}

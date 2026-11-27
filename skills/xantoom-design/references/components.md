@@ -85,6 +85,7 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
 ```
 
 - A required field gets ` *` after its `.x-label` automatically.
+- A label may start with an icon (`<label class="x-label"><svg aria-hidden>…</svg>Dark theme</label>`): it sits on the words' line, at their size.
 - Invalid fields turn red on `:user-invalid` (after interaction) or `aria-invalid="true"`. On submit, move focus to
   the first error.
 - `x-options` is for one choice among a few that stay visible (a view, an alignment). More than five, or a

@@ -58,7 +58,7 @@ describe('pickers', () => {
 		const out = html(<ColorField label="Outline" value="#2f5bff" onChange={noop} labels={{ plane: 'Saturation and brightness', hue: 'Hue', hex: 'Hex' }} />);
 		expect(out).toContain('<span class="x-swatch" style="--x-swatch:#2f5bff"></span>');
 		expect(out).toContain('>#2F5BFF</span>');
-		expect(out).toMatch(/popovertarget="([^"]+)"[^>]*>.*id="\1" class="x-popover" popover="auto" role="dialog" aria-label="Outline"/);
+		expect(out).toMatch(/popovertarget="([^"]+)"[^>]*>.*id="\1" class="x-popover" popover="auto" role="dialog" aria-label="Outline"/i);
 	});
 });
 

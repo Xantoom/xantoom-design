@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.2
+
+- A field label with an icon before its words (`<label class="x-label"><svg>…</svg>Dark theme</label>`) keeps both
+  on one line, the icon at the text's size.
+- React components pass `popoverTarget`, the name React knows, so development builds no longer warn about
+  `popovertarget`.
+
 ## 0.7.1
 
 - React `Avatar decorative`: hidden from assistive technology when the name is written beside it, so it is not read

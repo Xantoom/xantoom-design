@@ -42,7 +42,7 @@ describe('react', () => {
 				<MenuItem checked={false}>Date</MenuItem>
 			</Menu>,
 		);
-		const id = /popovertarget="([^"]+)"/.exec(out)?.[1];
+		const id = /popovertarget="([^"]+)"/i.exec(out)?.[1];
 		expect(out).toContain(`<div id="${id}" class="x-menu" popover="auto" role="menu" aria-label="Sort">`);
 		expect(out).toContain('aria-haspopup="menu" aria-expanded="false"');
 		expect(out).toContain('role="menuitemradio" aria-checked="true"');

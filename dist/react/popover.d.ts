@@ -8,7 +8,7 @@ export declare function CloseProvider({ element, children }: {
 }): ReactElement;
 /** What a popover's button must carry: it opens the popover, and says whether it is open. */
 export interface PopoverTriggerProps {
-    popovertarget: string;
+    popoverTarget: string;
     'aria-expanded': boolean;
 }
 /**

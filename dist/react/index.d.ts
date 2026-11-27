@@ -15,10 +15,6 @@ declare module 'react' {
         /** Interest invokers: shows the popover `id` on hover and focus. */
         interestfor?: string;
     }
-    interface ButtonHTMLAttributes<T> {
-        /** The popover this button toggles (React 19 renders `popoverTarget` under that very name). */
-        popovertarget?: string;
-    }
     interface DialogHTMLAttributes<T> {
         /** Which user actions close the dialog: `any` adds a click outside. */
         closedby?: 'any' | 'closerequest' | 'none';

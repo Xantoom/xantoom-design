@@ -200,7 +200,7 @@ function SelectButton<T extends string>({
 				aria-invalid={named['aria-invalid']}
 				aria-haspopup="listbox"
 				aria-expanded={open}
-				popovertarget={`${id}-panel`}
+				popoverTarget={`${id}-panel`}
 				data-variant={variant === 'field' ? undefined : variant}
 				data-size={size === 'md' ? undefined : size}
 				data-bare={bare ? '' : undefined}

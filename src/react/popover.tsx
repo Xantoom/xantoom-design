@@ -27,7 +27,7 @@ export function CloseProvider({ element, children }: { element: HTMLElement | nu
 
 /** What a popover's button must carry: it opens the popover, and says whether it is open. */
 export interface PopoverTriggerProps {
-	popovertarget: string;
+	popoverTarget: string;
 	'aria-expanded': boolean;
 }
 
@@ -71,7 +71,7 @@ export function Popover({
 
 	return (
 		<>
-			{trigger({ popovertarget: id, 'aria-expanded': shown })}
+			{trigger({ popoverTarget: id, 'aria-expanded': shown })}
 			<div
 				ref={ref}
 				id={id}

@@ -23,6 +23,20 @@
 	font-size: var(--x-text-sm);
 	font-weight: var(--x-weight-medium);
 
+	/* An icon before the words (a moon, a sun): on their line, at their size. */
+	&:has(> svg) {
+		display: flex;
+		gap: var(--x-space-1-5);
+		align-items: center;
+
+		& > svg {
+			flex: none;
+			inline-size: 1em;
+			block-size: 1em;
+			color: var(--x-fg-muted);
+		}
+	}
+
 	/* Required fields say so visibly; the `required` attribute says it to assistive technology. */
 	.x-field:has(:required) > &::after {
 		content: " *" / "";
