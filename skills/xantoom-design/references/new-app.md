@@ -61,8 +61,7 @@ All logos share one grammar, so they read as a family:
 
 ## 4. Wire it
 
-In the app: `bun add github:Xantoom/xantoom-design#vX.Y.Z`, `bunx xantoom-design sync`, add
-`"postinstall": "xantoom-design sync"`, then import `xantoom-design/css` and `xantoom-design/themes/<app>.css`. Set
+In the app: `bun add github:Xantoom/xantoom-design#vX.Y.Z`, then import `xantoom-design/css` and `xantoom-design/themes/<app>.css`. Set
 `<meta name="theme-color">` to `--x-bg` in each mode (`media="(prefers-color-scheme: dark)"`), and inline
 `xantoom-design/theme-head.js` after them (see the theme switch in components.md).
 

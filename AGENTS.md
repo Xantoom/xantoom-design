@@ -11,9 +11,10 @@ them too.
 - `src/`: CSS by layer (`reset`, `base`, `layout`, `components/*`, `motion`, `utilities`), plus `xantoom.js`.
   `src/tokens.css` is generated.
 - `dist/`: built output (committed: projects install this repository as a git dependency, with no build step).
-- `scripts/build.ts`: tokens to CSS, then the lightningcss bundle and the minified script. `scripts/sync.ts` is the
-  `xantoom-design sync` command that projects run.
-- `skills/xantoom-design/`: the cross-agent skill (Agent Skills format) copied into every project.
+- `scripts/build.ts`: tokens to CSS, then the lightningcss bundle and the minified script. `scripts/cli.ts` is the
+  `xantoom-design` command (`skill`, `contrast`, `migrate`).
+- `skills/xantoom-design/`: the cross-agent skill (Agent Skills format), installed on each machine by
+  `xantoom-design skill`, never into projects. It ships apart from the CSS: either installs without the other.
 - `demo/`: every component on one page (`bun run demo`).
 
 ## Rules

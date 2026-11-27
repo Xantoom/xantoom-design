@@ -20,18 +20,19 @@ One signature, one theme per app. The design language of every Xantoom web proje
 - **The family's logos** in [`brand/`](brand), one source for every site that shows them.
 - **Theme contrast check** for apps with their own themes: `bunx xantoom-design contrast src/themes.css --theme <app> [--prefix <app> --ground <name>]`.
 - **Agent skill**: [`skills/xantoom-design`](skills/xantoom-design/SKILL.md), in the open Agent Skills format, so any
-  coding agent working in a Xantoom project knows the rules.
+  coding agent knows the rules. Installed on the machine, apart from the CSS.
 
 ## Use it
 
+The CSS and the skill are installed apart; either works without the other.
+
 ```sh
-bun add github:Xantoom/xantoom-design#v0.5.0
-bunx xantoom-design sync
+bun add github:Xantoom/xantoom-design#v0.5.1     # the CSS, script, React components and tokens, in a project
+bunx github:Xantoom/xantoom-design skill          # the agent skill, once per machine (~/.claude/skills, ~/.agents/skills)
 ```
 
-`sync` copies the skill into `.agents/skills/`, links it from `.claude/skills/`, and adds a pointer to `AGENTS.md`
-(and to `CLAUDE.md` when the project has one). Add `"postinstall": "xantoom-design sync"` to keep it current, and
-commit the result. `xantoom-design sync --check` fails in CI when the copy is stale.
+Run the second again to update the skill. On a machine that holds a checkout of this repository, link the skill
+instead (`ln -s <checkout>/skills/xantoom-design ~/.claude/skills/xantoom-design`): `skill` leaves a link alone.
 
 ```css
 @layer x, app;

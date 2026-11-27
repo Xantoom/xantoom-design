@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.5.0
+  version: 0.5.1
 ---
 
 # Xantoom design system
@@ -66,13 +66,12 @@ The package is `xantoom-design` (github.com/Xantoom/xantoom-design). It ships pu
 
 ## Adding the design system to a project
 
-```sh
-bun add github:Xantoom/xantoom-design#v0.5.0
-bunx xantoom-design sync          # copies this skill into .agents/skills/, links .claude/skills/, adds pointers
-```
+The CSS goes in the project; this skill stays on the machine (`bunx github:Xantoom/xantoom-design skill` installs or
+updates it). A project never holds a copy of the skill.
 
-Also add `"postinstall": "xantoom-design sync"` to the project's `package.json`, so the skill stays current on every
-install. Commit the synced files: an agent reads them before any install.
+```sh
+bun add github:Xantoom/xantoom-design#v0.5.1
+```
 
 ```css
 @layer x, app;

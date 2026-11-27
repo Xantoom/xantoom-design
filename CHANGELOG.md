@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.1
+
+- The skill and the CSS install apart. `xantoom-design skill` installs the skill on the machine
+  (`~/.claude/skills`, `~/.agents/skills`; a link to a checkout is left alone). `xantoom-design sync` is gone: a
+  project no longer holds a copy of the skill, a postinstall or a generated pointer. Projects that ran it delete
+  `.agents/skills/xantoom-design`, `.claude/skills/xantoom-design` and their `"postinstall": "xantoom-design sync"`.
+
 ## 0.5.0
 
 - Toasts show during a modal: `toast()` moves the toaster into the open modal (the page behind is inert) and back
