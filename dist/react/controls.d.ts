@@ -70,4 +70,39 @@ export declare function DropZone({ title, hint, detail, icon, className, ...opti
     icon?: ReactNode;
     className?: string;
 }): ReactElement;
+/**
+ * A setting on a range: its label, the value (`format`), and the range filled from the neutral value to the thumb, or
+ * `track` in its place (a gradient showing what the setting does). `onChange` follows the drag, `onCommit` comes once
+ * it is released or the keyboard leaves, so a drag can be previewed live and kept as one undo step. With `neutral`, a
+ * double click goes back to it, and `reset` names a button beside the value that does the same.
+ */
+export declare function Slider({ label, value, onChange, onCommit, min, max, step, neutral, format, track, reset, hint, hideLabel, disabled, className, }: {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    onCommit?: () => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    /** The value the setting does nothing at: the fill starts there. */
+    neutral?: number;
+    format?: (value: number) => string;
+    /** A CSS background for the track, instead of the fill. */
+    track?: string;
+    /** The name of the button back to `neutral`, shown once the value moved away from it. */
+    reset?: string;
+    hint?: ReactNode;
+    /** Under a title that already says it: the label is left to assistive technology. */
+    hideLabel?: boolean;
+    disabled?: boolean;
+    className?: string;
+}): ReactElement;
+/** A password with a button that shows what was typed, easier than typing it twice blind. `labels` name the button. */
+export declare function PasswordInput({ labels, className, ref, ...input }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+    labels: {
+        show: string;
+        hide: string;
+    };
+    ref?: Ref<HTMLInputElement>;
+}): ReactElement;
 export {};

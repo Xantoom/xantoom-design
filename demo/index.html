@@ -221,6 +221,21 @@
 							<label class="x-label" for="volume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>Volume</label>
 							<input class="x-range" id="volume" name="volume" type="range" value="60">
 						</div>
+						<div class="x-slider">
+							<div>
+								<label for="warmth">Warmth</label>
+								<output aria-hidden="true">+20</output>
+							</div>
+							<input class="x-range" id="warmth" type="range" min="-100" max="100" value="20" aria-valuetext="+20" aria-describedby="warmth-hint" style="--_low: 50%; --_high: 60%">
+							<small id="warmth-hint">From the neutral value to the thumb.</small>
+						</div>
+						<div class="x-field">
+							<label class="x-label" for="pass">Password</label>
+							<div class="x-password">
+								<input class="x-input" id="pass" type="password" autocomplete="new-password">
+								<button type="button" class="x-button" data-variant="ghost" data-icon="" data-size="sm" aria-pressed="false" aria-label="Show the password" data-tip="Show the password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+							</div>
+						</div>
 						<fieldset class="x-options">
 							<legend>View</legend>
 							<label><input type="radio" name="view" checked>List</label>

@@ -72,7 +72,12 @@ with unique ids (`label` to name it, `id` for a stable suffix when rendering on 
   <kbd class="x-kbd">/</kbd><button type="button" aria-label="Clear"><svg aria-hidden>…</svg></button></div>
 <label class="x-dropzone"><svg aria-hidden>…</svg><strong>Drop files here</strong><span>or choose</span>
   <small>MP4, WebM · 4 GB</small><input type="file" class="x-visually-hidden"></label>   <!-- data-drag while dragging -->
-<input type="range" class="x-range">  <input type="file" class="x-file">  <fieldset class="x-fieldset"><legend>…</legend>…</fieldset>
+<div class="x-slider"><div><label for="t">Warmth</label><output aria-hidden="true">+20</output></div>
+  <input class="x-range" id="t" type="range" aria-valuetext="+20" style="--_low: 50%; --_high: 60%"><small>…</small></div>
+  <!-- x-range: a thin track filled from --_low to --_high, or --x-range-track (a gradient) in its place -->
+<div class="x-password"><input class="x-input" type="password"><button class="x-button" data-variant="ghost" data-icon
+  data-size="sm" aria-pressed="false" aria-label="Show the password">…</button></div>
+<input type="file" class="x-file">  <fieldset class="x-fieldset"><legend>…</legend>…</fieldset>
 <div class="x-number" data-step="1"><span class="x-number-scrub" aria-hidden="true"><svg>…</svg></span>
   <input id="…" type="text" inputmode="decimal" role="spinbutton" aria-valuemin="1" aria-valuemax="500" aria-valuenow="20">
   <span class="x-number-unit">GB</span><span class="x-number-steps" aria-hidden="true">
@@ -299,6 +304,8 @@ arrow buttons Windows draws.
 | `<Popover label trigger open onOpenChange>` and `useClose()` | A panel anchored to its button (filters, a small form); its content exists only while open, and `useClose()` closes it from inside. `className` sizes it: a display utility (`flex`) would show it closed, so lay out an inner element |
 | `<Dialog open onClose title actions closeLabel size variant icon tone description>` | A modal `<dialog closedby="any">`; its content exists only while open, focus starts in its first field. `variant="alert"`: `role="alertdialog"`, narrow, no click outside, `icon` in the `tone`, `description` announced. Other attributes pass through. `useModal()` drives any other native modal the same way |
 | `<Switch label? checked onChange>` | `x-switch` in its `x-check` label: a native checkbox with `switch` and `role="switch"`. Without `label`, the bare switch (named by `aria-label`, or by a SettingRow through `id`) |
+| `<Slider label value onChange onCommit? min max step neutral? format? track? reset? hint? hideLabel?>` | `x-slider`: label, value, range filled from `neutral` to the thumb (or `track`, a gradient). `onChange` follows the drag, `onCommit` once released; with `neutral`, a double click goes back to it and `reset` names a button that does |
+| `<PasswordInput labels={{ show, hide }} …input>` | `x-password`: the input with a button that shows what was typed. Bare: put it in a `Field` |
 | `<NumberField label? value onChange min max step unit format locale>` | Without `label` (and for DurationField too), the bare `x-number`, named by `id`, `aria-label`, `aria-labelledby` and `aria-describedby`: a SettingRow's control. `x-number`: typed freely (checked on leaving or Enter, Escape undoes), dragged from the grip, arrow keys (Shift ×10), Page Up and Down, Home and End, the small arrows; shown with `Intl.NumberFormat` |
 | `<SearchField label value onChange shortcut clearLabel>` | `x-search`: the shortcut (one key, "/") focuses it while empty, then the clear button; Escape clears it before closing what holds it |
 | `<FilePicker accept multiple onFiles>{(pick) => …}</FilePicker>`, `<DropZone title hint detail icon accept multiple onFiles>` | A hidden file input any button opens; the `x-dropzone`, with its drag state |

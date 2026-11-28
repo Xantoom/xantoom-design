@@ -1,5 +1,7 @@
+import { IconButton } from './button';
 import { Field, type ControlProps, type FieldProps } from './field';
 import {
+	type CSSProperties,
 	type InputHTMLAttributes,
 	type KeyboardEvent,
 	type PointerEvent,
@@ -7,6 +9,7 @@ import {
 	type ReactNode,
 	type Ref,
 	useEffect,
+	useId,
 	useMemo,
 	useRef,
 	useState,
@@ -401,3 +404,125 @@ export function DropZone({
 }
 
 const multiple = (options: FileOptions): boolean => options.multiple === true;
+
+/**
+ * A setting on a range: its label, the value (`format`), and the range filled from the neutral value to the thumb, or
+ * `track` in its place (a gradient showing what the setting does). `onChange` follows the drag, `onCommit` comes once
+ * it is released or the keyboard leaves, so a drag can be previewed live and kept as one undo step. With `neutral`, a
+ * double click goes back to it, and `reset` names a button beside the value that does the same.
+ */
+export function Slider({
+	label,
+	value,
+	onChange,
+	onCommit,
+	min = 0,
+	max = 100,
+	step = 1,
+	neutral,
+	format = String,
+	track,
+	reset,
+	hint,
+	hideLabel = false,
+	disabled,
+	className,
+}: {
+	label: string;
+	value: number;
+	onChange: (value: number) => void;
+	onCommit?: () => void;
+	min?: number;
+	max?: number;
+	step?: number;
+	/** The value the setting does nothing at: the fill starts there. */
+	neutral?: number;
+	format?: (value: number) => string;
+	/** A CSS background for the track, instead of the fill. */
+	track?: string;
+	/** The name of the button back to `neutral`, shown once the value moved away from it. */
+	reset?: string;
+	hint?: ReactNode;
+	/** Under a title that already says it: the label is left to assistive technology. */
+	hideLabel?: boolean;
+	disabled?: boolean;
+	className?: string;
+}): ReactElement {
+	const id = useId();
+	const at = (n: number): number => ((Math.min(max, Math.max(min, n)) - min) / (max - min || 1)) * 100;
+	const from = at(neutral ?? min);
+	const back = (): void => {
+		if (neutral === undefined) return;
+		onChange(neutral);
+		onCommit?.();
+	};
+	const style = {
+		'--_low': `${Math.min(from, at(value))}%`,
+		'--_high': `${Math.max(from, at(value))}%`,
+		...(track ? { '--x-range-track': track } : {}),
+	} as CSSProperties;
+	return (
+		<div className={className ? `x-slider ${className}` : 'x-slider'}>
+			<div>
+				<label htmlFor={id} className={hideLabel ? 'x-visually-hidden' : undefined}>
+					{label}
+				</label>
+				{reset !== undefined && neutral !== undefined ? (
+					<IconButton label={reset} size="sm" disabled={disabled || value === neutral} onClick={back}>
+						<svg {...ICON}>
+							<path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+							<path d="M3 3v5h5" />
+						</svg>
+					</IconButton>
+				) : null}
+				<output htmlFor={id} aria-hidden="true">
+					{format(value)}
+				</output>
+			</div>
+			<input
+				id={id}
+				className="x-range"
+				type="range"
+				min={min}
+				max={max}
+				step={step}
+				value={value}
+				disabled={disabled}
+				aria-valuetext={format(value)}
+				aria-describedby={hint ? `${id}-hint` : undefined}
+				style={style}
+				onChange={(event) => onChange(Number(event.currentTarget.value))}
+				// Keyboard steps stay one commit until the range loses focus.
+				onPointerUp={onCommit}
+				onBlur={onCommit}
+				onDoubleClick={back}
+			/>
+			{hint ? <small id={`${id}-hint`}>{hint}</small> : null}
+		</div>
+	);
+}
+
+/** A password with a button that shows what was typed, easier than typing it twice blind. `labels` name the button. */
+export function PasswordInput({
+	labels,
+	className,
+	ref,
+	...input
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+	labels: { show: string; hide: string };
+	ref?: Ref<HTMLInputElement>;
+}): ReactElement {
+	const [shown, setShown] = useState(false);
+	return (
+		<div className={className ? `x-password ${className}` : 'x-password'}>
+			<input {...input} ref={ref} className="x-input" type={shown ? 'text' : 'password'} />
+			<IconButton label={shown ? labels.hide : labels.show} size="sm" aria-pressed={shown} onClick={() => setShown(!shown)}>
+				<svg {...ICON}>
+					<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+					<circle cx="12" cy="12" r="3" />
+					{shown ? <path d="m3 3 18 18" /> : null}
+				</svg>
+			</IconButton>
+		</div>
+	);
+}

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.6
+
+- `x-range` is drawn the same everywhere: a thin track filled from `--_low` to `--_high` (or `--x-range-track`, a
+  gradient showing what the setting does) and a round thumb with a focus ring; the fill follows RTL.
+- `x-slider` and React `Slider`: a label, the value, a button back to the neutral value, the range and a hint.
+  `onChange` follows the drag and `onCommit` comes once, so a drag is one undo step.
+- `x-password` and React `PasswordInput`: a password with a button that shows what was typed.
+
 ## 0.7.5
 
 - React `ColorPicker`: ColorField's picker on its own, for a button of the app's (a swatch, a colour wheel) in a

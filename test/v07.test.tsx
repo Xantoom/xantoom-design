@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Select, SettingRow, Tooltip } from '../src/react';
+import { PasswordInput, Select, SettingRow, Slider, Tooltip } from '../src/react';
 
 const html = (node: React.ReactElement): string => renderToStaticMarkup(node);
 const noop = (): void => undefined;
@@ -117,5 +117,21 @@ describe('0.7.5', () => {
 
 	test('a Select search shows its label as a placeholder', () => {
 		expect(source('src/react/pickers.tsx')).toMatch(/aria-label=\{search\.label\}\s*placeholder=\{search\.label\}/);
+	});
+});
+
+describe('0.7.6', () => {
+	test('a Slider fills from its neutral value and names its value', () => {
+		const out = html(<Slider label="Warmth" value={20} min={-100} max={100} neutral={0} format={(v) => `+${v}`} onChange={noop} />);
+		expect(out).toContain('class="x-slider"');
+		expect(out).toContain('--_low:50%;--_high:60%');
+		expect(out).toContain('aria-valuetext="+20"');
+	});
+
+	test('a PasswordInput is the input and its show button', () => {
+		const out = html(<PasswordInput labels={{ show: 'Show', hide: 'Hide' }} />);
+		expect(out).toContain('class="x-password"');
+		expect(out).toContain('type="password"');
+		expect(out).toContain('aria-pressed="false"');
 	});
 });
