@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.7
+
+- `x-password`: the show button keeps its own height, centred in the field, instead of stretching to it.
+
 ## 0.7.6
 
 - `x-range` is drawn the same everywhere: a thin track filled from `--_low` to `--_high` (or `--x-range-track`, a

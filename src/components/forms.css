@@ -877,6 +877,7 @@ textarea.x-input {
 		position: absolute;
 		inset-block: 0;
 		inset-inline-end: var(--x-space-1);
+		block-size: fit-content;
 		margin-block: auto;
 	}
 }
