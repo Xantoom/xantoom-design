@@ -71,6 +71,17 @@ export declare function Combobox<T extends string>({ value, onChange, options, p
     name?: string;
     disabled?: boolean;
 }): ReactElement;
+/** The colour picker on its own (in a Popover with a button of the app's): the plane, the hue bar, the hex code. */
+export declare function ColorPicker({ value, onChange, labels, }: {
+    value: string;
+    onChange: (hex: string) => void;
+    /** The picker's parts, for assistive technology: the plane, the hue bar, the hex field. */
+    labels: {
+        plane: string;
+        hue: string;
+        hex: string;
+    };
+}): ReactElement;
 /**
  * A colour: a button showing it, opening a picker (saturation and brightness on a plane, the arrow keys there too;
  * the hue on a bar; the hex code to type or paste). `value` and `onChange` use "#rrggbb".

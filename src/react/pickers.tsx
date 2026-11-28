@@ -258,6 +258,7 @@ function SelectButton<T extends string>({
 						type="search"
 						role="combobox"
 						aria-label={search.label}
+						placeholder={search.label}
 						aria-expanded={open}
 						aria-controls={`${id}-list`}
 						aria-autocomplete="list"
@@ -469,6 +470,91 @@ const toHsv = (hex: string, hue = 0): Hsv => {
 
 const HEX = /^#?([\da-f]{6})$/i;
 
+/** The colour picker on its own (in a Popover with a button of the app's): the plane, the hue bar, the hex code. */
+export function ColorPicker({
+	value,
+	onChange,
+	labels,
+}: {
+	value: string;
+	onChange: (hex: string) => void;
+	/** The picker's parts, for assistive technology: the plane, the hue bar, the hex field. */
+	labels: { plane: string; hue: string; hex: string };
+}): ReactElement {
+	// The hue is kept apart: a grey has none, and dragging through one must not lose it.
+	const [hsv, setHsv] = useState<Hsv>(() => toHsv(value));
+	const [typed, setTyped] = useState<string | null>(null);
+	useEffect(() => {
+		if (toHex(hsv) !== value.toLowerCase()) setHsv((now) => toHsv(value, now[0]));
+	}, [value, hsv]);
+
+	const update = (next: Hsv): void => {
+		setHsv(next);
+		onChange(toHex(next));
+	};
+	const at = (event: React.PointerEvent<HTMLDivElement>): void => {
+		const box = event.currentTarget.getBoundingClientRect();
+		const x = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+		const s = getComputedStyle(event.currentTarget).direction === 'rtl' ? 1 - x : x;
+		update([hsv[0], s, 1 - Math.min(1, Math.max(0, (event.clientY - box.top) / box.height))]);
+	};
+	const [h, s, v] = hsv;
+	const percent = (n: number): string => `${Math.round(n * 100)} %`;
+
+	return (
+		<div className="x-color" style={{ '--_hue': h } as React.CSSProperties}>
+			<div
+				data-plane=""
+				role="slider"
+				tabIndex={0}
+				aria-label={labels.plane}
+				aria-valuenow={Math.round(s * 100)}
+				aria-valuetext={`${percent(s)}, ${percent(v)}`}
+				onPointerDown={(event) => {
+					event.currentTarget.setPointerCapture(event.pointerId);
+					at(event);
+				}}
+				onPointerMove={(event) => {
+					if (event.currentTarget.hasPointerCapture(event.pointerId)) at(event);
+				}}
+				onKeyDown={(event) => {
+					const d = event.shiftKey ? 0.1 : 0.02;
+					const rtl = getComputedStyle(event.currentTarget).direction === 'rtl' ? -1 : 1;
+					const by = { ArrowLeft: [-d * rtl, 0], ArrowRight: [d * rtl, 0], ArrowUp: [0, d], ArrowDown: [0, -d] }[event.key];
+					if (!by) return;
+					event.preventDefault();
+					const fit = (n: number): number => Math.min(1, Math.max(0, n));
+					update([h, fit(s + (by[0] ?? 0)), fit(v + (by[1] ?? 0))]);
+				}}
+			>
+				<span style={{ '--_x': `${s * 100}%`, '--_y': `${(1 - v) * 100}%` } as React.CSSProperties} />
+			</div>
+			<input type="range" min={0} max={359} value={Math.round(h)} aria-label={labels.hue} onChange={(event) => update([Number(event.currentTarget.value), s, v])} />
+			<div>
+				<span className="x-swatch" style={{ '--x-swatch': value } as React.CSSProperties} />
+				<input
+					className="x-input"
+					aria-label={labels.hex}
+					spellCheck={false}
+					autoComplete="off"
+					value={typed ?? value.toUpperCase()}
+					onChange={(event) => {
+						const text = event.currentTarget.value;
+						setTyped(text);
+						const match = HEX.exec(text.trim());
+						if (match) {
+							const next = toHsv(`#${match[1]}`, h);
+							setHsv(next);
+							onChange(`#${match[1]?.toLowerCase()}`);
+						}
+					}}
+					onBlur={() => setTyped(null)}
+				/>
+			</div>
+		</div>
+	);
+}
+
 /**
  * A colour: a button showing it, opening a picker (saturation and brightness on a plane, the arrow keys there too;
  * the hue on a bar; the hex code to type or paste). `value` and `onChange` use "#rrggbb".
@@ -488,27 +574,6 @@ export function ColorField({
 	className?: string;
 }): ReactElement {
 	const id = useId();
-	// The hue is kept apart: a grey has none, and dragging through one must not lose it.
-	const [hsv, setHsv] = useState<Hsv>(() => toHsv(value));
-	const [typed, setTyped] = useState<string | null>(null);
-	const plane = useRef<HTMLDivElement>(null);
-	useEffect(() => {
-		if (toHex(hsv) !== value.toLowerCase()) setHsv((now) => toHsv(value, now[0]));
-	}, [value, hsv]);
-
-	const update = (next: Hsv): void => {
-		setHsv(next);
-		onChange(toHex(next));
-	};
-	const at = (event: React.PointerEvent<HTMLDivElement>): void => {
-		const box = event.currentTarget.getBoundingClientRect();
-		const x = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
-		const s = getComputedStyle(event.currentTarget).direction === 'rtl' ? 1 - x : x;
-		update([hsv[0], s, 1 - Math.min(1, Math.max(0, (event.clientY - box.top) / box.height))]);
-	};
-	const [h, s, v] = hsv;
-	const percent = (n: number): string => `${Math.round(n * 100)} %`;
-
 	return (
 		<div className={className ? `x-field ${className}` : 'x-field'}>
 			<span className="x-label" id={`${id}-label`}>
@@ -523,57 +588,7 @@ export function ColorField({
 					</button>
 				)}
 			>
-				<div className="x-color" style={{ '--_hue': h } as React.CSSProperties}>
-					<div
-						ref={plane}
-						data-plane=""
-						role="slider"
-						tabIndex={0}
-						aria-label={labels.plane}
-						aria-valuenow={Math.round(s * 100)}
-						aria-valuetext={`${percent(s)}, ${percent(v)}`}
-						onPointerDown={(event) => {
-							event.currentTarget.setPointerCapture(event.pointerId);
-							at(event);
-						}}
-						onPointerMove={(event) => {
-							if (event.currentTarget.hasPointerCapture(event.pointerId)) at(event);
-						}}
-						onKeyDown={(event) => {
-							const d = event.shiftKey ? 0.1 : 0.02;
-							const rtl = getComputedStyle(event.currentTarget).direction === 'rtl' ? -1 : 1;
-							const by = { ArrowLeft: [-d * rtl, 0], ArrowRight: [d * rtl, 0], ArrowUp: [0, d], ArrowDown: [0, -d] }[event.key];
-							if (!by) return;
-							event.preventDefault();
-							const fit = (n: number): number => Math.min(1, Math.max(0, n));
-							update([h, fit(s + (by[0] ?? 0)), fit(v + (by[1] ?? 0))]);
-						}}
-					>
-						<span style={{ '--_x': `${s * 100}%`, '--_y': `${(1 - v) * 100}%` } as React.CSSProperties} />
-					</div>
-					<input type="range" min={0} max={359} value={Math.round(h)} aria-label={labels.hue} onChange={(event) => update([Number(event.currentTarget.value), s, v])} />
-					<div>
-						<span className="x-swatch" style={{ '--x-swatch': value } as React.CSSProperties} />
-						<input
-							className="x-input"
-							aria-label={labels.hex}
-							spellCheck={false}
-							autoComplete="off"
-							value={typed ?? value.toUpperCase()}
-							onChange={(event) => {
-								const text = event.currentTarget.value;
-								setTyped(text);
-								const match = HEX.exec(text.trim());
-								if (match) {
-									const next = toHsv(`#${match[1]}`, h);
-									setHsv(next);
-									onChange(`#${match[1]?.toLowerCase()}`);
-								}
-							}}
-							onBlur={() => setTyped(null)}
-						/>
-					</div>
-				</div>
+				<ColorPicker value={value} onChange={onChange} labels={labels} />
 			</Popover>
 		</div>
 	);

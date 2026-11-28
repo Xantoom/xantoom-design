@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.5
+
+- React `ColorPicker`: ColorField's picker on its own, for a button of the app's (a swatch, a colour wheel) in a
+  `Popover`. ColorField is built on it.
+- A tooltip whose words are already on screen (a nav label hidden only when narrow) does not show.
+- `x-number`: its input has no width of its own, so a fluid field (`w-full`) in a narrow grid cell no longer
+  overflows.
+- A Select's search shows its label as a placeholder.
+
 ## 0.7.4
 
 - React `Dialog` stays open under StrictMode: the close its unmount cleanup makes on React's pretend unmount no longer

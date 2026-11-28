@@ -264,9 +264,11 @@ const TAP = 'a[href], button, input, select, textarea, label, [role=button], [ro
 
 function showTip(host) {
 	clearTimeout(tipTimer);
+	const { tip: text, tipSub, tipImg, tipPoster } = host.dataset;
+	// Its words are on screen already (a label hidden only when narrow): the tooltip would repeat them.
+	if (!tipSub && !tipImg && !tipPoster && normalize(host.innerText) === normalize(text)) return hideTip();
 	tipHost = host;
 	tipLabel(host);
-	const { tip: text, tipSub, tipImg, tipPoster } = host.dataset;
 	tip.replaceChildren(text);
 	if (tipSub) tip.append(Object.assign(document.createElement('small'), { textContent: tipSub }));
 	// A picture above the text (an icon, a flag) or a cover (a poster, 3:4); placed again once it has its size.

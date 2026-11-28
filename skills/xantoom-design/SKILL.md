@@ -4,7 +4,7 @@ description: The Xantoom design system, shared by every Xantoom web app (Vixion,
 license: MIT
 metadata:
   author: Xantoom
-  version: 0.7.4
+  version: 0.7.5
 ---
 
 # Xantoom design system
@@ -76,7 +76,7 @@ The CSS goes in the project; this skill stays on the machine (`bunx github:Xanto
 updates it). A project never holds a copy of the skill.
 
 ```sh
-bun add github:Xantoom/xantoom-design#v0.7.4
+bun add github:Xantoom/xantoom-design#v0.7.5
 ```
 
 ```css

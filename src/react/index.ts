@@ -4,7 +4,7 @@ export { Button, IconButton, buttonProps, type ButtonProps, type ButtonSize, typ
 export { Avatar, Flag, Options, Spinner, ThemeCycle, Toaster, hueOf, type FlagCode, type Option } from './content';
 export { Brand } from './brand';
 export { DropZone, DurationField, FilePicker, NumberField, SearchField, Switch, type NumberFieldProps } from './controls';
-export { ColorField, Combobox, Select, SettingRow, Settings, type Choice, type SelectProps } from './pickers';
+export { ColorField, ColorPicker, Combobox, Select, SettingRow, Settings, type Choice, type SelectProps } from './pickers';
 export { CommandPalette, type CommandGroup, type CommandItem, type CommandPaletteProps } from './command';
 export { Dialog, useModal, type DialogProps } from './dialog';
 export { Field, TextArea, TextField, type ControlProps, type FieldProps } from './field';

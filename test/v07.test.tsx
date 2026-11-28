@@ -103,3 +103,19 @@ describe('0.7.4 fixes', () => {
 		expect(source('src/xantoom.js')).toMatch(/focusin[\s\S]{0,200}requestAnimationFrame/);
 	});
 });
+
+describe('0.7.5', () => {
+	test('a tooltip that would repeat the words on screen does not show', () => {
+		expect(source('src/xantoom.js')).toContain('normalize(host.innerText) === normalize(text)) return hideTip();');
+	});
+
+	test('ColorPicker is the picker alone, and ColorField uses it', () => {
+		const pickers = source('src/react/pickers.tsx');
+		expect(pickers).toContain('export function ColorPicker(');
+		expect(pickers).toContain('<ColorPicker value={value} onChange={onChange} labels={labels} />');
+	});
+
+	test('a Select search shows its label as a placeholder', () => {
+		expect(source('src/react/pickers.tsx')).toMatch(/aria-label=\{search\.label\}\s*placeholder=\{search\.label\}/);
+	});
+});

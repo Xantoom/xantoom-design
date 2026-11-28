@@ -521,6 +521,8 @@ textarea.x-input {
 
 	& > input {
 		flex: 1;
+		/* No width of its own: the field's sets it, so a fluid field in a narrow grid cell does not overflow. */
+		inline-size: 0;
 		min-inline-size: 0;
 		padding: 0 var(--x-space-1);
 		border: 0;
